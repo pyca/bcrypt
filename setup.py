@@ -61,9 +61,15 @@ setup(
         "cffi",
     ],
     extras_require={
-        "tests": ["pytest"],
+        "tests": [
+            "pytest",
+            "mock",
+        ],
     },
-    tests_require=["pytest"],
+    tests_require=[
+        "pytest",
+        "mock",
+    ],
 
     packages=[
         "bcrypt",
