@@ -1,3 +1,4 @@
+__pycache__/
 .py[co]
 
 # Packages
@@ -16,9 +17,6 @@ develop-eggs
 # Installer logs
 pip-log.txt
 
-# Installer lock files
-Gemfile.lock
-
 # Unit test / coverage reports
 .coverage
 .tox
@@ -26,9 +24,3 @@ Gemfile.lock
 
 #Translations
 *.mo
-
-# SASS cache
-.sass-cache
-
-# Ignore the typical config file
-config.yaml
