@@ -105,3 +105,13 @@ def test_hashpw_existing(password, hashed):
 def test_hashpw_invalid():
     with pytest.raises(ValueError):
         bcrypt.hashpw(b"password", b"$2z$04$cVWp4XaNU8a4v1uMRum2SO")
+
+
+def test_hashpw_str_password():
+    with pytest.raises(TypeError):
+        bcrypt.hashpw(u"password", b"$2a$04$cVWp4XaNU8a4v1uMRum2SO")
+
+
+def test_hashpw_str_salt():
+    with pytest.raises(TypeError):
+        bcrypt.hashpw(b"password", u"$2a$04$cVWp4XaNU8a4v1uMRum2SO")
