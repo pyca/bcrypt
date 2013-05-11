@@ -12,3 +12,8 @@ script:
 branches:
   only:
     - master
+matrix:
+  allow_failures:
+    # Travis-CI currently has PyPy 1.9 which does not have the CFFI backend.
+    #   See: https://github.com/travis-ci/travis-ci/issues/1106
+    - python: "PyPy"
