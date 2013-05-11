@@ -1,0 +1,14 @@
+language: python
+python:
+  - "2.6"
+  - "2.7"
+  - "3.2"
+  - "3.3"
+  - "PyPy"
+install:
+  - "pip install ."
+script:
+  - py.test
+branches:
+  only:
+    - master
