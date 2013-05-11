@@ -17,6 +17,7 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import unicode_literals
 
+import hashlib
 import os
 import sys
 
@@ -38,7 +39,8 @@ else:
     text_type = unicode
 
 
-_bundled_dir = os.path.join(os.path.dirname(__file__), "crypt_blowfish-1.2")
+_crypt_blowfish_dir = "crypt_blowfish-1.2"
+_bundled_dir = os.path.join(os.path.dirname(__file__), _crypt_blowfish_dir)
 
 _ffi = FFI()
 _ffi.cdef("""
@@ -56,7 +58,16 @@ _bcrypt_lib = _ffi.verify('#include "ow-crypt.h"',
         # How can we get distutils to work with a .S file?
         # str(os.path.join(_bundled_dir, "x86.S")),
     ],
-    include_dirs=[str(_bundled_dir)]
+    include_dirs=[str(_bundled_dir)],
+    modulename=str("_".join([
+                    "_cffi",
+                    hashlib.sha1(
+                        "".join(_ffi._cdefsources).encode("utf-8")
+                    ).hexdigest()[:6],
+                    hashlib.sha1(
+                        _crypt_blowfish_dir.encode("utf-8")
+                    ).hexdigest()[:6],
+                ])),
 )
 
 

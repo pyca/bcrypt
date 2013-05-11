@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import sys
+import os
 
 from setuptools import setup
 from setuptools.command.test import test as TestCommand
@@ -16,6 +17,11 @@ class _AttrDict(dict):
 
     def __setattr__(self, key, value):
         self[key] = value
+
+
+# This is really hacky, but it ensures that if setup_requires are being used
+#   setup.py can import them. No idea why this is required.
+sys.path += [x for x in os.listdir(".") if x.endswith(".egg")]
 
 
 try:
@@ -57,6 +63,9 @@ setup(
     author=__about__.__author__,
     author_email=__about__.__email__,
 
+    setup_requires=[
+        "cffi",
+    ],
     install_requires=[
         "cffi",
     ],
@@ -79,7 +88,6 @@ setup(
         "bcrypt": ["crypt_blowfish-1.2/*"],
     },
 
-    ext_package="bcrypt",
     ext_modules=ext_modules,
 
     zip_safe=False,
