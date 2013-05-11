@@ -40,13 +40,13 @@ _ffi.cdef("""
 
 _bcrypt_lib = _ffi.verify('#include "ow-crypt.h"',
     sources=[
-        os.path.join(_bundled_dir, "crypt_blowfish.c"),
-        os.path.join(_bundled_dir, "crypt_gensalt.c"),
-        os.path.join(_bundled_dir, "wrapper.c"),
+        str(os.path.join(_bundled_dir, "crypt_blowfish.c")),
+        str(os.path.join(_bundled_dir, "crypt_gensalt.c")),
+        str(os.path.join(_bundled_dir, "wrapper.c")),
         # How can we get distutils to work with a .S file?
-        # os.path.join(_bundled_dir, "x86.S"),
+        # str(os.path.join(_bundled_dir, "x86.S")),
     ],
-    include_dirs=[_bundled_dir]
+    include_dirs=[str(_bundled_dir)]
 )
 
 
