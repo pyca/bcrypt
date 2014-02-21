@@ -1,8 +1,8 @@
 bcrypt
 ======
 
-.. image:: https://travis-ci.org/dstufft/bcrypt.png?branch=master
-    :target: https://travis-ci.org/dstufft/bcrypt
+.. image:: https://travis-ci.org/pyca/bcrypt.png?branch=master
+    :target: https://travis-ci.org/pyca/bcrypt
 
 Modern password hashing for your software and your servers
 
