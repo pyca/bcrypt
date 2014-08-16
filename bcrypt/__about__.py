@@ -24,7 +24,7 @@ __all__ = [
 
 __title__ = "bcrypt"
 __summary__ = "Modern password hashing for your software and your servers"
-__uri__ = "https://github.com/dstufft/bcrypt/"
+__uri__ = "https://github.com/pyca/bcrypt/"
 
 __version__ = "1.0.2"
 
