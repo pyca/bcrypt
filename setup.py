@@ -11,21 +11,8 @@ CFFI_DEPENDENCY = "cffi>=0.8"
 SIX_DEPENDENCY = "six>=1.4.1"
 
 
-class _AttrDict(dict):
-
-    def __getattr__(self, key):
-        try:
-            return self[key]
-        except KeyError:
-            # to conform with __getattr__ spec
-            raise AttributeError(key)
-
-    def __setattr__(self, key, value):
-        self[key] = value
-
-
 # Manually extract the __about__
-__about__ = _AttrDict()
+__about__ = {}
 with open("bcrypt/__about__.py") as fp:
     exec(fp.read(), __about__)
 
@@ -220,16 +207,16 @@ class DummyPyTest(test):
 
 
 setup(
-    name=__about__.__title__,
-    version=__about__.__version__,
+    name=__about__["__title__"],
+    version=__about__["__version__"],
 
-    description=__about__.__summary__,
+    description=__about__["__summary__"],
     long_description=open("README.rst").read(),
-    url=__about__.__uri__,
-    license=__about__.__license__,
+    url=__about__["__uri__"],
+    license=__about__["__license__"],
 
-    author=__about__.__author__,
-    author_email=__about__.__email__,
+    author=__about__["__author__"],
+    author_email=__about__["__email__"],
 
     install_requires=[
         CFFI_DEPENDENCY,
