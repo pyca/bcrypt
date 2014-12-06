@@ -1,7 +1,5 @@
 import os
 
-import mock
-
 import pytest
 
 import six
@@ -15,8 +13,7 @@ def test_raise_implicit_compile():
 
 
 def test_gensalt_basic(monkeypatch):
-    urandom = mock.Mock(return_value=b"0000000000000000")
-    monkeypatch.setattr(os, "urandom", urandom)
+    monkeypatch.setattr(os, "urandom", lambda n: b"0000000000000000")
     assert bcrypt.gensalt() == b"$2a$12$KB.uKB.uKB.uKB.uKB.uK."
 
 
@@ -44,15 +41,13 @@ def test_gensalt_basic(monkeypatch):
     (24, b"$2a$24$KB.uKB.uKB.uKB.uKB.uK."),
 ])
 def test_gensalt_rounds_valid(rounds, expected, monkeypatch):
-    urandom = mock.Mock(return_value=b"0000000000000000")
-    monkeypatch.setattr(os, "urandom", urandom)
+    monkeypatch.setattr(os, "urandom", lambda n: b"0000000000000000")
     assert bcrypt.gensalt(rounds) == expected
 
 
 @pytest.mark.parametrize(("rounds",), [[x] for x in range(1, 4)])
 def test_gensalt_rounds_invalid(rounds, monkeypatch):
-    urandom = mock.Mock(return_value=b"0000000000000000")
-    monkeypatch.setattr(os, "urandom", urandom)
+    monkeypatch.setattr(os, "urandom", lambda n: b"0000000000000000")
 
     with pytest.raises(ValueError):
         bcrypt.gensalt(rounds)
