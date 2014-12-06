@@ -13,7 +13,7 @@
 .\" This manual page in its current form is intended for use on systems
 .\" based on the GNU C Library with crypt_blowfish patched into libcrypt.
 .\"
-.TH CRYPT 3 "July 16, 2011" "Openwall Project" "Library functions"
+.TH CRYPT 3 "July 7, 2014" "Openwall Project" "Library functions"
 .ad l
 .\" No macros in NAME to keep makewhatis happy.
 .SH NAME
@@ -392,8 +392,8 @@ OpenBSD, and FreeBSD due to the use of David Burren's FreeSec library.
 .br
 This is Poul-Henning Kamp's MD5-based password hashing method originally
 developed for FreeBSD.
-It is currently supported on many free Unix-like systems, on Solaris 10,
-and it is a part of the official glibc.
+It is currently supported on many free Unix-like systems, on Solaris 10
+and newer, and it is part of the official glibc.
 Its main disadvantage is the fixed iteration count, which is already
 too low for the currently available hardware.
 .hash "$1$" "\e$1\e$[^$]{1,8}\e$[./0-9A-Za-z]{22}" unlimited 8 "" 128 "6 to 48" 1000
@@ -404,8 +404,8 @@ too low for the currently available hardware.
 .B bcrypt
 was originally developed by Niels Provos and David Mazieres for OpenBSD
 and is also supported on recent versions of FreeBSD and NetBSD,
-on Solaris 10, and on several GNU/*/Linux distributions.
-It is, however, not a part of the official glibc.
+on Solaris 10 and newer, and on several GNU/*/Linux distributions.
+It is, however, not part of the official glibc.
 .PP
 While both
 .B bcrypt
@@ -414,7 +414,7 @@ and the BSDI-style DES-based hashing offer a variable iteration count,
 may scale to even faster hardware, doesn't allow for certain optimizations
 specific to password cracking only, doesn't have the effective key size
 limitation, and uses 8-bit characters in passwords.
-.hash "$2y$" "\e$2[axy]\e$[0-9]{2}\e$[./A-Za-z0-9]{53}" 72 8 "" 184 128 "2**4 to 2**99 (current implementations are limited to 2**31 iterations)"
+.hash "$2b$" "\e$2[abxy]\e$[0-9]{2}\e$[./A-Za-z0-9]{53}" 72 8 "" 184 128 "2**4 to 2**99 (current implementations are limited to 2**31 iterations)"
 .PP
 With
 .BR bcrypt ,
@@ -432,20 +432,21 @@ the 8th bit set.
 Besides fixing the bug,
 to provide for upgrade strategies for existing systems, two new prefixes were
 introduced: "$2x$", which fully re-introduces the bug, and "$2y$", which
-guarantees correct handling of both 7- and 8-bit characters (same as OpenBSD's
-"$2a$").
+guarantees correct handling of both 7- and 8-bit characters.
+OpenBSD 5.5 introduced the "$2b$" prefix for behavior that exactly matches
+crypt_blowfish's "$2y$", and current crypt_blowfish supports it as well.
 Unfortunately, the behavior of "$2a$" on password characters with the 8th bit
 set has to be considered system-specific.
-When generating new password hashes, the "$2y$" prefix should be used.
+When generating new password hashes, the "$2b$" or "$2y$" prefix should be used.
 (If such hashes ever need to be migrated to a system that does not yet support
-this new prefix, the prefix in migrated copies of the already-generated hashes
-may be changed to "$2a$".)
+these new prefixes, the prefix in migrated copies of the already-generated
+hashes may be changed to "$2a$".)
 .PP
 .crypt_gensalt and
-support the "$2y$" and "$2a$" prefixes (the latter for legacy programs or
-configurations), but not "$2x$" (which must not be used for new hashes).
+support the "$2b$", "$2y$", and "$2a$" prefixes (the latter for legacy programs
+or configurations), but not "$2x$" (which must not be used for new hashes).
 .crypt and
-support all three of these prefixes.
+support all four of these prefixes.
 .SH PORTABILITY NOTES
 Programs using any of these functions on a glibc 2.x system must be
 linked against
@@ -480,7 +481,7 @@ function on HP-UX and MKS Toolkit, but the prototypes and semantics differ.
 is an Openwall extension.
 There's also a
 .B crypt_gensalt
-function on Solaris 10, but the prototypes and semantics differ.
+function on Solaris 10 and newer, but the prototypes and semantics differ.
 .PP
 .BR crypt_rn ,
 .BR crypt_ra ,
