@@ -225,12 +225,10 @@ setup(
     extras_require={
         "tests": [
             "pytest",
-            "mock",
         ],
     },
     tests_require=[
         "pytest",
-        "mock",
     ],
 
     packages=[
