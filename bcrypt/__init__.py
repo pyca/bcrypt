@@ -24,11 +24,17 @@ from cffi import FFI
 
 import six
 
-from . import __about__
-from .__about__ import *
+from .__about__ import (
+    __author__, __copyright__, __email__, __license__, __summary__, __title__,
+    __uri__, __version__,
+)
 
 
-__all__ = ["gensalt", "hashpw"] + __about__.__all__
+__all__ = [
+    "__title__", "__summary__", "__uri__", "__version__", "__author__",
+    "__email__", "__license__", "__copyright__",
+    "gensalt", "hashpw",
+]
 
 
 _crypt_blowfish_dir = "crypt_blowfish-1.2"
@@ -42,26 +48,30 @@ _ffi.cdef("""
     char *crypt_rn(const char *key, const char *setting, void *data, int size);
 """)
 
-_bcrypt_lib = _ffi.verify('#include "ow-crypt.h"',
+_bcrypt_lib = _ffi.verify(
+    '#include "ow-crypt.h"',
     sources=[
         str(os.path.join(_bundled_dir, "crypt_blowfish.c")),
         str(os.path.join(_bundled_dir, "crypt_gensalt.c")),
         str(os.path.join(_bundled_dir, "wrapper.c")),
         # How can we get distutils to work with a .S file?
-        #   Set https://github.com/dstufft/bcrypt/blob/4c939e895bd9607301cda6d6f05ef3c1146eb658/bcrypt/crypt_blowfish-1.2/crypt_blowfish.c#L57
+        #   Set https://github.com/dstufft/bcrypt/blob/4c939e895bd9607301cda6d
+        #      6f05ef3c1146eb658/bcrypt/crypt_blowfish-1.2/crypt_blowfish.c#L57
         #      back to 1 if we get ASM loaded.
         # str(os.path.join(_bundled_dir, "x86.S")),
     ],
     include_dirs=[str(_bundled_dir)],
-    modulename=str("_".join([
-                    "_cffi",
-                    hashlib.sha1(
-                        "".join(_ffi._cdefsources).encode("utf-8")
-                    ).hexdigest()[:6],
-                    hashlib.sha1(
-                        _crypt_blowfish_dir.encode("utf-8")
-                    ).hexdigest()[:6],
-                ])),
+    modulename=str(
+        "_".join([
+            "_cffi",
+            hashlib.sha1(
+                "".join(_ffi._cdefsources).encode("utf-8")
+            ).hexdigest()[:6],
+            hashlib.sha1(
+                _crypt_blowfish_dir.encode("utf-8")
+            ).hexdigest()[:6],
+        ]),
+    ),
 )
 
 
@@ -70,7 +80,8 @@ def gensalt(rounds=12):
     output = _ffi.new("unsigned char[]", 30)
 
     retval = _bcrypt_lib.crypt_gensalt_rn(
-                    b"$2a$", rounds, salt, len(salt), output, len(output))
+        b"$2a$", rounds, salt, len(salt), output, len(output),
+    )
 
     if not retval:
         raise ValueError("Invalid rounds")

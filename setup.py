@@ -1,9 +1,9 @@
 #!/usr/bin/env python
-import sys
 import os
+import sys
 
 from setuptools import setup
-from setuptools.command.test import test as TestCommand
+from setuptools.command.test import test
 
 
 SIX_DEPENDENCY = "six>=1.4.1"
@@ -42,9 +42,9 @@ else:
     ext_modules = [_ffi.verifier.get_extension()]
 
 
-class PyTest(TestCommand):
+class PyTest(test):
     def finalize_options(self):
-        TestCommand.finalize_options(self)
+        test.finalize_options(self)
         self.test_args = []
         self.test_suite = True
 
