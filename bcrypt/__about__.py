@@ -26,7 +26,7 @@ __title__ = "bcrypt"
 __summary__ = "Modern password hashing for your software and your servers"
 __uri__ = "https://github.com/pyca/bcrypt/"
 
-__version__ = "1.0.2"
+__version__ = "1.1.0"
 
 __author__ = "Donald Stufft"
 __email__ = "donald@stufft.io"
