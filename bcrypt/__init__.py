@@ -17,8 +17,9 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import unicode_literals
 
-import hashlib
+import binascii
 import os
+import sys
 
 from cffi import FFI
 
@@ -37,19 +38,40 @@ __all__ = [
 ]
 
 
+def _create_modulename(cdef_sources, source, sys_version):
+    """
+    This is the same as CFFI's create modulename except we don't include the
+    CFFI version.
+    """
+    key = '\x00'.join([sys_version[:3], source, cdef_sources])
+    key = key.encode('utf-8')
+    k1 = hex(binascii.crc32(key[0::2]) & 0xffffffff)
+    k1 = k1.lstrip('0x').rstrip('L')
+    k2 = hex(binascii.crc32(key[1::2]) & 0xffffffff)
+    k2 = k2.lstrip('0').rstrip('L')
+    return '_bcrypt_cffi_{0}{1}'.format(k1, k2)
+
+
 _crypt_blowfish_dir = "crypt_blowfish-1.2"
 _bundled_dir = os.path.join(os.path.dirname(__file__), _crypt_blowfish_dir)
 
-_ffi = FFI()
-_ffi.cdef("""
+
+CDEF = """
     char *crypt_gensalt_rn(const char *prefix, unsigned long count,
                 const char *input, int size, char *output, int output_size);
 
     char *crypt_rn(const char *key, const char *setting, void *data, int size);
-""")
+"""
+
+SOURCE = """
+    #include "ow-crypt.h"
+"""
+
+_ffi = FFI()
+_ffi.cdef(CDEF)
 
 _bcrypt_lib = _ffi.verify(
-    '#include "ow-crypt.h"',
+    SOURCE,
     sources=[
         str(os.path.join(_bundled_dir, "crypt_blowfish.c")),
         str(os.path.join(_bundled_dir, "crypt_gensalt.c")),
@@ -61,17 +83,7 @@ _bcrypt_lib = _ffi.verify(
         # str(os.path.join(_bundled_dir, "x86.S")),
     ],
     include_dirs=[str(_bundled_dir)],
-    modulename=str(
-        "_".join([
-            "_cffi",
-            hashlib.sha1(
-                "".join(_ffi._cdefsources).encode("utf-8")
-            ).hexdigest()[:6],
-            hashlib.sha1(
-                _crypt_blowfish_dir.encode("utf-8")
-            ).hexdigest()[:6],
-        ]),
-    ),
+    modulename=_create_modulename(CDEF, SOURCE, sys.version),
 )
 
 
