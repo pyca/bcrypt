@@ -64,4 +64,4 @@ Compatibility
 -------------
 
 This library should be compatible with py-bcrypt and it will run on Python
-2.6, 2.7, 3.2, 3.3 and PyPy 2.0.
+2.6+, 3.2+, and PyPy.
