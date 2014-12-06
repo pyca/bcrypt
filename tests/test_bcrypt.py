@@ -2,6 +2,7 @@ import os
 
 import mock
 import pytest
+import six
 
 import bcrypt
 
@@ -109,9 +110,9 @@ def test_hashpw_invalid():
 
 def test_hashpw_str_password():
     with pytest.raises(TypeError):
-        bcrypt.hashpw(bcrypt.text_type("password"), b"$2a$04$cVWp4XaNU8a4v1uMRum2SO")
+        bcrypt.hashpw(six.text_type("password"), b"$2a$04$cVWp4XaNU8a4v1uMRum2SO")
 
 
 def test_hashpw_str_salt():
     with pytest.raises(TypeError):
-        bcrypt.hashpw(b"password", bcrypt.text_type("$2a$04$cVWp4XaNU8a4v1uMRum2SO"))
+        bcrypt.hashpw(b"password", six.text_type("$2a$04$cVWp4XaNU8a4v1uMRum2SO"))

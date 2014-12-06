@@ -19,24 +19,16 @@ from __future__ import unicode_literals
 
 import hashlib
 import os
-import sys
 
 from cffi import FFI
+
+import six
 
 from . import __about__
 from .__about__ import *
 
 
 __all__ = ["gensalt", "hashpw"] + __about__.__all__
-
-
-# True if we are running on Python 3.
-PY3 = sys.version_info[0] == 3
-
-if PY3:
-    text_type = str
-else:
-    text_type = unicode
 
 
 _crypt_blowfish_dir = "crypt_blowfish-1.2"
@@ -87,7 +79,7 @@ def gensalt(rounds=12):
 
 
 def hashpw(password, salt):
-    if isinstance(password, text_type) or isinstance(salt, text_type):
+    if isinstance(password, six.text_type) or isinstance(salt, six.text_type):
         raise TypeError("Unicode-objects must be encoded before hashing")
 
     hashed = _ffi.new("unsigned char[]", 128)
