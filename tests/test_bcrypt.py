@@ -49,7 +49,7 @@ def test_gensalt_rounds_valid(rounds, expected, monkeypatch):
     assert bcrypt.gensalt(rounds) == expected
 
 
-@pytest.mark.parametrize(("rounds",), [[x] for x in range(1, 4)])
+@pytest.mark.parametrize("rounds", list(range(1, 4)))
 def test_gensalt_rounds_invalid(rounds, monkeypatch):
     urandom = mock.Mock(return_value=b"0000000000000000")
     monkeypatch.setattr(os, "urandom", urandom)
