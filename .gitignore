@@ -1,5 +1,5 @@
 __pycache__/
-.py[co]
+*.py[co]
 
 # Packages
 *.egg
