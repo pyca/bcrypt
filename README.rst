@@ -51,7 +51,7 @@ the work factor merely pass the desired number of rounds to
     >>> import bcrypt
     >>> password = b"super secret password"
     >>> # Hash a password for the first time, with a certain number of rounds
-    >>> hashed = bcrypt.hashpw(password, bcrypt.gensalt(10))
+    >>> hashed = bcrypt.hashpw(password, bcrypt.gensalt(14))
     >>> # Check that a unhashed password matches one that has previously been
     >>> #   hashed
     >>> if bcrypt.hashpw(password, hashed) == hashed:
