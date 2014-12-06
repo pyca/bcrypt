@@ -9,6 +9,11 @@ import six
 import bcrypt
 
 
+def test_raise_implicit_compile():
+    with pytest.raises(RuntimeError):
+        bcrypt._compile_module()
+
+
 def test_gensalt_basic(monkeypatch):
     urandom = mock.Mock(return_value=b"0000000000000000")
     monkeypatch.setattr(os, "urandom", urandom)
