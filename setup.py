@@ -6,6 +6,9 @@ from setuptools import setup
 from setuptools.command.test import test as TestCommand
 
 
+SIX_DEPENDENCY = "six>=1.4.1"
+
+
 class _AttrDict(dict):
 
     def __getattr__(self, key):
@@ -65,9 +68,11 @@ setup(
 
     setup_requires=[
         "cffi",
+        SIX_DEPENDENCY,
     ],
     install_requires=[
         "cffi",
+        SIX_DEPENDENCY,
     ],
     extras_require={
         "tests": [
