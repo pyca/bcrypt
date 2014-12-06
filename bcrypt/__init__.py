@@ -53,6 +53,13 @@ def _create_modulename(cdef_sources, source, sys_version):
     return '_bcrypt_cffi_{0}{1}'.format(k1, k2)
 
 
+def _compile_module(*args, **kwargs):
+    raise RuntimeError(
+        "Attempted implicit compile of a cffi module. All cffi modules should "
+        "be pre-compiled at installation time."
+    )
+
+
 class LazyLibrary(object):
     def __init__(self, ffi):
         self._ffi = ffi
@@ -105,6 +112,10 @@ _ffi.verifier = Verifier(
     include_dirs=[str(_bundled_dir)],
     modulename=_create_modulename(CDEF, SOURCE, sys.version),
 )
+
+# Patch the Verifier() instance to prevent CFFI from compiling the module
+_ffi.verifier.compile_module = _compile_module
+_ffi.verifier._compile_module = _compile_module
 
 
 _bcrypt_lib = LazyLibrary(_ffi)
