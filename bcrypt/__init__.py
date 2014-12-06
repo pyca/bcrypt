@@ -19,8 +19,10 @@ from __future__ import division
 import binascii
 import os
 import sys
+import threading
 
 from cffi import FFI
+from cffi.verifier import Verifier
 
 import six
 
@@ -51,6 +53,25 @@ def _create_modulename(cdef_sources, source, sys_version):
     return '_bcrypt_cffi_{0}{1}'.format(k1, k2)
 
 
+class LazyLibrary(object):
+    def __init__(self, ffi):
+        self._ffi = ffi
+        self._lib = None
+        self._lock = threading.Lock()
+
+    def __getattr__(self, name):
+        if self._lib is None:
+            with self._lock:
+                # We no cover this because this guard is here just to protect
+                # against concurrent loads of this library. This is pretty
+                # hard to test and the logic is simple and should hold fine
+                # without testing (famous last words).
+                if self._lib is None:  # pragma: no cover
+                    self._lib = self._ffi.verifier.load_library()
+
+        return getattr(self._lib, name)
+
+
 _crypt_blowfish_dir = "crypt_blowfish-1.2"
 _bundled_dir = os.path.join(os.path.dirname(__file__), _crypt_blowfish_dir)
 
@@ -68,8 +89,8 @@ SOURCE = """
 
 _ffi = FFI()
 _ffi.cdef(CDEF)
-
-_bcrypt_lib = _ffi.verify(
+_ffi.verifier = Verifier(
+    _ffi,
     SOURCE,
     sources=[
         str(os.path.join(_bundled_dir, "crypt_blowfish.c")),
@@ -84,6 +105,9 @@ _bcrypt_lib = _ffi.verify(
     include_dirs=[str(_bundled_dir)],
     modulename=_create_modulename(CDEF, SOURCE, sys.version),
 )
+
+
+_bcrypt_lib = LazyLibrary(_ffi)
 
 
 def gensalt(rounds=12):
