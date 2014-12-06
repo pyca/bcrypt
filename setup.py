@@ -251,7 +251,7 @@ setup(
     ],
 
     package_data={
-        "bcrypt": ["crypt_blowfish-1.2/*"],
+        "bcrypt": ["crypt_blowfish-1.3/*"],
     },
 
     zip_safe=False,

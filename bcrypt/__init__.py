@@ -72,7 +72,7 @@ class LazyLibrary(object):
         return getattr(self._lib, name)
 
 
-_crypt_blowfish_dir = "crypt_blowfish-1.2"
+_crypt_blowfish_dir = "crypt_blowfish-1.3"
 _bundled_dir = os.path.join(os.path.dirname(__file__), _crypt_blowfish_dir)
 
 
@@ -97,9 +97,8 @@ _ffi.verifier = Verifier(
         str(os.path.join(_bundled_dir, "crypt_gensalt.c")),
         str(os.path.join(_bundled_dir, "wrapper.c")),
         # How can we get distutils to work with a .S file?
-        #   Set https://github.com/dstufft/bcrypt/blob/4c939e895bd9607301cda6d
-        #      6f05ef3c1146eb658/bcrypt/crypt_blowfish-1.2/crypt_blowfish.c#L57
-        #      back to 1 if we get ASM loaded.
+        #   Set bcrypt/crypt_blowfish-1.3/crypt_blowfish.c#57 back to 1 if we
+        #   get ASM loaded.
         # str(os.path.join(_bundled_dir, "x86.S")),
     ],
     include_dirs=[str(_bundled_dir)],

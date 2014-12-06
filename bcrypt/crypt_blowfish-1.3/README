@@ -1,8 +1,8 @@
 This is an implementation of a password hashing method, provided via the
-crypt(3) and a reentrant interface.  It is mostly compatible with
-OpenBSD's bcrypt.c (prefix "$2a$") by Niels Provos and David Mazieres.
-(Please refer to the included crypt(3) man page for information on
-compatibility issues.)
+crypt(3) and a reentrant interface.  It is fully compatible with
+OpenBSD's bcrypt.c for prefix "$2b$", originally by Niels Provos and
+David Mazieres.  (Please refer to the included crypt(3) man page for
+information on minor compatibility issues for other bcrypt prefixes.)
 
 I've placed this code in the public domain, with fallback to a
 permissive license.  Please see the comment in crypt_blowfish.c for
@@ -65,4 +65,4 @@ routines as well.
 -- 
 Solar Designer <solar at openwall.com>
 
-$Owl: Owl/packages/glibc/crypt_blowfish/README,v 1.9 2011/07/16 21:48:45 solar Exp $
+$Owl: Owl/packages/glibc/crypt_blowfish/README,v 1.10 2014/07/07 15:19:04 solar Exp $

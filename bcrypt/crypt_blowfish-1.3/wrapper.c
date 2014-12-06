@@ -1,9 +1,9 @@
 /*
- * Written by Solar Designer <solar at openwall.com> in 2000-2011.
+ * Written by Solar Designer <solar at openwall.com> in 2000-2014.
  * No copyright is claimed, and the software is hereby placed in the public
  * domain.  In case this attempt to disclaim copyright and place the software
  * in the public domain is deemed null and void, then the software is
- * Copyright (c) 2000-2011 Solar Designer and it is hereby released to the
+ * Copyright (c) 2000-2014 Solar Designer and it is hereby released to the
  * general public under the following terms:
  *
  * Redistribution and use in source and binary forms, with or without
@@ -210,7 +210,8 @@ char *__crypt_gensalt_rn(const char *prefix, unsigned long count,
 		return NULL;
 	}
 
-	if (!strncmp(prefix, "$2a$", 4) || !strncmp(prefix, "$2y$", 4))
+	if (!strncmp(prefix, "$2a$", 4) || !strncmp(prefix, "$2b$", 4) ||
+	    !strncmp(prefix, "$2y$", 4))
 		use = _crypt_gensalt_blowfish_rn;
 	else
 	if (!strncmp(prefix, "$1$", 3))
@@ -293,9 +294,13 @@ static const char *tests[][3] = {
 		"\xff\xff\xa3"},
 	{"$2a$05$/OK.fbVrR/bpIqNJ5ianF.nqd1wy.pTMdcvrRWxyiGL2eMz.2a85.",
 		"\xff\xff\xa3"},
+	{"$2b$05$/OK.fbVrR/bpIqNJ5ianF.CE5elHaaO4EbggVDjb8P19RukzXSM3e",
+		"\xff\xff\xa3"},
 	{"$2y$05$/OK.fbVrR/bpIqNJ5ianF.Sa7shbm4.OzKpvFnX1pQLmQW96oUlCq",
 		"\xa3"},
 	{"$2a$05$/OK.fbVrR/bpIqNJ5ianF.Sa7shbm4.OzKpvFnX1pQLmQW96oUlCq",
+		"\xa3"},
+	{"$2b$05$/OK.fbVrR/bpIqNJ5ianF.Sa7shbm4.OzKpvFnX1pQLmQW96oUlCq",
 		"\xa3"},
 	{"$2x$05$/OK.fbVrR/bpIqNJ5ianF.o./n25XVfn6oAPaUvHe.Csk4zRfsYPi",
 		"1\xa3" "345"},
@@ -347,6 +352,7 @@ static const char *tests[][3] = {
 		""},
 	{"*0", "", "$2a$03$CCCCCCCCCCCCCCCCCCCCC."},
 	{"*0", "", "$2a$32$CCCCCCCCCCCCCCCCCCCCC."},
+	{"*0", "", "$2c$05$CCCCCCCCCCCCCCCCCCCCC."},
 	{"*0", "", "$2z$05$CCCCCCCCCCCCCCCCCCCCC."},
 	{"*0", "", "$2`$05$CCCCCCCCCCCCCCCCCCCCC."},
 	{"*0", "", "$2{$05$CCCCCCCCCCCCCCCCCCCCC."},
