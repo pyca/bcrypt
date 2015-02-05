@@ -48,6 +48,16 @@ def test_gensalt_rounds_invalid(rounds, monkeypatch):
         bcrypt.gensalt(rounds)
 
 
+def test_gensalt_bad_prefix():
+    with pytest.raises(ValueError):
+        bcrypt.gensalt(prefix="bad")
+
+
+def test_gensalt_2a_prefix(monkeypatch):
+    monkeypatch.setattr(os, "urandom", lambda n: b"0000000000000000")
+    assert bcrypt.gensalt(prefix=b"2a") == b"$2a$12$KB.uKB.uKB.uKB.uKB.uK."
+
+
 @pytest.mark.parametrize(("password", "salt", "expected"), [
     (
         b"Kk4DQuMMfZL9o",
