@@ -52,9 +52,11 @@ def test_gensalt_rounds_invalid(rounds, monkeypatch):
     with pytest.raises(ValueError):
         bcrypt.gensalt(rounds)
 
+
 def test_gensalt_bad_prefix():
     with pytest.raises(TypeError):
         bcrypt.gensalt(prefix="bad")
+
 
 def test_gensalt_2a_prefix(monkeypatch):
     monkeypatch.setattr(os, "urandom", lambda n: b"0000000000000000")
