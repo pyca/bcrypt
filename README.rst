@@ -1,7 +1,11 @@
 bcrypt
 ======
 
-.. image:: https://travis-ci.org/pyca/bcrypt.png?branch=master
+.. image:: https://pypip.in/version/bcrypt/badge.svg?style=flat
+    :target: https://pypi.python.org/pypi/bcrypt/
+        :alt: Latest Version
+
+.. image:: https://travis-ci.org/pyca/bcrypt.svg?branch=master
     :target: https://travis-ci.org/pyca/bcrypt
 
 Modern password hashing for your software and your servers
