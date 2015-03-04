@@ -1,8 +1,10 @@
 __pycache__/
 *.py[co]
+*.so
 
 # Packages
 *.egg
+*.eggs
 *.egg-info
 dist
 build
