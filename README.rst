@@ -69,3 +69,11 @@ Compatibility
 
 This library should be compatible with py-bcrypt and it will run on Python
 2.6+, 3.2+, and PyPy.
+
+Security
+--------
+
+``bcrypt`` follows the same `security policy as cryptography`_, if you
+identify a vulnerability, we ask you to contact as privately.
+
+.. _`security policy as cryptography`: https://cryptography.io/en/latest/security/
