@@ -73,7 +73,7 @@ This library should be compatible with py-bcrypt and it will run on Python
 Security
 --------
 
-``bcrypt`` follows the same `security policy as cryptography`_, if you
-identify a vulnerability, we ask you to contact as privately.
+``bcrypt`` follows the `same security policy as cryptography`_, if you
+identify a vulnerability, we ask you to contact us privately.
 
-.. _`security policy as cryptography`: https://cryptography.io/en/latest/security/
+.. _`same security policy as cryptography`: https://cryptography.io/en/latest/security/
