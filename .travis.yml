@@ -1,4 +1,6 @@
 language: python
+# Run on Travis CI's docker infrastructure
+sudo: false
 
 env:
   # We have to explicitly use the CC arguments here because Travis does not
