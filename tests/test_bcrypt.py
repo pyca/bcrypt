@@ -264,3 +264,7 @@ def test_hashpw_str_salt():
             b"password",
             six.text_type("$2a$04$cVWp4XaNU8a4v1uMRum2SO"),
         )
+
+def test_nul_byte():
+    with pytest.raises(ValueError):
+        bcrypt.hashpw(b"abc\0def", bcrypt.gensalt(0))
