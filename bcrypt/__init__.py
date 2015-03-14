@@ -120,8 +120,15 @@ _ffi.verifier._compile_module = _compile_module
 _bcrypt_lib = LazyLibrary(_ffi)
 
 
-def gensalt(rounds=12):
-    salt = os.urandom(16)
+def gensalt(rounds=12, random_bytes=None):
+    if random_bytes is None:
+        salt = os.urandom(16)
+    else:
+        if not len(random_bytes) == 16:
+            raise TypeError("random_bytes have the wrong size")
+        if isinstance(random_bytes, text_type):
+            raise TypeError("random_bytes must be encoded before usage")
+        salt = random_bytes
     output = _ffi.new("unsigned char[]", 30)
 
     retval = _bcrypt_lib.crypt_gensalt_rn(
