@@ -138,6 +138,9 @@ def hashpw(password, salt):
     if isinstance(password, six.text_type) or isinstance(salt, six.text_type):
         raise TypeError("Unicode-objects must be encoded before hashing")
 
+    if b"\x00" in password:
+        raise ValueError("password may not contain NUL bytes")
+
     hashed = _ffi.new("unsigned char[]", 128)
     retval = _bcrypt_lib.crypt_rn(password, salt, hashed, len(hashed))
 
