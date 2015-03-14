@@ -120,12 +120,15 @@ _ffi.verifier._compile_module = _compile_module
 _bcrypt_lib = LazyLibrary(_ffi)
 
 
-def gensalt(rounds=12):
+def gensalt(rounds=12, prefix=b"2b"):
+    if prefix not in (b"2a", b"2b"):
+        raise TypeError("Supported prefixes are '2a' or '2b'")
+
     salt = os.urandom(16)
     output = _ffi.new("unsigned char[]", 30)
 
     retval = _bcrypt_lib.crypt_gensalt_rn(
-        b"$2a$", rounds, salt, len(salt), output, len(output),
+        b"$" + prefix + b"$", rounds, salt, len(salt), output, len(output),
     )
 
     if not retval:
