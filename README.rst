@@ -64,6 +64,14 @@ the work factor merely pass the desired number of rounds to
     ...     print("It Does not Match :(")
 
 
+Adjustable Prefix
+~~~~~~~~~~~~~~~~~
+
+Another one of bcrypt's features is an adjustable prefix to let you define what
+libraries you'll remain compatible with. To adjust this, pass either ``2a`` or
+``2b`` (the default) to ``bcrypt.gensalt(prefix=b"2b")`` as a bytes object.
+
+
 Compatibility
 -------------
 
