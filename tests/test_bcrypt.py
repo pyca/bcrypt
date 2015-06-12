@@ -7,11 +7,6 @@ import six
 import bcrypt
 
 
-def test_raise_implicit_compile():
-    with pytest.raises(RuntimeError):
-        bcrypt._compile_module()
-
-
 def test_gensalt_basic(monkeypatch):
     monkeypatch.setattr(os, "urandom", lambda n: b"0000000000000000")
     assert bcrypt.gensalt() == b"$2a$12$KB.uKB.uKB.uKB.uKB.uK."

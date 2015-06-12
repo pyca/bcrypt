@@ -20,9 +20,9 @@ env:
   - TOXENV=pep8
   - TOXENV=py3pep8
 
-install: pip install tox
+install: .travis/install.sh
 
-script: tox
+script: .travis/run.sh
 
 branches:
   only:

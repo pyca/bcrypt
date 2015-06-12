@@ -7,46 +7,19 @@ from setuptools.command.install import install
 from setuptools.command.test import test
 
 
-CFFI_DEPENDENCY = "cffi>=0.8"
+CFFI_DEPENDENCY = "cffi>=1.1"
 SIX_DEPENDENCY = "six>=1.4.1"
+
+
+CFFI_MODULES = [
+    "src/build_bcrypt.py:ffi",
+]
 
 
 # Manually extract the __about__
 __about__ = {}
-with open("bcrypt/__about__.py") as fp:
+with open("src/bcrypt/__about__.py") as fp:
     exec(fp.read(), __about__)
-
-
-def get_ext_modules():
-    from bcrypt import _ffi
-    return [_ffi.verifier.get_extension()]
-
-
-class CFFIBuild(build):
-    """
-    This class exists, instead of just providing ``ext_modules=[...]`` directly
-    in ``setup()`` because importing cryptography requires we have several
-    packages installed first.
-
-    By doing the imports here we ensure that packages listed in
-    ``setup_requires`` are already installed.
-    """
-
-    def finalize_options(self):
-        self.distribution.ext_modules = get_ext_modules()
-        build.finalize_options(self)
-
-
-class CFFIInstall(install):
-    """
-    As a consequence of CFFIBuild and it's late addition of ext_modules, we
-    need the equivalent for the ``install`` command to install into platlib
-    install-dir rather than purelib.
-    """
-
-    def finalize_options(self):
-        self.distribution.ext_modules = get_ext_modules()
-        install.finalize_options(self)
 
 
 class PyTest(test):
@@ -159,12 +132,11 @@ def keywords_with_side_effects(argv):
         }
     else:
         return {
-            "setup_requires": [CFFI_DEPENDENCY, SIX_DEPENDENCY],
+            "setup_requires": [CFFI_DEPENDENCY],
             "cmdclass": {
-                "build": CFFIBuild,
-                "install": CFFIInstall,
                 "test": PyTest,
-            }
+            },
+            "cffi_modules": CFFI_MODULES,
         }
 
 
@@ -231,13 +203,10 @@ setup(
         "pytest",
     ],
 
+    package_dir={"": "src"},
     packages=[
         "bcrypt",
     ],
-
-    package_data={
-        "bcrypt": ["crypt_blowfish-1.3/*"],
-    },
 
     zip_safe=False,
 
@@ -251,6 +220,8 @@ setup(
         "Programming Language :: Python :: 3.2",
         "Programming Language :: Python :: 3.3",
     ],
+
+    ext_package="bcrypt",
 
     **keywords_with_side_effects(sys.argv)
 )
