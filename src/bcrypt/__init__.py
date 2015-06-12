@@ -35,12 +35,15 @@ __all__ = [
 ]
 
 
-def gensalt(rounds=12):
+def gensalt(rounds=12, prefix=b"2b"):
+    if prefix not in (b"2a", b"2b"):
+        raise ValueError("Supported prefixes are b'2a' or b'2b'")
+
     salt = os.urandom(16)
     output = _bcrypt.ffi.new("unsigned char[]", 30)
 
     retval = _bcrypt.lib.crypt_gensalt_rn(
-        b"$2a$", rounds, salt, len(salt), output, len(output),
+        b"$" + prefix + b"$", rounds, salt, len(salt), output, len(output),
     )
 
     if not retval:
