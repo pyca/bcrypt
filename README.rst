@@ -1,7 +1,7 @@
 bcrypt
 ======
 
-.. image:: https://img.shields.io/pypi/v/nine.svg 
+.. image:: https://img.shields.io/pypi/v/bcrypt.svg 
     :target: https://pypi.python.org/pypi/bcrypt/
     :alt: Latest Version
 
@@ -26,13 +26,13 @@ For Debian and Ubuntu, the following command will ensure that the required depen
 
 .. code:: bash
 
-    $ sudo apt-get install build-essential libssl-dev libffi-dev python-dev
+    $ sudo apt-get install build-essential libffi-dev python-dev
 
 For Fedora and RHEL-derivatives, the following command will ensure that the required dependencies are installed:
 
 .. code:: bash
 
-    $ sudo yum install gcc libffi-devel python-devel openssl-devel
+    $ sudo yum install gcc libffi-devel python-devel
 
 Usage
 -----
