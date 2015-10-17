@@ -95,7 +95,7 @@ password with a cryptographic hash, such as ``sha512`` before hasing it with
 .. code:: pycon
 
     >>> password = b"an incredibly long password" * 10
-    >>> hashed = bcrypt.hashpwd(
+    >>> hashed = bcrypt.hashpw(
     ...     hashlib.sha512(password).digest(),
     ...     bcrypt.gensalt()
     ... )
