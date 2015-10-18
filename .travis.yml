@@ -7,14 +7,12 @@ env:
   # support the compiler directive with language: python.
   - TOXENV=py26 CC=gcc
   - TOXENV=py27 CC=gcc
-  - TOXENV=py32 CC=gcc
   - TOXENV=py33 CC=gcc
   - TOXENV=py34 CC=gcc
   - TOXENV=py35 CC=gcc
   - TOXENV=pypy CC=gcc
   - TOXENV=py26 CC=clang
   - TOXENV=py27 CC=clang
-  - TOXENV=py32 CC=clang
   - TOXENV=py33 CC=clang
   - TOXENV=py34 CC=clang
   - TOXENV=py35 CC=clang
