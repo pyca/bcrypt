@@ -1,7 +1,7 @@
 bcrypt
 ======
 
-.. image:: https://img.shields.io/pypi/v/bcrypt.svg 
+.. image:: https://img.shields.io/pypi/v/bcrypt.svg
     :target: https://pypi.python.org/pypi/bcrypt/
     :alt: Latest Version
 
@@ -89,7 +89,7 @@ Compatibility
 -------------
 
 This library should be compatible with py-bcrypt and it will run on Python
-2.6+, 3.2+, and PyPy.
+2.6+, 3.3+, and PyPy.
 
 Security
 --------
