@@ -89,14 +89,15 @@ Maxmimum Password Length
 
 The bcrypt algorithm only handles passwords up to 72 characters, any characters
 beyond that are ignored. To work around this, a common approach is to hash a
-password with a cryptographic hash, such as ``sha512`` before hasing it with
+password with a cryptographic hash (such as ``sha256``) and then hex or base64
+encoding it to prevent NULL byte problems before hashing the result with
 ``bcrypt``:
 
 .. code:: pycon
 
     >>> password = b"an incredibly long password" * 10
     >>> hashed = bcrypt.hashpw(
-    ...     hashlib.sha512(password).digest(),
+    ...     hashlib.sha256(password).hexdigest(),
     ...     bcrypt.gensalt()
     ... )
 
