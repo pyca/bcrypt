@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import platform
 import sys
 from distutils.command.build import build
 
@@ -20,6 +21,14 @@ CFFI_MODULES = [
 __about__ = {}
 with open("src/bcrypt/__about__.py") as fp:
     exec(fp.read(), __about__)
+
+
+if platform.python_implementation() == "PyPy":
+    if sys.pypy_version_info < (2, 6):
+        raise RuntimeError(
+            "bcrypt is not compatible with PyPy < 2.6. Please upgrade PyPy to "
+            "use this library."
+        )
 
 
 class PyTest(test):
