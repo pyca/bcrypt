@@ -778,7 +778,7 @@ static char *BF_crypt(const char *key, const char *setting,
 	return output;
 }
 
-int _crypt_output_magic(const char *setting, char *output, int size)
+int bcrypt_crypt_output_magic(const char *setting, char *output, int size)
 {
 	if (size < 3)
 		return -1;
@@ -813,7 +813,7 @@ int _crypt_output_magic(const char *setting, char *output, int size)
  * The performance cost of this quick self-test is around 0.6% at the "$2a$08"
  * setting.
  */
-char *_crypt_blowfish_rn(const char *key, const char *setting,
+char *bcrypt_crypt_blowfish_rn(const char *key, const char *setting,
 	char *output, int size)
 {
 	const char *test_key = "8b \xd0\xc1\xd2\xcf\xcc\xd8";
@@ -831,7 +831,7 @@ char *_crypt_blowfish_rn(const char *key, const char *setting,
 	} buf;
 
 /* Hash the supplied password */
-	_crypt_output_magic(setting, output, size);
+	bcrypt_crypt_output_magic(setting, output, size);
 	retval = BF_crypt(key, setting, output, size, 16);
 	save_errno = errno;
 
@@ -873,12 +873,12 @@ char *_crypt_blowfish_rn(const char *key, const char *setting,
 		return retval;
 
 /* Should not happen */
-	_crypt_output_magic(setting, output, size);
+	bcrypt_crypt_output_magic(setting, output, size);
 	__set_errno(EINVAL); /* pretend we don't support this hash type */
 	return NULL;
 }
 
-char *_crypt_gensalt_blowfish_rn(const char *prefix, unsigned long count,
+char *bcrypt_crypt_gensalt_blowfish_rn(const char *prefix, unsigned long count,
 	const char *input, int size, char *output, int output_size)
 {
 	if (size < 16 || output_size < 7 + 22 + 1 ||
