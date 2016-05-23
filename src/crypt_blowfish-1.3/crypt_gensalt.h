@@ -17,14 +17,14 @@
 #ifndef _CRYPT_GENSALT_H
 #define _CRYPT_GENSALT_H
 
-extern unsigned char _crypt_itoa64[];
-extern char *_crypt_gensalt_traditional_rn(const char *prefix,
+extern unsigned char bcrypt_crypt_itoa64[];
+extern char *bcrypt_crypt_gensalt_traditional_rn(const char *prefix,
 	unsigned long count,
 	const char *input, int size, char *output, int output_size);
-extern char *_crypt_gensalt_extended_rn(const char *prefix,
+extern char *bcrypt_crypt_gensalt_extended_rn(const char *prefix,
 	unsigned long count,
 	const char *input, int size, char *output, int output_size);
-extern char *_crypt_gensalt_md5_rn(const char *prefix, unsigned long count,
+extern char *bcrypt_crypt_gensalt_md5_rn(const char *prefix, unsigned long count,
 	const char *input, int size, char *output, int output_size);
 
 #endif

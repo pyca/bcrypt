@@ -90,7 +90,7 @@ static char *_crypt_retval_magic(char *retval, const char *setting,
 	if (retval)
 		return retval;
 
-	if (_crypt_output_magic(setting, output, size))
+	if (bcrypt_crypt_output_magic(setting, output, size))
 		return NULL; /* shouldn't happen */
 
 	return output;
@@ -113,7 +113,7 @@ char *__crypt_rn(__const char *key, __const char *setting,
 	void *data, int size)
 {
 	if (setting[0] == '$' && setting[1] == '2')
-		return _crypt_blowfish_rn(key, setting, (char *)data, size);
+		return bcrypt_crypt_blowfish_rn(key, setting, (char *)data, size);
 	if (setting[0] == '$' && setting[1] == '1')
 		return __md5_crypt_r(key, setting, (char *)data, size);
 	if (setting[0] == '$' || setting[0] == '_') {
@@ -132,7 +132,7 @@ char *__crypt_ra(__const char *key, __const char *setting,
 	if (setting[0] == '$' && setting[1] == '2') {
 		if (_crypt_data_alloc(data, size, CRYPT_OUTPUT_SIZE))
 			return NULL;
-		return _crypt_blowfish_rn(key, setting, (char *)*data, *size);
+		return bcrypt_crypt_blowfish_rn(key, setting, (char *)*data, *size);
 	}
 	if (setting[0] == '$' && setting[1] == '1') {
 		if (_crypt_data_alloc(data, size, CRYPT_OUTPUT_SIZE))
@@ -165,7 +165,7 @@ char *__crypt(__const char *key, __const char *setting)
 #else
 char *crypt_rn(const char *key, const char *setting, void *data, int size)
 {
-	return _crypt_blowfish_rn(key, setting, (char *)data, size);
+	return bcrypt_crypt_blowfish_rn(key, setting, (char *)data, size);
 }
 
 char *crypt_ra(const char *key, const char *setting,
@@ -173,7 +173,7 @@ char *crypt_ra(const char *key, const char *setting,
 {
 	if (_crypt_data_alloc(data, size, CRYPT_OUTPUT_SIZE))
 		return NULL;
-	return _crypt_blowfish_rn(key, setting, (char *)*data, *size);
+	return bcrypt_crypt_blowfish_rn(key, setting, (char *)*data, *size);
 }
 
 char *crypt_r(const char *key, const char *setting, void *data)
@@ -212,19 +212,19 @@ char *__crypt_gensalt_rn(const char *prefix, unsigned long count,
 
 	if (!strncmp(prefix, "$2a$", 4) || !strncmp(prefix, "$2b$", 4) ||
 	    !strncmp(prefix, "$2y$", 4))
-		use = _crypt_gensalt_blowfish_rn;
+		use = bcrypt_crypt_gensalt_blowfish_rn;
 	else
 	if (!strncmp(prefix, "$1$", 3))
-		use = _crypt_gensalt_md5_rn;
+		use = bcrypt_crypt_gensalt_md5_rn;
 	else
 	if (prefix[0] == '_')
-		use = _crypt_gensalt_extended_rn;
+		use = bcrypt_crypt_gensalt_extended_rn;
 	else
 	if (!prefix[0] ||
 	    (prefix[0] && prefix[1] &&
-	    memchr(_crypt_itoa64, prefix[0], 64) &&
-	    memchr(_crypt_itoa64, prefix[1], 64)))
-		use = _crypt_gensalt_traditional_rn;
+	    memchr(bcrypt_crypt_itoa64, prefix[0], 64) &&
+	    memchr(bcrypt_crypt_itoa64, prefix[1], 64)))
+		use = bcrypt_crypt_gensalt_traditional_rn;
 	else {
 		__set_errno(EINVAL);
 		return NULL;
