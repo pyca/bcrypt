@@ -15,33 +15,26 @@ import os.path
 from cffi import FFI
 
 
-BLOWFISH_DIR = os.path.join(os.path.dirname(__file__), "crypt_blowfish-1.3")
+BLOWFISH_DIR = os.path.join(os.path.dirname(__file__), "_csrc")
 
 
 ffi = FFI()
 
-ffi.cdef(
-    """
-    char *crypt_gensalt_rn(const char *prefix, unsigned long count,
-                const char *input, int size, char *output, int output_size);
-
-    char *crypt_rn(const char *key, const char *setting, void *data, int size);
-    """
-)
+ffi.cdef("""
+int bcrypt_hashpass(const char *, const char *, char *, size_t);
+int encode_base64(char *, const uint8_t *, size_t);
+""")
 
 ffi.set_source(
     "_bcrypt",
     """
-    #include "ow-crypt.h"
+    #include "pycabcrypt.h"
     """,
     sources=[
-        os.path.join(BLOWFISH_DIR, "crypt_blowfish.c"),
-        os.path.join(BLOWFISH_DIR, "crypt_gensalt.c"),
-        os.path.join(BLOWFISH_DIR, "wrapper.c"),
-        # How can we get distutils to work with a .S file?
-        #   Set bcrypt/crypt_blowfish-1.3/crypt_blowfish.c#57 back to 1 if we
-        #   get ASM loaded.
-        # os.path.join(BLOWFISH_DIR, "x86.S"),
+        os.path.join(BLOWFISH_DIR, "blf.c"),
+        os.path.join(BLOWFISH_DIR, "bcrypt.c"),
+        os.path.join(BLOWFISH_DIR, "sha2.c"),
+        os.path.join(BLOWFISH_DIR, "timingsafe_bcmp.c"),
     ],
     include_dirs=[BLOWFISH_DIR],
 )
