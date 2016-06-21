@@ -26,10 +26,10 @@ __title__ = "bcrypt"
 __summary__ = "Modern password hashing for your software and your servers"
 __uri__ = "https://github.com/pyca/bcrypt/"
 
-__version__ = "2.0.0"
+__version__ = "3.0.0.dev1"
 
-__author__ = "Donald Stufft"
-__email__ = "donald@stufft.io"
+__author__ = "The Python Cryptographic Authority developers"
+__email__ = "cryptography-dev@python.org"
 
 __license__ = "Apache License, Version 2.0"
-__copyright__ = "Copyright 2013 Donald Stufft"
+__copyright__ = "Copyright 2013-2016 {0}".format(__author__)
