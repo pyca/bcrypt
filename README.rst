@@ -34,6 +34,19 @@ For Fedora and RHEL-derivatives, the following command will ensure that the requ
 
     $ sudo yum install gcc libffi-devel python-devel
 
+Changelog
+=========
+
+3.0.0
+-----
+* Switched the C backend to code obtained from the OpenBSD project rather than
+  openwall.
+
+2.0.0
+-----
+* Added support for an adjustible prefix when calling `gensalt`.
+* Switched to CFFI 1.0+
+
 Usage
 -----
 
