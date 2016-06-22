@@ -40,7 +40,7 @@
  * Bruce Schneier.
  */
 
-#include <sys/param.h>
+#include <sys/types.h>
 
 #include "blf.h"
 

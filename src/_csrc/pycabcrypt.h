@@ -1,63 +1,27 @@
 #include <sys/types.h>
 #include <string.h>
+#include <stdio.h>
+#include "portable_endian.h"
 
 #if defined(_WIN32)
-#include "winstdint.h"
+typedef unsigned char uint8_t;
+typedef uint8_t u_int8_t;
+typedef unsigned short uint16_t;
+typedef uint16_t u_int16_t;
+typedef unsigned uint32_t;
+typedef uint32_t u_int32_t;
+typedef unsigned long long uint64_t;
+typedef uint64_t u_int64_t;
+#define snprintf _snprintf
+#define __attribute__(unused)
+#define __BEGIN_DECLS
+#define __END_DECLS
 #else
 #include <stdint.h>
 #endif
 
-
 #define explicit_bzero(s,n) memset(s, 0, n)
 #define DEF_WEAK(f)
-
-#ifndef BYTE_ORDER
-#ifndef BIG_ENDIAN
-#define BIG_ENDIAN 4321
-#define LITTLE_ENDIAN 1234
-#endif
-
-#if defined(_WIN32) && defined(__x86_64__)
-#define BYTE_ORDER LITTLE_ENDIAN
-#elif defined(_WIN32) && defined(__x86_64__)
-#define BYTE_ORDER LITTLE_ENDIAN
-//MSVC can't handle this preprocessor magic
-#elif (*(uint16_t *)"\0\xff" < 0x100)
-#define BYTE_ORDER BIG_ENDIAN
-#else
-#define BYTE_ORDER LITTLE_ENDIAN
-#endif
-#endif
-
-// Clang has this macro, gcc does not.
-#ifndef __has_builtin
-  #define __has_builtin(x) 0
-#endif
-
-// Set up swap32/swap64 macros on all supported platforms
-#if __has_builtin(__builtin_bswap32) && __has_builtin(__builtin_bswap64)
-#define swap32 __builtin_bswap32
-#define swap64 __builtin_bswap64
-#elif defined(_WIN32)
-#define swap32 _byteswap_ulong
-#define swap64 _byteswap_uint64
-#elif defined(__APPLE__)
-#include <libkern/OSByteOrder.h>
-#define swap32 OSSwapInt32
-#define swap64 OSSwapInt64
-#elif defined(__linux__)
-#include <byteswap.h>
-#define swap32 __bswap_32
-#define swap64 __bswap_64
-#elif defined(__OpenBSD__)
-#include <sys/endian.h>
-#define swap32 __swap32
-#define swap64 __swap64
-#else
-#define swap32(x)  ((((x) >> 24) & 0xFF) | (((x) >> 8) & 0xFF00) | (((x) & 0xFF00) << 8) | (((x) & 0xFF) << 24))
-#define swap64(x)  ((swap32(((x) >> 32) & 0xFFFFFFFF)) | (swap32((x) & 0xFFFFFFFF) << 32))
-#endif
-
 
 int bcrypt_hashpass(const char *key, const char *salt, char *encrypted, size_t encryptedlen);
 int encode_base64(char *, const u_int8_t *, size_t);

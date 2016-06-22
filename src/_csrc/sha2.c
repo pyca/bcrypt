@@ -34,7 +34,6 @@
  * $From: sha2.c,v 1.1 2001/11/08 00:01:51 adg Exp adg $
  */
 
-#include <sys/time.h>
 #include "pycabcrypt.h"
 #include "sha2.h"
 
@@ -55,38 +54,6 @@
 #if defined(__amd64__) || defined(__i386__)
 #define SHA2_UNROLL_TRANSFORM
 #endif
-#endif
-
-/*** SHA-256/384/512 Machine Architecture Definitions *****************/
-/*
- * BYTE_ORDER NOTE:
- *
- * Please make sure that your system defines BYTE_ORDER.  If your
- * architecture is little-endian, make sure it also defines
- * LITTLE_ENDIAN and that the two (BYTE_ORDER and LITTLE_ENDIAN) are
- * equivilent.
- *
- * If your system does not define the above, then you can do so by
- * hand like this:
- *
- *   #define LITTLE_ENDIAN 1234
- *   #define BIG_ENDIAN    4321
- *
- * And for little-endian machines, add:
- *
- *   #define BYTE_ORDER LITTLE_ENDIAN
- *
- * Or for big-endian machines:
- *
- *   #define BYTE_ORDER BIG_ENDIAN
- *
- * The FreeBSD machine this was written on defines BYTE_ORDER
- * appropriately by including <sys/types.h> (which in turn includes
- * <machine/endian.h> where the appropriate definitions are actually
- * made).
- */
-#if !defined(BYTE_ORDER) || (BYTE_ORDER != LITTLE_ENDIAN && BYTE_ORDER != BIG_ENDIAN)
-#error Define BYTE_ORDER to be equal to either LITTLE_ENDIAN or BIG_ENDIAN
 #endif
 
 
@@ -475,10 +442,8 @@ SHA256Final(u_int8_t digest[], SHA2_CTX *context)
 	unsigned int	usedspace;
 
 	usedspace = (context->bitcount[0] >> 3) % SHA256_BLOCK_LENGTH;
-#if BYTE_ORDER == LITTLE_ENDIAN
 	/* Convert FROM host byte order */
-	context->bitcount[0] = swap64(context->bitcount[0]);
-#endif
+	context->bitcount[0] = htobe64(context->bitcount[0]);
 	if (usedspace > 0) {
 		/* Begin padding with a 1 bit: */
 		context->buffer[usedspace++] = 0x80;
@@ -512,15 +477,13 @@ SHA256Final(u_int8_t digest[], SHA2_CTX *context)
 	/* Final transform: */
 	SHA256Transform(context->state.st32, context->buffer);
 
-#if BYTE_ORDER == LITTLE_ENDIAN
 	{
 		/* Convert TO host byte order */
 		int	j;
 		for (j = 0; j < 8; j++) {
-			context->state.st32[j] = swap32(context->state.st32[j]);
+			context->state.st32[j] = le32toh(context->state.st32[j]);
 		}
 	}
-#endif
 	memcpy(digest, context->state.st32, SHA256_DIGEST_LENGTH);
 	/* Clean up state data: */
 	explicit_bzero(context, sizeof(*context));
@@ -755,11 +718,9 @@ SHA512Last(SHA2_CTX *context)
 	unsigned int	usedspace;
 
 	usedspace = (context->bitcount[0] >> 3) % SHA512_BLOCK_LENGTH;
-#if BYTE_ORDER == LITTLE_ENDIAN
 	/* Convert FROM host byte order */
-	context->bitcount[0] = swap64(context->bitcount[0]);
-	context->bitcount[1] = swap64(context->bitcount[1]);
-#endif
+	context->bitcount[0] = htobe64(context->bitcount[0]);
+	context->bitcount[1] = htobe64(context->bitcount[1]);
 	if (usedspace > 0) {
 		/* Begin padding with a 1 bit: */
 		context->buffer[usedspace++] = 0x80;
@@ -801,15 +762,13 @@ SHA512Final(u_int8_t digest[], SHA2_CTX *context)
 	SHA512Last(context);
 
 	/* Save the hash data for output: */
-#if BYTE_ORDER == LITTLE_ENDIAN
 	{
 		/* Convert TO host byte order */
 		int	j;
 		for (j = 0; j < 8; j++) {
-			context->state.st64[j] = swap64(context->state.st64[j]);
+			context->state.st64[j] = be64toh(context->state.st64[j]);
 		}
 	}
-#endif
 	memcpy(digest, context->state.st64, SHA512_DIGEST_LENGTH);
 
 	/* Zero out state data */
@@ -840,15 +799,13 @@ SHA384Final(u_int8_t digest[], SHA2_CTX *context)
 	SHA512Last(context);
 
 	/* Save the hash data for output: */
-#if BYTE_ORDER == LITTLE_ENDIAN
 	{
 		/* Convert TO host byte order */
 		int	j;
 		for (j = 0; j < 6; j++) {
-			context->state.st64[j] = swap64(context->state.st64[j]);
+			context->state.st64[j] = be64toh(context->state.st64[j]);
 		}
 	}
-#endif
 	memcpy(digest, context->state.st64, SHA384_DIGEST_LENGTH);
 	/* Zero out state data */
 	explicit_bzero(context, sizeof(*context));
