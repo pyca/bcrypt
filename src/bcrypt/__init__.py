@@ -48,7 +48,7 @@ def gensalt(rounds=12, prefix=b"2b"):
     _bcrypt.lib.encode_base64(output, salt, len(salt))
 
     return (
-        b"$" + prefix + b"$" + "%2.2u" % rounds + b"$" +
+        b"$" + prefix + b"$" + ("%2.2u" % rounds).encode("ascii") + b"$" +
         _bcrypt.ffi.string(output)
     )
 
