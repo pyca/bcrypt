@@ -41,9 +41,7 @@ def test_gensalt_rounds_valid(rounds, expected, monkeypatch):
 
 
 @pytest.mark.parametrize("rounds", list(range(1, 4)))
-def test_gensalt_rounds_invalid(rounds, monkeypatch):
-    monkeypatch.setattr(os, "urandom", lambda n: b"0000000000000000")
-
+def test_gensalt_rounds_invalid(rounds):
     with pytest.raises(ValueError):
         bcrypt.gensalt(rounds)
 
@@ -272,5 +270,6 @@ def test_hashpw_str_salt():
 
 
 def test_nul_byte():
+    salt = bcrypt.gensalt(4)
     with pytest.raises(ValueError):
-        bcrypt.hashpw(b"abc\0def", bcrypt.gensalt(0))
+        bcrypt.hashpw(b"abc\0def", salt)
