@@ -280,6 +280,22 @@ def test_hashpw_existing(password, hashed):
     assert bcrypt.hashpw(password, hashed) == hashed
 
 
+@pytest.mark.parametrize(("password", "hashed", "expected"), [
+    (
+        b"\xa3",
+        b"$2y$05$/OK.fbVrR/bpIqNJ5ianF.Sa7shbm4.OzKpvFnX1pQLmQW96oUlCq",
+        b"$2b$05$/OK.fbVrR/bpIqNJ5ianF.Sa7shbm4.OzKpvFnX1pQLmQW96oUlCq",
+    ),
+    (
+        b"\xff\xff\xa3",
+        b"$2y$05$/OK.fbVrR/bpIqNJ5ianF.CE5elHaaO4EbggVDjb8P19RukzXSM3e",
+        b"$2b$05$/OK.fbVrR/bpIqNJ5ianF.CE5elHaaO4EbggVDjb8P19RukzXSM3e",
+    ),
+])
+def test_hashpw_2y_prefix(password, hashed, expected):
+    assert bcrypt.hashpw(password, hashed) == expected
+
+
 def test_hashpw_invalid():
     with pytest.raises(ValueError):
         bcrypt.hashpw(b"password", b"$2z$04$cVWp4XaNU8a4v1uMRum2SO")

@@ -17,6 +17,7 @@ from __future__ import absolute_import
 from __future__ import division
 
 import os
+import re
 
 import six
 
@@ -33,6 +34,13 @@ __all__ = [
     "__email__", "__license__", "__copyright__",
     "gensalt", "hashpw",
 ]
+
+
+_normalize_re = re.compile(b"^\$2y\$")
+
+
+def _normalize_prefix(salt):
+    return _normalize_re.sub(b"$2b$", salt)
 
 
 def gensalt(rounds=12, prefix=b"2b"):
@@ -58,6 +66,8 @@ def hashpw(password, salt):
 
     if b"\x00" in password:
         raise ValueError("password may not contain NUL bytes")
+
+    salt = _normalize_prefix(salt)
 
     hashed = _bcrypt.ffi.new("unsigned char[]", 128)
     retval = _bcrypt.lib.bcrypt_hashpass(password, salt, hashed, len(hashed))
