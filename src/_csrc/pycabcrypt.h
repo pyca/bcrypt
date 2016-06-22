@@ -1,6 +1,12 @@
 #include <sys/types.h>
-#include <stdint.h>
 #include <string.h>
+
+#if defined(_WIN32)
+#include "winstdint.h"
+#else
+#include <stdint.h>
+#endif
+
 
 #define explicit_bzero(s,n) memset(s, 0, n)
 #define DEF_WEAK(f)
@@ -11,7 +17,12 @@
 #define LITTLE_ENDIAN 1234
 #endif
 
-#if (*(uint16_t *)"\0\xff" < 0x100)
+#if defined(_WIN32) && defined(__x86_64__)
+#define BYTE_ORDER LITTLE_ENDIAN
+#elif defined(_WIN32) && defined(__x86_64__)
+#define BYTE_ORDER LITTLE_ENDIAN
+//MSVC can't handle this preprocessor magic
+#elif (*(uint16_t *)"\0\xff" < 0x100)
 #define BYTE_ORDER BIG_ENDIAN
 #else
 #define BYTE_ORDER LITTLE_ENDIAN
