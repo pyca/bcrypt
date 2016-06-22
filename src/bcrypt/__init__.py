@@ -32,7 +32,7 @@ from .__about__ import (
 __all__ = [
     "__title__", "__summary__", "__uri__", "__version__", "__author__",
     "__email__", "__license__", "__copyright__",
-    "gensalt", "hashpw",
+    "gensalt", "hashpw", "kdf",
 ]
 
 
@@ -76,3 +76,30 @@ def hashpw(password, salt):
         raise ValueError("Invalid salt")
 
     return _bcrypt.ffi.string(hashed)
+
+
+def kdf(password, salt, desired_key_bytes, rounds):
+    if isinstance(password, six.text_type) or isinstance(salt, six.text_type):
+        raise TypeError("Unicode-objects must be encoded before hashing")
+
+    if len(password) == 0 or len(salt) == 0:
+        raise ValueError("password and salt must not be empty")
+
+    if desired_key_bytes <= 0 or desired_key_bytes > 512:
+        raise ValueError("desired_key_bytes must be 1-512")
+
+    if rounds < 1:
+        raise ValueError("rounds must be 1 or more")
+
+    key = _bcrypt.ffi.new("uint8_t[]", desired_key_bytes)
+    res = _bcrypt.lib.bcrypt_pbkdf(
+        password, len(password), salt, len(salt), key, len(key), rounds
+    )
+    _bcrypt_assert(res == 0)
+
+    return _bcrypt.ffi.buffer(key, desired_key_bytes)[:]
+
+
+def _bcrypt_assert(ok):
+    if not ok:
+        raise SystemError("bcrypt assertion failed")
