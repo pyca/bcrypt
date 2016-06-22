@@ -36,6 +36,8 @@
 #define swap64 OSSwapInt64
 #elif defined(__linux__)
 #include <byteswap.h>
+#define swap32 __bswap_32
+#define swap64 __bswap_64
 #elif defined(__OpenBSD__)
 #include <sys/endian.h>
 #define swap32 __swap32
