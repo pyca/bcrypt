@@ -39,7 +39,6 @@ def gensalt(rounds=12, prefix=b"2b"):
     if prefix not in (b"2a", b"2b"):
         raise ValueError("Supported prefixes are b'2a' or b'2b'")
 
-    # TODO: is this the right min/max?
     if rounds < 4 or rounds > 31:
         raise ValueError("Invalid rounds")
 
