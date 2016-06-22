@@ -243,6 +243,32 @@ def test_hashpw_new(password, salt, expected):
         b"J8eHUDuxBB520",
         b"$2b$04$VvlCUKbTMjaxaYJ.k5juoecpG/7IzcH1AkmqKi.lIZMVIOLClWAk.",
     ),
+    (
+        b"U*U",
+        b"$2a$05$CCCCCCCCCCCCCCCCCCCCC.E5YPO9kmyuRGyh0XouQYb4YMJKvyOeW",
+    ),
+    (
+        b"U*U*",
+        b"$2a$05$CCCCCCCCCCCCCCCCCCCCC.VGOzA784oUp/Z0DY336zx7pLYAy0lwK",
+    ),
+    (
+        b"U*U*U",
+        b"$2a$05$XXXXXXXXXXXXXXXXXXXXXOAcXxm9kjPGEMsLznoKqmqw7tc8WCx4a",
+    ),
+    (
+        b"0123456789abcdefghijklmnopqrstuvwxyz"
+        b"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+        b"chars after 72 are ignored",
+        b"$2a$05$abcdefghijklmnopqrstuu5s2v8.iXieOjg/.AySBTTZIIVFJeBui",
+    ),
+    (
+        b"\xff\xff\xa3",
+        b"$2a$05$/OK.fbVrR/bpIqNJ5ianF.nqd1wy.pTMdcvrRWxyiGL2eMz.2a85."
+    ),
+    (
+        b"\xa3",
+        b"$2a$05$/OK.fbVrR/bpIqNJ5ianF.Sa7shbm4.OzKpvFnX1pQLmQW96oUlCq"
+    ),
 ])
 def test_hashpw_existing(password, hashed):
     assert bcrypt.hashpw(password, hashed) == hashed
