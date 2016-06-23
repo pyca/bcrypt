@@ -3,7 +3,7 @@
 set -e
 set -x
 
-install_pypy () {
+install_pyenv () {
     git clone https://github.com/yyuu/pyenv.git ~/.pyenv
     PYENV_ROOT="$HOME/.pyenv"
     PATH="$PYENV_ROOT/bin:$PATH"
@@ -11,7 +11,7 @@ install_pypy () {
 }
 
 if [[ "$(uname -s)" == 'Darwin' ]]; then
-    install_pypy
+    install_pyenv
     case "${TOXENV}" in
         py27)
             curl -O https://bootstrap.pypa.io/get-pip.py
@@ -26,7 +26,7 @@ if [[ "$(uname -s)" == 'Darwin' ]]; then
     python -m pip install --user virtualenv
 else
     if [[ "${TOXENV}" == "pypy" ]]; then
-        install_pypy
+        install_pyenv
         pyenv install pypy-2.6.0
         pyenv global pypy-2.6.0
     fi
