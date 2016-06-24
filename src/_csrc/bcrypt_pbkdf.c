@@ -17,12 +17,11 @@
 
 #include <sys/types.h>
 
-#include <stdint.h>
+#include "pycabcrypt.h"
 #include <stdlib.h>
 #include "blf.h"
 #include "sha2.h"
 #include <string.h>
-#include "pycabcrypt.h"
 
 #define	MINIMUM(a,b) (((a) < (b)) ? (a) : (b))
 
