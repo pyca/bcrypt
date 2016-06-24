@@ -326,18 +326,18 @@ def test_nul_byte():
 @pytest.mark.parametrize(
     ("rounds", "password", "salt", "expected"),
     [[
-        4, "password", "salt",
+        4, b"password", b"salt",
         b"\x5b\xbf\x0c\xc2\x93\x58\x7f\x1c\x36\x35\x55\x5c\x27\x79\x65\x98"
         b"\xd4\x7e\x57\x90\x71\xbf\x42\x7e\x9d\x8f\xbe\x84\x2a\xba\x34\xd9"
     ], [
-        4, "password", b"\x00",
+        4, b"password", b"\x00",
         b"\xc1\x2b\x56\x62\x35\xee\xe0\x4c\x21\x25\x98\x97\x0a\x57\x9a\x67"
     ], [
-        4, b"\x00", "salt",
+        4, b"\x00", b"salt",
         b"\x60\x51\xbe\x18\xc2\xf4\xf8\x2c\xbf\x0e\xfe\xe5\x47\x1b\x4b\xb9"
     ], [
         # nul bytes in password and string
-        4, "password\x00", "salt\x00",
+        4, b"password\x00", b"salt\x00",
         b"\x74\x10\xe4\x4c\xf4\xfa\x07\xbf\xaa\xc8\xa9\x28\xb1\x72\x7f\xac"
         b"\x00\x13\x75\xe7\xbf\x73\x84\x37\x0f\x48\xef\xd1\x21\x74\x30\x50"
     ], [
@@ -348,25 +348,25 @@ def test_nul_byte():
         b"\x4b\xa4\xac\x39\x25\xc0\xe8\xd7\xf0\xcd\xb6\xbb\x16\x84\xa5\x6f"
     ], [
         # bigger key
-        8, "password", "salt",
+        8, b"password", b"salt",
         b"\xe1\x36\x7e\xc5\x15\x1a\x33\xfa\xac\x4c\xc1\xc1\x44\xcd\x23\xfa"
         b"\x15\xd5\x54\x84\x93\xec\xc9\x9b\x9b\x5d\x9c\x0d\x3b\x27\xbe\xc7"
         b"\x62\x27\xea\x66\x08\x8b\x84\x9b\x20\xab\x7a\xa4\x78\x01\x02\x46"
         b"\xe7\x4b\xba\x51\x72\x3f\xef\xa9\xf9\x47\x4d\x65\x08\x84\x5e\x8d"
     ], [
         # more rounds
-        42, "password", "salt",
+        42, b"password", b"salt",
         b"\x83\x3c\xf0\xdc\xf5\x6d\xb6\x56\x08\xe8\xf0\xdc\x0c\xe8\x82\xbd"
     ], [
         # longer password
         8,
-        "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do "
-        "eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut "
-        "enim ad minim veniam, quis nostrud exercitation ullamco laboris "
-        "nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor "
-        "in reprehenderit in voluptate velit esse cillum dolore eu fugiat "
-        "nulla pariatur. Excepteur sint occaecat cupidatat non proident, "
-        "sunt in culpa qui officia deserunt mollit anim id est laborum.",
+        b"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do "
+        b"eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut "
+        b"enim ad minim veniam, quis nostrud exercitation ullamco laboris "
+        b"nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor "
+        b"in reprehenderit in voluptate velit esse cillum dolore eu fugiat "
+        b"nulla pariatur. Excepteur sint occaecat cupidatat non proident, "
+        b"sunt in culpa qui officia deserunt mollit anim id est laborum.",
         b"salis\x00",
         b"\x10\x97\x8b\x07\x25\x3d\xf5\x7f\x71\xa1\x62\xeb\x0e\x8a\xd3\x0a"
     ], [
@@ -400,9 +400,9 @@ def test_nul_byte():
         # UTF-8 Greek characters "odysseus" / "telemachos"
         8,
         b"\xe1\xbd\x88\xce\xb4\xcf\x85\xcf\x83\xcf\x83\xce\xb5\xcf\x8d\xcf"
-        "\x82",
+        b"\x82",
         b"\xce\xa4\xce\xb7\xce\xbb\xce\xad\xce\xbc\xce\xb1\xcf\x87\xce\xbf"
-        "\xcf\x82",
+        b"\xcf\x82",
         b"\x43\x66\x6c\x9b\x09\xef\x33\xed\x8c\x27\xe8\xe8\xf3\xe2\xd8\xe6"
     ]])
 def test_kdf(rounds, password, salt, expected):
