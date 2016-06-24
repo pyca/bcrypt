@@ -19,10 +19,9 @@
 
 #include <stdint.h>
 #include <stdlib.h>
-#include <blf.h>
-#include <sha2.h>
+#include "blf.h"
+#include "sha2.h"
 #include <string.h>
-#include <util.h>
 #include "pycabcrypt.h"
 
 #define	MINIMUM(a,b) (((a) < (b)) ? (a) : (b))
