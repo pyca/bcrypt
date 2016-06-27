@@ -41,6 +41,7 @@ Changelog
 -----
 * Switched the C backend to code obtained from the OpenBSD project rather than
   openwall.
+* Added support for `bcrypt_pbkdf` via the `kdf` function.
 
 2.0.0
 -----
@@ -50,8 +51,8 @@ Changelog
 Usage
 -----
 
-Basic
-~~~~~
+Hashing
+~~~~~~~
 
 Hashing and then later checking that a password matches the previous hashed
 password is very simple:
@@ -68,6 +69,21 @@ password is very simple:
     ...     print("It Matches!")
     ... else:
     ...     print("It Does not Match :(")
+
+KDF
+~~~
+
+As of 3.0.0 `bcrypt` now offers a `kdf` function which does `bcrypt_pbkdf`.
+This KDF is used in OpenSSH's newer encrypted private key format.
+
+.. code:: pycon
+
+    >>> import bcrypt
+    >>> key = bcrypt.kdf(
+    ...     password=b'password',
+    ...     salt=b'salt',
+    ...     desired_key_bytes=32,
+    ...     rounds=100)
 
 
 Adjustable Work Factor
