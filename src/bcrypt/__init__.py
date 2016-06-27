@@ -17,6 +17,7 @@ from __future__ import absolute_import
 from __future__ import division
 
 import os
+import re
 
 import six
 
@@ -35,21 +36,28 @@ __all__ = [
 ]
 
 
+_normalize_re = re.compile(b"^\$2y\$")
+
+
+def _normalize_prefix(salt):
+    return _normalize_re.sub(b"$2b$", salt)
+
+
 def gensalt(rounds=12, prefix=b"2b"):
     if prefix not in (b"2a", b"2b"):
         raise ValueError("Supported prefixes are b'2a' or b'2b'")
 
-    salt = os.urandom(16)
-    output = _bcrypt.ffi.new("unsigned char[]", 30)
-
-    retval = _bcrypt.lib.crypt_gensalt_rn(
-        b"$" + prefix + b"$", rounds, salt, len(salt), output, len(output),
-    )
-
-    if not retval:
+    if rounds < 4 or rounds > 31:
         raise ValueError("Invalid rounds")
 
-    return _bcrypt.ffi.string(output)
+    salt = os.urandom(16)
+    output = _bcrypt.ffi.new("unsigned char[]", 30)
+    _bcrypt.lib.encode_base64(output, salt, len(salt))
+
+    return (
+        b"$" + prefix + b"$" + ("%2.2u" % rounds).encode("ascii") + b"$" +
+        _bcrypt.ffi.string(output)
+    )
 
 
 def hashpw(password, salt):
@@ -59,10 +67,12 @@ def hashpw(password, salt):
     if b"\x00" in password:
         raise ValueError("password may not contain NUL bytes")
 
-    hashed = _bcrypt.ffi.new("unsigned char[]", 128)
-    retval = _bcrypt.lib.crypt_rn(password, salt, hashed, len(hashed))
+    salt = _normalize_prefix(salt)
 
-    if not retval:
+    hashed = _bcrypt.ffi.new("unsigned char[]", 128)
+    retval = _bcrypt.lib.bcrypt_hashpass(password, salt, hashed, len(hashed))
+
+    if retval != 0:
         raise ValueError("Invalid salt")
 
     return _bcrypt.ffi.string(hashed)

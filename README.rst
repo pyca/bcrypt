@@ -34,6 +34,19 @@ For Fedora and RHEL-derivatives, the following command will ensure that the requ
 
     $ sudo yum install gcc libffi-devel python-devel
 
+Changelog
+=========
+
+3.0.0
+-----
+* Switched the C backend to code obtained from the OpenBSD project rather than
+  openwall.
+
+2.0.0
+-----
+* Added support for an adjustible prefix when calling `gensalt`.
+* Switched to CFFI 1.0+
+
 Usage
 -----
 
@@ -84,6 +97,8 @@ Another one of bcrypt's features is an adjustable prefix to let you define what
 libraries you'll remain compatible with. To adjust this, pass either ``2a`` or
 ``2b`` (the default) to ``bcrypt.gensalt(prefix=b"2b")`` as a bytes object.
 
+As of 3.0.0 the `$2y$` prefix is still supported in `hashpw` but deprecated.
+
 Maxmimum Password Length
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -106,6 +121,11 @@ Compatibility
 
 This library should be compatible with py-bcrypt and it will run on Python
 2.6+, 3.3+, and PyPy 2.6+.
+
+C Code
+------
+
+This library uses code from OpenBSD.
 
 Security
 --------

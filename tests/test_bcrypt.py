@@ -41,9 +41,7 @@ def test_gensalt_rounds_valid(rounds, expected, monkeypatch):
 
 
 @pytest.mark.parametrize("rounds", list(range(1, 4)))
-def test_gensalt_rounds_invalid(rounds, monkeypatch):
-    monkeypatch.setattr(os, "urandom", lambda n: b"0000000000000000")
-
+def test_gensalt_rounds_invalid(rounds):
     with pytest.raises(ValueError):
         bcrypt.gensalt(rounds)
 
@@ -245,9 +243,57 @@ def test_hashpw_new(password, salt, expected):
         b"J8eHUDuxBB520",
         b"$2b$04$VvlCUKbTMjaxaYJ.k5juoecpG/7IzcH1AkmqKi.lIZMVIOLClWAk.",
     ),
+    (
+        b"U*U",
+        b"$2a$05$CCCCCCCCCCCCCCCCCCCCC.E5YPO9kmyuRGyh0XouQYb4YMJKvyOeW",
+    ),
+    (
+        b"U*U*",
+        b"$2a$05$CCCCCCCCCCCCCCCCCCCCC.VGOzA784oUp/Z0DY336zx7pLYAy0lwK",
+    ),
+    (
+        b"U*U*U",
+        b"$2a$05$XXXXXXXXXXXXXXXXXXXXXOAcXxm9kjPGEMsLznoKqmqw7tc8WCx4a",
+    ),
+    (
+        b"0123456789abcdefghijklmnopqrstuvwxyz"
+        b"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+        b"chars after 72 are ignored",
+        b"$2a$05$abcdefghijklmnopqrstuu5s2v8.iXieOjg/.AySBTTZIIVFJeBui",
+    ),
+    (
+        b"\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa"
+        b"\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa"
+        b"\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa"
+        b"\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa"
+        b"\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa"
+        b"\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa"
+        b"chars after 72 are ignored as usual",
+        b"$2a$05$/OK.fbVrR/bpIqNJ5ianF.swQOIzjOiJ9GHEPuhEkvqrUyvWhEMx6"
+    ),
+    (
+        b"\xa3",
+        b"$2a$05$/OK.fbVrR/bpIqNJ5ianF.Sa7shbm4.OzKpvFnX1pQLmQW96oUlCq"
+    ),
 ])
 def test_hashpw_existing(password, hashed):
     assert bcrypt.hashpw(password, hashed) == hashed
+
+
+@pytest.mark.parametrize(("password", "hashed", "expected"), [
+    (
+        b"\xa3",
+        b"$2y$05$/OK.fbVrR/bpIqNJ5ianF.Sa7shbm4.OzKpvFnX1pQLmQW96oUlCq",
+        b"$2b$05$/OK.fbVrR/bpIqNJ5ianF.Sa7shbm4.OzKpvFnX1pQLmQW96oUlCq",
+    ),
+    (
+        b"\xff\xff\xa3",
+        b"$2y$05$/OK.fbVrR/bpIqNJ5ianF.CE5elHaaO4EbggVDjb8P19RukzXSM3e",
+        b"$2b$05$/OK.fbVrR/bpIqNJ5ianF.CE5elHaaO4EbggVDjb8P19RukzXSM3e",
+    ),
+])
+def test_hashpw_2y_prefix(password, hashed, expected):
+    assert bcrypt.hashpw(password, hashed) == expected
 
 
 def test_hashpw_invalid():
@@ -272,5 +318,6 @@ def test_hashpw_str_salt():
 
 
 def test_nul_byte():
+    salt = bcrypt.gensalt(4)
     with pytest.raises(ValueError):
-        bcrypt.hashpw(b"abc\0def", bcrypt.gensalt(0))
+        bcrypt.hashpw(b"abc\0def", salt)
