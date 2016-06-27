@@ -23,6 +23,8 @@ ffi = FFI()
 ffi.cdef("""
 int bcrypt_hashpass(const char *, const char *, char *, size_t);
 int encode_base64(char *, const uint8_t *, size_t);
+int bcrypt_pbkdf(const char *, size_t, const uint8_t *, size_t,
+                 uint8_t *, size_t, unsigned int);
 """)
 
 ffi.set_source(
@@ -33,6 +35,7 @@ ffi.set_source(
     sources=[
         os.path.join(BLOWFISH_DIR, "blf.c"),
         os.path.join(BLOWFISH_DIR, "bcrypt.c"),
+        os.path.join(BLOWFISH_DIR, "bcrypt_pbkdf.c"),
         os.path.join(BLOWFISH_DIR, "sha2.c"),
         os.path.join(BLOWFISH_DIR, "timingsafe_bcmp.c"),
     ],
