@@ -1,3 +1,4 @@
+import hmac
 import os
 
 import pytest
@@ -241,6 +242,36 @@ def test_hashpw_invalid():
         bcrypt.hashpw(b"password", b"$2z$04$cVWp4XaNU8a4v1uMRum2SO")
 
 
+def test_checkpw_wrong_password():
+    assert bcrypt.checkpw(
+        b"badpass",
+        b"$2b$04$2Siw3Nv3Q/gTOIPetAyPr.GNj3aO0lb1E5E9UumYGKjP9BYqlNWJe"
+    ) is False
+
+
+def test_checkpw_bad_salt():
+    assert bcrypt.checkpw(
+        b"badpass",
+        b"$2b$04$?Siw3Nv3Q/gTOIPetAyPr.GNj3aO0lb1E5E9UumYGKjP9BYqlNWJe"
+    ) is False
+
+
+def test_checkpw_str_password():
+    with pytest.raises(TypeError):
+        bcrypt.checkpw(
+            six.text_type("password"),
+            b"$2b$04$cVWp4XaNU8a4v1uMRum2SO",
+        )
+
+
+def test_checkpw_str_salt():
+    with pytest.raises(TypeError):
+        bcrypt.checkpw(
+            b"password",
+            six.text_type("$2b$04$cVWp4XaNU8a4v1uMRum2SO"),
+        )
+
+
 def test_hashpw_str_password():
     with pytest.raises(TypeError):
         bcrypt.hashpw(
@@ -254,6 +285,20 @@ def test_hashpw_str_salt():
         bcrypt.hashpw(
             b"password",
             six.text_type("$2b$04$cVWp4XaNU8a4v1uMRum2SO"),
+        )
+
+
+def test_checkpw_nul_byte():
+    with pytest.raises(ValueError):
+        bcrypt.checkpw(
+            b"abc\0def",
+            b"$2b$04$2Siw3Nv3Q/gTOIPetAyPr.GNj3aO0lb1E5E9UumYGKjP9BYqlNWJe"
+        )
+
+    with pytest.raises(ValueError):
+        bcrypt.checkpw(
+            b"abcdef",
+            b"$2b$04$2S\0w3Nv3Q/gTOIPetAyPr.GNj3aO0lb1E5E9UumYGKjP9BYqlNWJe"
         )
 
 
@@ -385,3 +430,10 @@ def test_invalid_params(password, salt, desired_key_bytes, rounds, error):
 def test_bcrypt_assert():
     with pytest.raises(SystemError):
         bcrypt._bcrypt_assert(False)
+
+
+def test_compare_no_compare_digest(monkeypatch):
+    monkeypatch.delattr(hmac, 'compare_digest', raising=False)
+    assert bcrypt._compare(b'string', b'string') is True
+    assert bcrypt._compare(b'string2', b'string') is False
+    assert bcrypt._compare(b'string', b'string2') is False
