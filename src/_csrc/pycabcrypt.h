@@ -14,10 +14,14 @@ typedef unsigned long long uint64_t;
 typedef uint64_t u_int64_t;
 #define snprintf _snprintf
 #define __attribute__(unused)
-#define __BEGIN_DECLS
-#define __END_DECLS
 #else
 #include <stdint.h>
+#endif
+#if !defined(__BEGIN_DECLS)
+#define __BEGIN_DECLS
+#endif
+#if !defined(__END_DECLS)
+#define __END_DECLS
 #endif
 
 #define explicit_bzero(s,n) memset(s, 0, n)
