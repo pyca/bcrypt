@@ -115,8 +115,8 @@ libraries you'll remain compatible with. To adjust this, pass either ``2a`` or
 
 As of 3.0.0 the ``$2y$`` prefix is still supported in ``hashpw`` but deprecated.
 
-Maxmimum Password Length
-~~~~~~~~~~~~~~~~~~~~~~~~
+Maximum Password Length
+~~~~~~~~~~~~~~~~~~~~~~~
 
 The bcrypt algorithm only handles passwords up to 72 characters, any characters
 beyond that are ignored. To work around this, a common approach is to hash a
