@@ -16,6 +16,7 @@
 from __future__ import absolute_import
 from __future__ import division
 
+import hmac
 import os
 import re
 
@@ -78,6 +79,26 @@ def hashpw(password, salt):
     return _bcrypt.ffi.string(hashed)
 
 
+def checkpw(password, hashed_password):
+    if len(password) > 65535 or len(hashed_password) > 65535:
+        raise ValueError("Invalid password/hashed_password length")
+
+    if b"\x00" in password or b"\x00" in hashed_password:
+        raise ValueError(
+            "password and hashed_password may not contain NUL bytes"
+        )
+
+    # If the user supplies a $2y$ prefix we normalize to $2b$
+    hashed_password = _normalize_prefix(hashed_password)
+
+    try:
+        ret = hashpw(password, hashed_password)
+    except ValueError:
+        return False
+
+    return _compare(ret, hashed_password)
+
+
 def kdf(password, salt, desired_key_bytes, rounds):
     if isinstance(password, six.text_type) or isinstance(salt, six.text_type):
         raise TypeError("Unicode-objects must be encoded before hashing")
@@ -103,3 +124,14 @@ def kdf(password, salt, desired_key_bytes, rounds):
 def _bcrypt_assert(ok):
     if not ok:
         raise SystemError("bcrypt assertion failed")
+
+
+def _compare(a, b):
+    # bcrypt hash comparisons should not be vulnerable
+    # to timing attacks against non-constant time
+    # comparisons, but we can still use a constant time
+    # comparator if available (2.7.7+)
+    try:
+        return hmac.compare_digest(a, b)
+    except AttributeError:
+        return a == b

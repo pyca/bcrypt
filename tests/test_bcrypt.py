@@ -217,6 +217,11 @@ def test_hashpw_new(password, salt, hashed):
 
 
 @pytest.mark.parametrize(("password", "salt", "hashed"), _test_vectors)
+def test_checkpw(password, salt, hashed):
+    assert bcrypt.checkpw(password, hashed) is True
+
+
+@pytest.mark.parametrize(("password", "salt", "hashed"), _test_vectors)
 def test_hashpw_existing(password, salt, hashed):
     assert bcrypt.hashpw(password, hashed) == hashed
 
@@ -224,6 +229,11 @@ def test_hashpw_existing(password, salt, hashed):
 @pytest.mark.parametrize(("password", "hashed", "expected"), _2y_test_vectors)
 def test_hashpw_2y_prefix(password, hashed, expected):
     assert bcrypt.hashpw(password, hashed) == expected
+
+
+@pytest.mark.parametrize(("password", "hashed", "expected"), _2y_test_vectors)
+def test_checkpw_2y_prefix(password, hashed, expected):
+    assert bcrypt.checkpw(password, hashed) is True
 
 
 def test_hashpw_invalid():
