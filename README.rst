@@ -20,7 +20,7 @@ To install bcrypt, simply:
 
     $ pip install bcrypt
 
-Note that bcrypt should build very easily on Linux provided you have a C compiler, headers for Python (if you’re not using pypy), and headers for the libffi libraries available on your system.
+Note that bcrypt should build very easily on Linux provided you have a C compiler, headers for Python (if you're not using pypy), and headers for the libffi libraries available on your system.
 
 For Debian and Ubuntu, the following command will ensure that the required dependencies are installed:
 
@@ -41,11 +41,11 @@ Changelog
 -----
 * Switched the C backend to code obtained from the OpenBSD project rather than
   openwall.
-* Added support for `bcrypt_pbkdf` via the `kdf` function.
+* Added support for ``bcrypt_pbkdf`` via the ``kdf`` function.
 
 2.0.0
 -----
-* Added support for an adjustible prefix when calling `gensalt`.
+* Added support for an adjustible prefix when calling ``gensalt``.
 * Switched to CFFI 1.0+
 
 Usage
@@ -73,7 +73,7 @@ password is very simple:
 KDF
 ~~~
 
-As of 3.0.0 `bcrypt` now offers a `kdf` function which does `bcrypt_pbkdf`.
+As of 3.0.0 ``bcrypt`` now offers a ``kdf`` function which does ``bcrypt_pbkdf``.
 This KDF is used in OpenSSH's newer encrypted private key format.
 
 .. code:: pycon
@@ -113,10 +113,10 @@ Another one of bcrypt's features is an adjustable prefix to let you define what
 libraries you'll remain compatible with. To adjust this, pass either ``2a`` or
 ``2b`` (the default) to ``bcrypt.gensalt(prefix=b"2b")`` as a bytes object.
 
-As of 3.0.0 the `$2y$` prefix is still supported in `hashpw` but deprecated.
+As of 3.0.0 the ``$2y$`` prefix is still supported in ``hashpw`` but deprecated.
 
-Maxmimum Password Length
-~~~~~~~~~~~~~~~~~~~~~~~~
+Maximum Password Length
+~~~~~~~~~~~~~~~~~~~~~~~
 
 The bcrypt algorithm only handles passwords up to 72 characters, any characters
 beyond that are ignored. To work around this, a common approach is to hash a
