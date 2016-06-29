@@ -69,10 +69,10 @@ def hashpw(password, salt):
 
     # bcrypt originally suffered from a wraparound bug:
     # http://www.openwall.com/lists/oss-security/2012/01/02/4
-    # This bug was corrected in the OpenBSD by truncating inputs to 72 bytes
-    # on the updated prefix $2b$, but leaving $2a$ unchanged for compatibility.
-    # However, pyca/bcrypt 2.0.0 *did* correctly truncate inputs on $2a$, so
-    # we do it here to preserve compatibility with 2.0.0
+    # This bug was corrected in the OpenBSD source by truncating inputs to 72
+    # bytes on the updated prefix $2b$, but leaving $2a$ unchanged for
+    # compatibility. However, pyca/bcrypt 2.0.0 *did* correctly truncate inputs
+    # on $2a$, so we do it here to preserve compatibility with 2.0.0
     password = password[:72]
 
     salt = _normalize_prefix(salt)
