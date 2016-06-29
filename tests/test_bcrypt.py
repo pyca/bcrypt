@@ -380,4 +380,4 @@ def test_bcrypt_assert():
 def test_2a_wraparound_bug():
     assert bcrypt.hashpw(
         (b"0123456789" * 26)[:255], b"$2a$04$R1lJ2gkNaoPGdafE.H.16."
-    ) != b"$2a$04$R1lJ2gkNaoPGdafE.H.16.nVyh2niHsGJhayOHLMiXlI45o8/DU.6"
+    ) == b"$2a$04$R1lJ2gkNaoPGdafE.H.16.1MKHPvmKwryeulRe225LKProWYwt9Oi"
