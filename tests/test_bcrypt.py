@@ -1,4 +1,3 @@
-import hmac
 import os
 
 import pytest
