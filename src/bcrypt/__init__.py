@@ -78,6 +78,24 @@ def hashpw(password, salt):
     return _bcrypt.ffi.string(hashed)
 
 
+def checkpw(password, hashed_password):
+    if (isinstance(password, six.text_type) or
+            isinstance(hashed_password, six.text_type)):
+        raise TypeError("Unicode-objects must be encoded before checking")
+
+    if b"\x00" in password or b"\x00" in hashed_password:
+        raise ValueError(
+            "password and hashed_password may not contain NUL bytes"
+        )
+
+    # If the user supplies a $2y$ prefix we normalize to $2b$
+    hashed_password = _normalize_prefix(hashed_password)
+
+    ret = hashpw(password, hashed_password)
+
+    return _bcrypt.lib.timingsafe_bcmp(ret, hashed_password, len(ret)) == 0
+
+
 def kdf(password, salt, desired_key_bytes, rounds):
     if isinstance(password, six.text_type) or isinstance(salt, six.text_type):
         raise TypeError("Unicode-objects must be encoded before hashing")

@@ -37,6 +37,10 @@ For Fedora and RHEL-derivatives, the following command will ensure that the requ
 Changelog
 =========
 
+3.1.0
+-----
+* Added support for ``checkpw`` as another method of verifying a password.
+
 3.0.0
 -----
 * Switched the C backend to code obtained from the OpenBSD project rather than
@@ -51,8 +55,8 @@ Changelog
 Usage
 -----
 
-Hashing
-~~~~~~~
+Password Hashing
+~~~~~~~~~~~~~~~~
 
 Hashing and then later checking that a password matches the previous hashed
 password is very simple:
@@ -63,9 +67,9 @@ password is very simple:
     >>> password = b"super secret password"
     >>> # Hash a password for the first time, with a randomly-generated salt
     >>> hashed = bcrypt.hashpw(password, bcrypt.gensalt())
-    >>> # Check that a unhashed password matches one that has previously been
-    >>> #   hashed
-    >>> if bcrypt.hashpw(password, hashed) == hashed:
+    >>> # Check that an unhashed password matches one that has previously been
+    >>> # hashed
+    >>> if bcrypt.checkpw(password, hashed):
     ...     print("It Matches!")
     ... else:
     ...     print("It Does not Match :(")

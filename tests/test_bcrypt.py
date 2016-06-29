@@ -217,6 +217,11 @@ def test_hashpw_new(password, salt, hashed):
 
 
 @pytest.mark.parametrize(("password", "salt", "hashed"), _test_vectors)
+def test_checkpw(password, salt, hashed):
+    assert bcrypt.checkpw(password, hashed) is True
+
+
+@pytest.mark.parametrize(("password", "salt", "hashed"), _test_vectors)
 def test_hashpw_existing(password, salt, hashed):
     assert bcrypt.hashpw(password, hashed) == hashed
 
@@ -226,9 +231,45 @@ def test_hashpw_2y_prefix(password, hashed, expected):
     assert bcrypt.hashpw(password, hashed) == expected
 
 
+@pytest.mark.parametrize(("password", "hashed", "expected"), _2y_test_vectors)
+def test_checkpw_2y_prefix(password, hashed, expected):
+    assert bcrypt.checkpw(password, hashed) is True
+
+
 def test_hashpw_invalid():
     with pytest.raises(ValueError):
         bcrypt.hashpw(b"password", b"$2z$04$cVWp4XaNU8a4v1uMRum2SO")
+
+
+def test_checkpw_wrong_password():
+    assert bcrypt.checkpw(
+        b"badpass",
+        b"$2b$04$2Siw3Nv3Q/gTOIPetAyPr.GNj3aO0lb1E5E9UumYGKjP9BYqlNWJe"
+    ) is False
+
+
+def test_checkpw_bad_salt():
+    with pytest.raises(ValueError):
+        bcrypt.checkpw(
+            b"badpass",
+            b"$2b$04$?Siw3Nv3Q/gTOIPetAyPr.GNj3aO0lb1E5E9UumYGKjP9BYqlNWJe"
+        )
+
+
+def test_checkpw_str_password():
+    with pytest.raises(TypeError):
+        bcrypt.checkpw(
+            six.text_type("password"),
+            b"$2b$04$cVWp4XaNU8a4v1uMRum2SO",
+        )
+
+
+def test_checkpw_str_salt():
+    with pytest.raises(TypeError):
+        bcrypt.checkpw(
+            b"password",
+            six.text_type("$2b$04$cVWp4XaNU8a4v1uMRum2SO"),
+        )
 
 
 def test_hashpw_str_password():
@@ -244,6 +285,20 @@ def test_hashpw_str_salt():
         bcrypt.hashpw(
             b"password",
             six.text_type("$2b$04$cVWp4XaNU8a4v1uMRum2SO"),
+        )
+
+
+def test_checkpw_nul_byte():
+    with pytest.raises(ValueError):
+        bcrypt.checkpw(
+            b"abc\0def",
+            b"$2b$04$2Siw3Nv3Q/gTOIPetAyPr.GNj3aO0lb1E5E9UumYGKjP9BYqlNWJe"
+        )
+
+    with pytest.raises(ValueError):
+        bcrypt.checkpw(
+            b"abcdef",
+            b"$2b$04$2S\0w3Nv3Q/gTOIPetAyPr.GNj3aO0lb1E5E9UumYGKjP9BYqlNWJe"
         )
 
 

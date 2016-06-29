@@ -25,6 +25,7 @@ int bcrypt_hashpass(const char *, const char *, char *, size_t);
 int encode_base64(char *, const uint8_t *, size_t);
 int bcrypt_pbkdf(const char *, size_t, const uint8_t *, size_t,
                  uint8_t *, size_t, unsigned int);
+int timingsafe_bcmp(const void *, const void *, size_t);
 """)
 
 ffi.set_source(
