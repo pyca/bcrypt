@@ -16,7 +16,6 @@
 from __future__ import absolute_import
 from __future__ import division
 
-import hmac
 import os
 import re
 
@@ -92,12 +91,9 @@ def checkpw(password, hashed_password):
     # If the user supplies a $2y$ prefix we normalize to $2b$
     hashed_password = _normalize_prefix(hashed_password)
 
-    try:
-        ret = hashpw(password, hashed_password)
-    except ValueError:
-        return False
+    ret = hashpw(password, hashed_password)
 
-    return _compare(ret, hashed_password)
+    return _bcrypt.lib.timingsafe_bcmp(ret, hashed_password, len(ret)) == 0
 
 
 def kdf(password, salt, desired_key_bytes, rounds):
@@ -125,14 +121,3 @@ def kdf(password, salt, desired_key_bytes, rounds):
 def _bcrypt_assert(ok):
     if not ok:
         raise SystemError("bcrypt assertion failed")
-
-
-def _compare(a, b):
-    # bcrypt hash comparisons should not be vulnerable
-    # to timing attacks against non-constant time
-    # comparisons, but we can still use a constant time
-    # comparator if available (2.7.7+)
-    try:
-        return hmac.compare_digest(a, b)
-    except AttributeError:
-        return a == b

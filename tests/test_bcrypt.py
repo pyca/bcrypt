@@ -250,10 +250,11 @@ def test_checkpw_wrong_password():
 
 
 def test_checkpw_bad_salt():
-    assert bcrypt.checkpw(
-        b"badpass",
-        b"$2b$04$?Siw3Nv3Q/gTOIPetAyPr.GNj3aO0lb1E5E9UumYGKjP9BYqlNWJe"
-    ) is False
+    with pytest.raises(ValueError):
+        bcrypt.checkpw(
+            b"badpass",
+            b"$2b$04$?Siw3Nv3Q/gTOIPetAyPr.GNj3aO0lb1E5E9UumYGKjP9BYqlNWJe"
+        )
 
 
 def test_checkpw_str_password():
@@ -430,10 +431,3 @@ def test_invalid_params(password, salt, desired_key_bytes, rounds, error):
 def test_bcrypt_assert():
     with pytest.raises(SystemError):
         bcrypt._bcrypt_assert(False)
-
-
-def test_compare_no_compare_digest(monkeypatch):
-    monkeypatch.delattr(hmac, 'compare_digest', raising=False)
-    assert bcrypt._compare(b'string', b'string') is True
-    assert bcrypt._compare(b'string2', b'string') is False
-    assert bcrypt._compare(b'string', b'string2') is False
