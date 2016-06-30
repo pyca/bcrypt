@@ -1,3 +1,11 @@
 include LICENSE README.rst
+
+include tox.ini .coveragerc
 include src/build_bcrypt.py
+
 recursive-include src/_csrc *
+recursive-include tests *.py
+
+exclude requirements.txt tasks.py .travis.yml
+
+prune .travis

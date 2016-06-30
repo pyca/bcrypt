@@ -30,6 +30,7 @@ matrix:
       env: TOXENV=pypy CC=clang
     - python: 2.7
       env: TOXENV=pep8
+    - env: TOXENV=packaging
     - python: 3.5
       env: TOXENV=py3pep8
     - language: generic
