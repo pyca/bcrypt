@@ -430,3 +430,9 @@ def test_invalid_params(password, salt, desired_key_bytes, rounds, error):
 def test_bcrypt_assert():
     with pytest.raises(SystemError):
         bcrypt._bcrypt_assert(False)
+
+
+def test_2a_wraparound_bug():
+    assert bcrypt.hashpw(
+        (b"0123456789" * 26)[:255], b"$2a$04$R1lJ2gkNaoPGdafE.H.16."
+    ) == b"$2a$04$R1lJ2gkNaoPGdafE.H.16.1MKHPvmKwryeulRe225LKProWYwt9Oi"
