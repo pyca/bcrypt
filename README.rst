@@ -105,7 +105,7 @@ the work factor merely pass the desired number of rounds to
     >>> hashed = bcrypt.hashpw(password, bcrypt.gensalt(14))
     >>> # Check that a unhashed password matches one that has previously been
     >>> #   hashed
-    >>> if bcrypt.hashpw(password, hashed) == hashed:
+    >>> if bcrypt.checkpw(password, hashed):
     ...     print("It Matches!")
     ... else:
     ...     print("It Does not Match :(")
