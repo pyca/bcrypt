@@ -40,6 +40,7 @@ Changelog
 3.1.0
 -----
 * Added support for ``checkpw`` as another method of verifying a password.
+* Ensure that you get a ``$2y$`` hash when you input a ``$2y$`` salt.
 
 3.0.0
 -----

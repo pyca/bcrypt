@@ -39,10 +39,6 @@ __all__ = [
 _normalize_re = re.compile(b"^\$2y\$")
 
 
-def _normalize_prefix(salt):
-    return _normalize_re.sub(b"$2b$", salt)
-
-
 def gensalt(rounds=12, prefix=b"2b"):
     if prefix not in (b"2a", b"2b"):
         raise ValueError("Supported prefixes are b'2a' or b'2b'")
@@ -75,7 +71,13 @@ def hashpw(password, salt):
     # on $2a$, so we do it here to preserve compatibility with 2.0.0
     password = password[:72]
 
-    salt = _normalize_prefix(salt)
+    # When the original 8bit bug was found the original library we supported
+    # added a new prefix, $2y$, that fixes it. This prefix is exactly the same
+    # as the $2b$ prefix added by OpenBSD other than the name. Since the
+    # OpenBSD library does not support the $2y$ prefix, if the salt given to us
+    # is for the $2y$ prefix, we'll just mugne it so that it's a $2b$ prior to
+    # passing it into the C library.
+    original_salt, salt = salt, _normalize_re.sub(b"$2b$", salt)
 
     hashed = _bcrypt.ffi.new("unsigned char[]", 128)
     retval = _bcrypt.lib.bcrypt_hashpass(password, salt, hashed, len(hashed))
@@ -83,7 +85,13 @@ def hashpw(password, salt):
     if retval != 0:
         raise ValueError("Invalid salt")
 
-    return _bcrypt.ffi.string(hashed)
+    # Now that we've gotten our hashed password, we want to ensure that the
+    # prefix we return is the one that was passed in, so we'll use the prefix
+    # from the original salt and concatenate that with the return value (minus
+    # the return value's prefix). This will ensure that if someone passed in a
+    # salt with a $2y$ prefix, that they get back a hash with a $2y$ prefix
+    # even though we munged it to $2b$.
+    return original_salt[:4] + _bcrypt.ffi.string(hashed)[4:]
 
 
 def checkpw(password, hashed_password):
@@ -95,9 +103,6 @@ def checkpw(password, hashed_password):
         raise ValueError(
             "password and hashed_password may not contain NUL bytes"
         )
-
-    # If the user supplies a $2y$ prefix we normalize to $2b$
-    hashed_password = _normalize_prefix(hashed_password)
 
     ret = hashpw(password, hashed_password)
 
