@@ -39,8 +39,10 @@ Changelog
 
 3.1.0
 -----
-* Added support for ``checkpw`` as another method of verifying a password.
+* Added support for ``checkpw``, a convenience method for verifying a password.
 * Ensure that you get a ``$2y$`` hash when you input a ``$2y$`` salt.
+* Fixed a regression where ``$2a`` hashes were vulnerable to a wraparound bug.
+* Fixed compilation under Alpine Linux.
 
 3.0.0
 -----
