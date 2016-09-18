@@ -37,6 +37,11 @@ For Fedora and RHEL-derivatives, the following command will ensure that the requ
 Changelog
 =========
 
+3.1.1
+-----
+* Resolve a type mismatch that caused a ``UserWarning`` when used with ``cffi``
+  1.8.3.
+
 3.1.0
 -----
 * Added support for ``checkpw``, a convenience method for verifying a password.
