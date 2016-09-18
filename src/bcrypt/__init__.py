@@ -47,7 +47,7 @@ def gensalt(rounds=12, prefix=b"2b"):
         raise ValueError("Invalid rounds")
 
     salt = os.urandom(16)
-    output = _bcrypt.ffi.new("unsigned char[]", 30)
+    output = _bcrypt.ffi.new("char[]", 30)
     _bcrypt.lib.encode_base64(output, salt, len(salt))
 
     return (
@@ -79,7 +79,7 @@ def hashpw(password, salt):
     # passing it into the C library.
     original_salt, salt = salt, _normalize_re.sub(b"$2b$", salt)
 
-    hashed = _bcrypt.ffi.new("unsigned char[]", 128)
+    hashed = _bcrypt.ffi.new("char[]", 128)
     retval = _bcrypt.lib.bcrypt_hashpass(password, salt, hashed, len(hashed))
 
     if retval != 0:
