@@ -308,6 +308,15 @@ def test_hashpw_nul_byte():
         bcrypt.hashpw(b"abc\0def", salt)
 
 
+def test_checkpw_extra_data():
+    salt = bcrypt.gensalt(4)
+    hashed = bcrypt.hashpw(b"abc", salt)
+
+    assert bcrypt.checkpw(b"abc", hashed)
+    assert bcrypt.checkpw(b"abc", hashed + b"extra") is False
+    assert bcrypt.checkpw(b"abc", hashed[:-10]) is False
+
+
 @pytest.mark.parametrize(
     ("rounds", "password", "salt", "expected"),
     [[
