@@ -106,6 +106,9 @@ def checkpw(password, hashed_password):
 
     ret = hashpw(password, hashed_password)
 
+    if len(ret) != len(hashed_password):
+        return False
+
     return _bcrypt.lib.timingsafe_bcmp(ret, hashed_password, len(ret)) == 0
 
 
