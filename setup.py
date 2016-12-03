@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import platform
 import sys
+import io
 from distutils.command.build import build
 
 from setuptools import setup
@@ -192,7 +193,7 @@ setup(
     version=__about__["__version__"],
 
     description=__about__["__summary__"],
-    long_description=open("README.rst").read(),
+    long_description=io.open("README.rst", encoding='utf-8').read(),
     url=__about__["__uri__"],
     license=__about__["__license__"],
 
