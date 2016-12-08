@@ -36,7 +36,7 @@ __all__ = [
 ]
 
 
-_normalize_re = re.compile(b"^\$2y\$")
+_normalize_re = re.compile(br"^\$2y\$")
 
 
 def gensalt(rounds=12, prefix=b"2b"):
