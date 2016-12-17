@@ -48,9 +48,9 @@
 #           define le64toh(x) (x)
 #       elif defined(__BYTE_ORDER) && (__BYTE_ORDER == __BIG_ENDIAN)
 #           define htobe16(x) (x)
-#           define htole16(x) ((((((uint16_t)(x)) >> 8))|((((uint16_t)(x)) << 8)))
+#           define htole16(x) (((((uint16_t)(x)) >> 8))|((((uint16_t)(x)) << 8)))
 #           define be16toh(x) (x)
-#           define le16toh(x) ((((((uint16_t)(x)) >> 8))|((((uint16_t)(x)) << 8)))
+#           define le16toh(x) (((((uint16_t)(x)) >> 8))|((((uint16_t)(x)) << 8)))
 
 #           define htobe32(x) (x)
 #           define htole32(x) (((uint32_t)htole16(((uint16_t)(((uint32_t)(x)) >> 16)))) | (((uint32_t)htole16(((uint16_t)(x)))) << 16))
