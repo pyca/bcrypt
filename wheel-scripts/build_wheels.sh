@@ -12,5 +12,5 @@ done
 
 for PYBIN in /opt/python/*/bin/; do
     "${PYBIN}"/pip install bcrypt --no-index -f /io/wheelhouse/
-    "${PYBIN}"/python -c "import bcrypt;password = b'super secret password';hashed = bcrypt.hashpw(password, bcrypt.gensalt());assert hashed"
+    "${PYBIN}"/python -c "import bcrypt;password = b'super secret password';hashed = bcrypt.hashpw(password, bcrypt.gensalt());bcrypt.checkpw(password, hashed)"
 done
