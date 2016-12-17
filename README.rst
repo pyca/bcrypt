@@ -37,6 +37,12 @@ For Fedora and RHEL-derivatives, the following command will ensure that the requ
 Changelog
 =========
 
+3.1.2
+-----
+* Fixed a compile issue affecting big endian platforms.
+* Fixed invalid escape sequence warnings on Python 3.6.
+* Fixed building in non-UTF8 environments on Python 2.
+
 3.1.1
 -----
 * Resolved a ``UserWarning`` when used with ``cffi`` 1.8.3.
