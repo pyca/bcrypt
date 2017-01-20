@@ -18,7 +18,7 @@ from __future__ import division
 
 import os
 import re
-import sys
+import warnings
 
 import six
 
@@ -130,9 +130,11 @@ def kdf(password, salt, desired_key_bytes, rounds, ignore_few_rounds = False):
         # They probably think bcrypt.kdf()'s rounds parameter is logarithmic,
         # expecting this value to be slow enough (it probably would be if this
         # were bcrypt). Emit a warning.
-        sys.stderr.write(("Warning: bcrypt.kdf() called with only {} round(s). "
-            + "This few is not secure: the parameter is linear, like PBKDF2.\n")
-            .format(rounds))
+        warnings.warn((
+            "Warning: bcrypt.kdf() called with only {} round(s). "
+            "This few is not secure: the parameter is linear, like PBKDF2.")
+            .format(rounds),
+            UserWarning)
 
     key = _bcrypt.ffi.new("uint8_t[]", desired_key_bytes)
     res = _bcrypt.lib.bcrypt_pbkdf(
