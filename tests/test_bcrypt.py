@@ -418,6 +418,12 @@ def test_kdf_str_salt():
         )
 
 
+def test_kdf_no_warn_rounds():
+    bcrypt.kdf(
+        b"password", b"salt", 10, 10, True
+    )
+
+
 def test_kdf_warn_rounds():
     with pytest.warns(UserWarning):
         bcrypt.kdf(
