@@ -18,6 +18,7 @@ from __future__ import division
 
 import os
 import re
+import warnings
 
 import six
 
@@ -112,7 +113,7 @@ def checkpw(password, hashed_password):
     return _bcrypt.lib.timingsafe_bcmp(ret, hashed_password, len(ret)) == 0
 
 
-def kdf(password, salt, desired_key_bytes, rounds):
+def kdf(password, salt, desired_key_bytes, rounds, ignore_few_rounds=False):
     if isinstance(password, six.text_type) or isinstance(salt, six.text_type):
         raise TypeError("Unicode-objects must be encoded before hashing")
 
@@ -124,6 +125,16 @@ def kdf(password, salt, desired_key_bytes, rounds):
 
     if rounds < 1:
         raise ValueError("rounds must be 1 or more")
+
+    if rounds < 50 and not ignore_few_rounds:
+        # They probably think bcrypt.kdf()'s rounds parameter is logarithmic,
+        # expecting this value to be slow enough (it probably would be if this
+        # were bcrypt). Emit a warning.
+        warnings.warn((
+            "Warning: bcrypt.kdf() called with only {0} round(s). "
+            "This few is not secure: the parameter is linear, like PBKDF2.")
+            .format(rounds),
+            UserWarning)
 
     key = _bcrypt.ffi.new("uint8_t[]", desired_key_bytes)
     res = _bcrypt.lib.bcrypt_pbkdf(
