@@ -37,6 +37,11 @@ For Fedora and RHEL-derivatives, the following command will ensure that the requ
 Changelog
 =========
 
+3.1.3
+-----
+* Fixed a compilation issue on Solaris.
+* Added a warning when using too few rounds with ``kdf``.
+
 3.1.2
 -----
 * Fixed a compile issue affecting big endian platforms.
