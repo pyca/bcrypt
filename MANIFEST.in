@@ -6,7 +6,7 @@ include src/build_bcrypt.py
 recursive-include src/_csrc *
 recursive-include tests *.py
 
-exclude requirements.txt tasks.py .travis.yml wheel-scripts
+exclude requirements.txt tasks.py .travis.yml wheel-scripts Jenkinsfile
 
 recursive-exclude wheel-scripts *
 
