@@ -21,9 +21,11 @@ def build(label, toxenv) {
                 tox -r -e $toxenv
             """
         } else {
-            sh """
-            tox -r -e $toxenv
-            """
+            wrap([$class: 'AnsiColorBuildWrapper']) {
+                sh """
+                tox -r -e $toxenv --  --color=yes
+                """
+            }
         }
     } catch (e) {
         currentBuild.result = 'FAILURE'
