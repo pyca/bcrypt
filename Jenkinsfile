@@ -7,11 +7,14 @@ def configs = [
         label: 'windows64',
         toxenvs: ['py26', 'py27', 'py33', 'py34', 'py35', 'py36'],
     ],
+    [
+        label: 'freebsd11',
+        toxenvs: ['py27'],
+    ],
 ]
 
 def build(label, toxenv) {
     try {
-        checkout scm
         if (label.startsWith("windows")) {
             bat """
                 @set PATH="C:\\Python27";"C:\\Python27\\Scripts";%PATH%
@@ -43,6 +46,9 @@ for (x in configs) {
 
         builders[combinedName] = {
             node(label) {
+                stage("Checkout") {
+                    checkout scm
+                }
                 stage(combinedName) {
                     build(label, toxenv)
                 }
