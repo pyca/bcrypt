@@ -15,16 +15,18 @@ def configs = [
 
 def build(label, toxenv) {
     try {
-        if (label.startsWith("windows")) {
-            bat """
-                @set PATH="C:\\Python27";"C:\\Python27\\Scripts";%PATH%
-                tox -r -e $toxenv
-            """
-        } else {
-            wrap([$class: 'AnsiColorBuildWrapper']) {
-                sh """
-                tox -r -e $toxenv --  --color=yes
+        timeout(time: 5, unit: 'MINUTES') {
+            if (label.startsWith("windows")) {
+                bat """
+                    @set PATH="C:\\Python27";"C:\\Python27\\Scripts";%PATH%
+                    tox -r -e $toxenv
                 """
+            } else {
+                ansiColor('xterm') {
+                    sh """
+                    tox -r -e $toxenv --  --color=yes
+                    """
+                }
             }
         }
     } catch (e) {
