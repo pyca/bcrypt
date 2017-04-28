@@ -23,9 +23,7 @@ def build(label, toxenv) {
                 """
             } else {
                 ansiColor('xterm') {
-                    sh """
-                    tox -r -e $toxenv --  --color=yes
-                    """
+                    sh "tox -r -e $toxenv --  --color=yes"
                 }
             }
         }
@@ -39,13 +37,11 @@ def build(label, toxenv) {
 }
 
 def builders = [:]
-for (x in configs) {
-    def label = x["label"]
-    def toxenvs = x["toxenvs"]
+for (config in configs) {
+    def label = config["label"]
+    def toxenvs = config["toxenvs"]
 
-    for (y in toxenvs) {
-        def toxenv = y
-
+    for (def toxenv: toxenvs) {
         def combinedName = "${label}-${toxenv}"
 
         builders[combinedName] = {
