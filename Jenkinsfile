@@ -41,7 +41,7 @@ for (config in configs) {
     def label = config["label"]
     def toxenvs = config["toxenvs"]
 
-    for (def toxenv in toxenvs) {
+    for (toxenv in toxenvs) {
         def combinedName = "${label}-${toxenv}"
 
         builders[combinedName] = {
