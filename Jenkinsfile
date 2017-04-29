@@ -27,9 +27,6 @@ def build(label, toxenv) {
                 }
             }
         }
-    } catch (e) {
-        currentBuild.result = 'FAILURE'
-        throw e
     } finally {
         deleteDir()
     }
