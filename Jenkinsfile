@@ -5,7 +5,7 @@ def configs = [
     ],
     [
         label: 'windows64',
-        toxenvs: ['py26', 'py27', 'py33', 'py34', 'py35', 'py36', 'py37'],
+        toxenvs: ['py26', 'py27', 'py33', 'py34', 'py35', 'py36'],
     ],
     [
         label: 'freebsd11',
@@ -26,6 +26,7 @@ def build(label, toxenv) {
                     sh "tox -r -e $toxenv --  --color=yes"
                 }
             }
+            1 / 0
         }
     } finally {
         deleteDir()
