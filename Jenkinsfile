@@ -26,7 +26,6 @@ def build(label, toxenv) {
                     sh "tox -r -e $toxenv --  --color=yes"
                 }
             }
-            1 / 0
         }
     } finally {
         deleteDir()
