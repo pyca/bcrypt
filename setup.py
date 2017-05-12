@@ -2,6 +2,7 @@
 import io
 import platform
 import sys
+import io
 from distutils.command.build import build
 
 from setuptools import setup
