@@ -8,6 +8,9 @@ recursive-include tests *.py
 
 exclude requirements.txt tasks.py .travis.yml wheel-scripts
 
+exclude .jenkins
+recursive-exclude .jenkins *
+
 recursive-exclude wheel-scripts *
 
 prune .travis
