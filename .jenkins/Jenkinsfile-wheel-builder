@@ -1,20 +1,21 @@
 def configs = [
     [
         label: 'windows',
-        versions: ['py27', 'py34', 'py35', 'py36'],
+        versions: ['py26', 'py27', 'py34', 'py35', 'py36'],
     ],
     [
         label: 'windows64',
-        versions: ['py27', 'py34', 'py35', 'py36'],
+        versions: ['py26', 'py27', 'py34', 'py35', 'py36'],
     ],
     [
         label: 'sierra',
-        versions: ['py27', 'py34', 'py35', 'py36'],
+        versions: ['py26', 'py27', 'py34', 'py35', 'py36'],
     ],
     [
         label: 'docker',
         imageName: 'quay.io/pypa/manylinux1_x86_64',
         versions: [
+            'cp26-cp26m', 'cp26-cp26mu',
             'cp27-cp27m', 'cp27-cp27mu', 'cp33-cp33m',
             'cp34-cp34m', 'cp35-cp35m', 'cp36-cp36m'
         ],
@@ -23,6 +24,7 @@ def configs = [
         label: 'docker',
         imageName: 'quay.io/pypa/manylinux1_i686',
         versions: [
+            'cp26-cp26m', 'cp26-cp26mu',
             'cp27-cp27m', 'cp27-cp27mu', 'cp33-cp33m',
             'cp34-cp34m', 'cp35-cp35m', 'cp36-cp36m'
         ],
@@ -35,6 +37,7 @@ def build(version, label, imageName) {
         timeout(time: 30, unit: 'MINUTES') {
             if (label.contains("windows")) {
                 def pythonPath = [
+                    py26: "C:\\Python26\\python.exe",
                     py27: "C:\\Python27\\python.exe",
                     py33: "C:\\Python33\\python.exe",
                     py34: "C:\\Python34\\python.exe",
@@ -55,6 +58,7 @@ def build(version, label, imageName) {
                 """
             } else if (label.contains("sierra")) {
                 def pythonPath = [
+                    py26: "/usr/bin/python2.6",
                     py27: "/Library/Frameworks/Python.framework/Versions/2.7/bin/python2.7",
                     py34: "/Library/Frameworks/Python.framework/Versions/3.4/bin/python3.4",
                     py35: "/Library/Frameworks/Python.framework/Versions/3.5/bin/python3.5",
