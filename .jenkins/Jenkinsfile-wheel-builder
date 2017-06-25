@@ -1,0 +1,150 @@
+def configs = [
+    [
+        label: 'windows',
+        versions: ['py26', 'py27', 'py34', 'py35', 'py36'],
+    ],
+    [
+        label: 'windows64',
+        versions: ['py26', 'py27', 'py34', 'py35', 'py36'],
+    ],
+    [
+        label: 'sierra',
+        versions: ['py26', 'py27', 'py34', 'py35', 'py36'],
+    ],
+    [
+        label: 'docker',
+        imageName: 'quay.io/pypa/manylinux1_x86_64',
+        versions: [
+            'cp26-cp26m', 'cp26-cp26mu',
+            'cp27-cp27m', 'cp27-cp27mu', 'cp33-cp33m',
+            'cp34-cp34m', 'cp35-cp35m', 'cp36-cp36m'
+        ],
+    ],
+    [
+        label: 'docker',
+        imageName: 'quay.io/pypa/manylinux1_i686',
+        versions: [
+            'cp26-cp26m', 'cp26-cp26mu',
+            'cp27-cp27m', 'cp27-cp27mu', 'cp33-cp33m',
+            'cp34-cp34m', 'cp35-cp35m', 'cp36-cp36m'
+        ],
+    ],
+]
+
+
+def build(version, label, imageName) {
+    try {
+        timeout(time: 30, unit: 'MINUTES') {
+            if (label.contains("windows")) {
+                def pythonPath = [
+                    py26: "C:\\Python26\\python.exe",
+                    py27: "C:\\Python27\\python.exe",
+                    py33: "C:\\Python33\\python.exe",
+                    py34: "C:\\Python34\\python.exe",
+                    py35: "C:\\Python35\\python.exe",
+                    py36: "C:\\Python36\\python.exe"
+                ]
+                bat """
+                    wmic qfe
+                    @set PATH="C:\\Python27";"C:\\Python27\\Scripts";%PATH%
+                    @set PYTHON="${pythonPath[version]}"
+
+                    virtualenv -p %PYTHON% .release
+                    call .release\\Scripts\\activate
+                    pip install wheel virtualenv
+                    pip wheel bcrypt --wheel-dir=wheelhouse --no-binary bcrypt
+                    pip install -f wheelhouse bcrypt --no-index
+                    python -c "import bcrypt;password = b'super secret password';hashed = bcrypt.hashpw(password, bcrypt.gensalt());bcrypt.checkpw(password, hashed)"
+                """
+            } else if (label.contains("sierra")) {
+                def pythonPath = [
+                    py26: "/usr/bin/python2.6",
+                    py27: "/Library/Frameworks/Python.framework/Versions/2.7/bin/python2.7",
+                    py34: "/Library/Frameworks/Python.framework/Versions/3.4/bin/python3.4",
+                    py35: "/Library/Frameworks/Python.framework/Versions/3.5/bin/python3.5",
+                    py36: "/Library/Frameworks/Python.framework/Versions/3.6/bin/python3.6",
+                ]
+                ansiColor {
+                    sh """#!/usr/bin/env bash
+                        set -xe
+                        # output the list of things we've installed as a point in time check of how up
+                        # to date the builder is
+                        /usr/sbin/system_profiler SPInstallHistoryDataType
+
+                        # Jenkins logs in as a non-interactive shell, so we don't even have /usr/local/bin in PATH
+                        export PATH="/usr/local/bin:\${PATH}"
+                        export PATH="/Users/jenkins/.pyenv/shims:\${PATH}"
+
+                        printenv
+
+                        virtualenv .venv -p ${pythonPath[version]}
+                        source .venv/bin/activate
+                        pip install -U wheel # upgrade wheel to latest before we use it to build the wheel
+                        pip wheel bcrypt --wheel-dir=wheelhouse --no-binary bcrypt
+                        pip install -f wheelhouse bcrypt --no-index
+                        python -c "import bcrypt;password = b'super secret password';hashed = bcrypt.hashpw(password, bcrypt.gensalt());bcrypt.checkpw(password, hashed)"
+                    """
+                }
+            } else if (label.contains("docker")) {
+                linux32 = ""
+                if (imageName.contains("i686")) {
+                    linux32 = "linux32"
+                }
+                sh """#!/usr/bin/env bash
+                    set -x -e
+                    # Because we are doing this as root in the container, but we write to a mounted dir that is outside the container
+                    # we need to make sure we set these files writable such that the jenkins user can delete them afterwards
+                    mkdir -p tmpwheelhouse
+                    mkdir -p wheelhouse
+                    chmod -R 777 tmpwheelhouse
+                    chmod -R 777 wheelhouse
+
+                    $linux32 /opt/python/$version/bin/pip install cffi six
+                    $linux32 /opt/python/$version/bin/pip wheel --no-binary bcrypt --no-deps bcrypt -w tmpwheelhouse/
+                    $linux32 auditwheel repair tmpwheelhouse/bcrypt*.whl -w wheelhouse/
+                    $linux32 /opt/python/$version/bin/pip install bcrypt --no-index -f wheelhouse/
+                    $linux32 /opt/python/$version/bin/python -c "import bcrypt;password = b'super secret password';hashed = bcrypt.hashpw(password, bcrypt.gensalt());bcrypt.checkpw(password, hashed)"
+                """
+            }
+            archiveArtifacts artifacts: "**/wheelhouse/bcrypt*.whl"
+        }
+    } finally {
+        deleteDir()
+    }
+
+}
+
+def builders = [:]
+for (config in configs) {
+    def label = config["label"]
+    def versions = config["versions"]
+
+    for (_version in versions) {
+        def version = _version
+
+        if (label.contains("docker")) {
+            def imageName = config["imageName"]
+            def combinedName = "${imageName}-${version}"
+            builders[combinedName] = {
+                node(label) {
+                    stage(combinedName) {
+                        docker.image(imageName).inside("-u root") {
+                            build(version, label, imageName)
+                        }
+                    }
+                }
+            }
+        } else {
+            def combinedName = "${label}-${version}"
+            builders[combinedName] = {
+                node(label) {
+                    stage(combinedName) {
+                        build(version, label, "")
+                    }
+                }
+            }
+        }
+    }
+}
+
+parallel builders
