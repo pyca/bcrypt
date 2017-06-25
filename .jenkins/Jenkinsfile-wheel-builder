@@ -54,7 +54,7 @@ def build(version, label, imageName) {
                     pip install wheel virtualenv
                     pip wheel bcrypt --wheel-dir=wheelhouse --no-binary bcrypt
                     pip install -f wheelhouse bcrypt --no-index
-                    python -c "import bcrypt;password = b'super secret password';hashed = bcrypt.hashpw(password, bcrypt.gensalt());assert hashed"
+                    python -c "import bcrypt;password = b'super secret password';hashed = bcrypt.hashpw(password, bcrypt.gensalt());bcrypt.checkpw(password, hashed)"
                 """
             } else if (label.contains("sierra")) {
                 def pythonPath = [
@@ -82,7 +82,7 @@ def build(version, label, imageName) {
                         pip install -U wheel # upgrade wheel to latest before we use it to build the wheel
                         pip wheel bcrypt --wheel-dir=wheelhouse --no-binary bcrypt
                         pip install -f wheelhouse bcrypt --no-index
-                        python -c "import bcrypt;password = b'super secret password';hashed = bcrypt.hashpw(password, bcrypt.gensalt());assert hashed"
+                        python -c "import bcrypt;password = b'super secret password';hashed = bcrypt.hashpw(password, bcrypt.gensalt());bcrypt.checkpw(password, hashed)"
                     """
                 }
             } else if (label.contains("docker")) {
@@ -103,7 +103,7 @@ def build(version, label, imageName) {
                     $linux32 /opt/python/$version/bin/pip wheel --no-binary bcrypt --no-deps bcrypt -w tmpwheelhouse/
                     $linux32 auditwheel repair tmpwheelhouse/bcrypt*.whl -w wheelhouse/
                     $linux32 /opt/python/$version/bin/pip install bcrypt --no-index -f wheelhouse/
-                    $linux32 /opt/python/$version/bin/python -c "import bcrypt;password = b'super secret password';hashed = bcrypt.hashpw(password, bcrypt.gensalt());assert hashed"
+                    $linux32 /opt/python/$version/bin/python -c "import bcrypt;password = b'super secret password';hashed = bcrypt.hashpw(password, bcrypt.gensalt());bcrypt.checkpw(password, hashed)"
                 """
             }
             archiveArtifacts artifacts: "**/wheelhouse/bcrypt*.whl"
