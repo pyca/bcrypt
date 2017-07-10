@@ -1,3 +1,6 @@
+#ifndef PYCABCRYPT
+#define PYCABCRYPT
+
 #include <sys/types.h>
 #include <string.h>
 #include <stdio.h>
@@ -30,3 +33,6 @@ int bcrypt_hashpass(const char *key, const char *salt, char *encrypted, size_t e
 int encode_base64(char *, const u_int8_t *, size_t);
 int timingsafe_bcmp(const void *b1, const void *b2, size_t n);
 int bcrypt_pbkdf(const char *pass, size_t passlen, const uint8_t *salt, size_t saltlen, uint8_t *key, size_t keylen, unsigned int rounds);
+
+#endif
+

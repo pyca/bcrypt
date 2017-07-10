@@ -31,10 +31,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#include "pycabcrypt.h"
 
 #ifndef _BLF_H_
 #define _BLF_H_
+
+#include "pycabcrypt.h"
 
 /* Schneier states the maximum key length to be 56 bytes.
  * The way how the subkeys are initialized by the key up
