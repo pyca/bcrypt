@@ -206,11 +206,11 @@ setup(
     ],
     extras_require={
         "tests": [
-            "pytest",
+            "pytest!=3.2.0",
         ],
     },
     tests_require=[
-        "pytest",
+        "pytest!=3.2.0",
     ],
 
     package_dir={"": "src"},
