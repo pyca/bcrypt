@@ -41,7 +41,7 @@ class PyTest(test):
         errno = pytest.main(self.test_args)
         sys.exit(errno)
 
-        
+
 setup(
     name=__about__["__title__"],
     version=__about__["__version__"],
