@@ -146,6 +146,13 @@ _test_vectors = [
         b"$2a$05$/OK.fbVrR/bpIqNJ5ianF.",
         b"$2a$05$/OK.fbVrR/bpIqNJ5ianF.Sa7shbm4.OzKpvFnX1pQLmQW96oUlCq"
     ),
+    (
+        b'}>\xb3\xfe\xf1\x8b\xa0\xe6(\xa2Lzq\xc3P\x7f\xcc\xc8b{\xf9\x14\xf6'
+        b'\xf6`\x81G5\xec\x1d\x87\x10\xbf\xa7\xe1}I7 \x96\xdfc\xf2\xbf\xb3Vh'
+        b'\xdfM\x88q\xf7\xff\x1b\x82~z\x13\xdd\xe9\x84\x00\xdd4',
+        b'$2b$10$keO.ZZs22YtygVF6BLfhGO',
+        b'$2b$10$keO.ZZs22YtygVF6BLfhGOI/JjshJYPp8DZsUtym6mJV2Eha2Hdd.'
+    )
 ]
 
 _2y_test_vectors = [
@@ -286,26 +293,6 @@ def test_hashpw_str_salt():
             b"password",
             six.text_type("$2b$04$cVWp4XaNU8a4v1uMRum2SO"),
         )
-
-
-def test_checkpw_nul_byte():
-    with pytest.raises(ValueError):
-        bcrypt.checkpw(
-            b"abc\0def",
-            b"$2b$04$2Siw3Nv3Q/gTOIPetAyPr.GNj3aO0lb1E5E9UumYGKjP9BYqlNWJe"
-        )
-
-    with pytest.raises(ValueError):
-        bcrypt.checkpw(
-            b"abcdef",
-            b"$2b$04$2S\0w3Nv3Q/gTOIPetAyPr.GNj3aO0lb1E5E9UumYGKjP9BYqlNWJe"
-        )
-
-
-def test_hashpw_nul_byte():
-    salt = bcrypt.gensalt(4)
-    with pytest.raises(ValueError):
-        bcrypt.hashpw(b"abc\0def", salt)
 
 
 def test_checkpw_extra_data():

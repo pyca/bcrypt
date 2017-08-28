@@ -61,9 +61,6 @@ def hashpw(password, salt):
     if isinstance(password, six.text_type) or isinstance(salt, six.text_type):
         raise TypeError("Unicode-objects must be encoded before hashing")
 
-    if b"\x00" in password:
-        raise ValueError("password may not contain NUL bytes")
-
     # bcrypt originally suffered from a wraparound bug:
     # http://www.openwall.com/lists/oss-security/2012/01/02/4
     # This bug was corrected in the OpenBSD source by truncating inputs to 72
@@ -81,7 +78,8 @@ def hashpw(password, salt):
     original_salt, salt = salt, _normalize_re.sub(b"$2b$", salt)
 
     hashed = _bcrypt.ffi.new("char[]", 128)
-    retval = _bcrypt.lib.bcrypt_hashpass(password, salt, hashed, len(hashed))
+    retval = _bcrypt.lib.bcrypt_hashpass(password, len(password), salt,
+                                         hashed, len(hashed))
 
     if retval != 0:
         raise ValueError("Invalid salt")
@@ -99,11 +97,6 @@ def checkpw(password, hashed_password):
     if (isinstance(password, six.text_type) or
             isinstance(hashed_password, six.text_type)):
         raise TypeError("Unicode-objects must be encoded before checking")
-
-    if b"\x00" in password or b"\x00" in hashed_password:
-        raise ValueError(
-            "password and hashed_password may not contain NUL bytes"
-        )
 
     ret = hashpw(password, hashed_password)
 

@@ -62,13 +62,12 @@ static int decode_base64(u_int8_t *, size_t, const char *);
  * the core bcrypt function
  */
 int
-bcrypt_hashpass(const char *key, const char *salt, char *encrypted,
+bcrypt_hashpass(const char *key, size_t key_len, const char *salt, char *encrypted,
     size_t encryptedlen)
 {
 	blf_ctx state;
 	u_int32_t rounds, i, k;
 	u_int16_t j;
-	size_t key_len;
 	u_int8_t salt_len, logr, minor;
 	u_int8_t ciphertext[4 * BCRYPT_WORDS] = "OrpheanBeholderScryDoubt";
 	u_int8_t csalt[BCRYPT_MAXSALT];
@@ -88,14 +87,13 @@ bcrypt_hashpass(const char *key, const char *salt, char *encrypted,
 	/* Check for minor versions */
 	switch ((minor = salt[1])) {
 	case 'a':
-		key_len = (u_int8_t)(strlen(key) + 1);
+		key_len = (u_int8_t)(key_len + 1);
 		break;
 	case 'b':
-		/* strlen() returns a size_t, but the function calls
+		/* key_len is a size_t, but the function calls
 		 * below result in implicit casts to a narrower integer
 		 * type, so cap key_len at the actual maximum supported
 		 * length here to avoid integer wraparound */
-		key_len = strlen(key);
 		if (key_len > 72)
 			key_len = 72;
 		key_len++; /* include the NUL */
