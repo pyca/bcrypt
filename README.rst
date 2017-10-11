@@ -37,6 +37,11 @@ For Fedora and RHEL-derivatives, the following command will ensure that the requ
 Changelog
 =========
 
+3.1.4
+-----
+
+* Fixed compilation with mingw and on illumos.
+
 3.1.3
 -----
 * Fixed a compilation issue on Solaris.
