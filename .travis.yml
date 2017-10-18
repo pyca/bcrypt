@@ -4,8 +4,6 @@ sudo: false
 
 matrix:
   include:
-    - python: 2.6
-      env: TOXENV=py26 CC=gcc
     - python: 2.7
       env: TOXENV=py27 CC=gcc
     - python: 3.3
@@ -18,8 +16,6 @@ matrix:
       env: TOXENV=py36 CC=gcc
     - python: pypy
       env: TOXENV=pypy CC=gcc
-    - python: 2.6
-      env: TOXENV=py26 CC=clang
     - python: 2.7
       env: TOXENV=py27 CC=clang
     - python: 3.3
