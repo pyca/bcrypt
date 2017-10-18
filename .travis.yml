@@ -41,3 +41,7 @@ matrix:
 install: .travis/install.sh
 
 script: .travis/run.sh
+
+branches:
+  only:
+    - master
