@@ -25,9 +25,9 @@ with open("src/bcrypt/__about__.py") as fp:
 
 
 if platform.python_implementation() == "PyPy":
-    if sys.pypy_version_info < (2, 7):
+    if sys.pypy_version_info < (2, 6):
         raise RuntimeError(
-            "bcrypt is not compatible with PyPy < 2.7. Please upgrade PyPy to "
+            "bcrypt is not compatible with PyPy < 2.6. Please upgrade PyPy to "
             "use this library."
         )
 
