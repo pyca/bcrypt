@@ -15,7 +15,7 @@ def configs = [
         label: 'docker',
         imageName: 'quay.io/pypa/manylinux1_x86_64',
         versions: [
-            'cp27-cp27m', 'cp27-cp27mu', 'cp33-cp33m',
+            'cp27-cp27m', 'cp27-cp27mu',
             'cp34-cp34m', 'cp35-cp35m', 'cp36-cp36m'
         ],
     ],
@@ -23,7 +23,7 @@ def configs = [
         label: 'docker',
         imageName: 'quay.io/pypa/manylinux1_i686',
         versions: [
-            'cp27-cp27m', 'cp27-cp27mu', 'cp33-cp33m',
+            'cp27-cp27m', 'cp27-cp27mu',
             'cp34-cp34m', 'cp35-cp35m', 'cp36-cp36m'
         ],
     ],
@@ -36,7 +36,6 @@ def build(version, label, imageName) {
             if (label.contains("windows")) {
                 def pythonPath = [
                     py27: "C:\\Python27\\python.exe",
-                    py33: "C:\\Python33\\python.exe",
                     py34: "C:\\Python34\\python.exe",
                     py35: "C:\\Python35\\python.exe",
                     py36: "C:\\Python36\\python.exe"
