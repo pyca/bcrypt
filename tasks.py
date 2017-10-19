@@ -21,7 +21,7 @@ def wait_for_build_completed(session):
     time.sleep(20)
     while True:
         response = session.get(
-            "{0}/lastBuild/api/json/".format(JENKINS_URL),
+            "{}/lastBuild/api/json/".format(JENKINS_URL),
             headers={
                 "Accept": "application/json",
             }
@@ -35,7 +35,7 @@ def wait_for_build_completed(session):
 
 def download_artifacts(session):
     response = session.get(
-        "{0}/lastBuild/api/json/".format(JENKINS_URL),
+        "{}/lastBuild/api/json/".format(JENKINS_URL),
         headers={
             "Accept": "application/json"
         }
@@ -50,7 +50,7 @@ def download_artifacts(session):
     for run in response.json()["runs"]:
         if run["number"] != last_build_number:
             print(
-                "Skipping {0} as it is not from the latest build ({1})".format(
+                "Skipping {} as it is not from the latest build ({})".format(
                     run["url"], last_build_number
                 )
             )
@@ -65,11 +65,11 @@ def download_artifacts(session):
         response.raise_for_status()
         for artifact in response.json()["artifacts"]:
             response = session.get(
-                "{0}artifact/{1}".format(run["url"], artifact["relativePath"]),
+                "{}artifact/{}".format(run["url"], artifact["relativePath"]),
                 stream=True
             )
             assert response.headers["content-length"]
-            print("Downloading {0}".format(artifact["fileName"]))
+            print("Downloading {}".format(artifact["fileName"]))
             bar = ProgressBar(
                 expected_size=int(response.headers["content-length"]),
                 filled_char="="
@@ -102,19 +102,19 @@ def release(version):
     invoke.run("python setup.py sdist")
 
     invoke.run(
-        "twine upload -s dist/bcrypt-{0}*".format(version)
+        "twine upload -s dist/bcrypt-{}*".format(version)
     )
 
     session = requests.Session()
 
     token = getpass.getpass("Input the Jenkins token: ")
     response = session.post(
-        "{0}/build?token={1}".format(JENKINS_URL, token),
+        "{}/build?token={}".format(JENKINS_URL, token),
         params={
-            "cause": "Building wheels for {0}".format(version)
+            "cause": "Building wheels for {}".format(version)
         }
     )
     response.raise_for_status()
     wait_for_build_completed(session)
     paths = download_artifacts(session)
-    invoke.run("twine upload {0}".format(" ".join(paths)))
+    invoke.run("twine upload {}".format(" ".join(paths)))

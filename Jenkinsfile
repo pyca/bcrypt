@@ -1,11 +1,11 @@
 def configs = [
     [
         label: 'windows',
-        toxenvs: ['py26', 'py27', 'py33', 'py34', 'py35', 'py36'],
+        toxenvs: ['py27', 'py34', 'py35', 'py36'],
     ],
     [
         label: 'windows64',
-        toxenvs: ['py26', 'py27', 'py33', 'py34', 'py35', 'py36'],
+        toxenvs: ['py27', 'py34', 'py35', 'py36'],
     ],
     [
         label: 'freebsd11',
