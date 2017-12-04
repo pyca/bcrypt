@@ -210,7 +210,7 @@ setup(
         ],
     },
     tests_require=[
-        "pytest>=3.2.1",
+        "pytest>=3.2.1,!=3.3.0",
     ],
 
     package_dir={"": "src"},
