@@ -400,7 +400,9 @@ def test_checkpw_extra_data():
         b"\x43\x66\x6c\x9b\x09\xef\x33\xed\x8c\x27\xe8\xe8\xf3\xe2\xd8\xe6"
     ]])
 def test_kdf(rounds, password, salt, expected):
-    derived = bcrypt.kdf(password, salt, len(expected), rounds)
+    derived = bcrypt.kdf(
+        password, salt, len(expected), rounds, ignore_few_rounds=True
+    )
     assert derived == expected
 
 
@@ -446,9 +448,7 @@ def test_kdf_warn_rounds():
 )
 def test_invalid_params(password, salt, desired_key_bytes, rounds, error):
     with pytest.raises(error):
-        bcrypt.kdf(
-            password, salt, desired_key_bytes, rounds, ignore_few_rounds=True
-        )
+        bcrypt.kdf(password, salt, desired_key_bytes, rounds)
 
 
 def test_bcrypt_assert():
