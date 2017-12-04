@@ -446,7 +446,9 @@ def test_kdf_warn_rounds():
 )
 def test_invalid_params(password, salt, desired_key_bytes, rounds, error):
     with pytest.raises(error):
-        bcrypt.kdf(password, salt, desired_key_bytes, rounds)
+        bcrypt.kdf(
+            password, salt, desired_key_bytes, rounds, ignore_few_rounds=True
+        )
 
 
 def test_bcrypt_assert():
