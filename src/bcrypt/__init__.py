@@ -134,7 +134,9 @@ def kdf(password, salt, desired_key_bytes, rounds, ignore_few_rounds=False):
             "Warning: bcrypt.kdf() called with only {0} round(s). "
             "This few is not secure: the parameter is linear, like PBKDF2.")
             .format(rounds),
-            UserWarning)
+            UserWarning,
+            stacklevel=2,
+        )
 
     key = _bcrypt.ffi.new("uint8_t[]", desired_key_bytes)
     res = _bcrypt.lib.bcrypt_pbkdf(
