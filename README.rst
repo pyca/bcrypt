@@ -2,7 +2,7 @@ bcrypt
 ======
 
 .. image:: https://img.shields.io/pypi/v/bcrypt.svg
-    :target: https://pypi.python.org/pypi/bcrypt/
+    :target: https://pypi.org/project/bcrypt/
     :alt: Latest Version
 
 .. image:: https://travis-ci.org/pyca/bcrypt.svg?branch=master
