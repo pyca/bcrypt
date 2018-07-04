@@ -8,7 +8,7 @@ bcrypt
 .. image:: https://travis-ci.org/pyca/bcrypt.svg?branch=master
     :target: https://travis-ci.org/pyca/bcrypt
 
-Modern password hashing for your software and your servers
+Good password hashing for your software and your servers
 
 
 Installation
@@ -33,6 +33,10 @@ For Fedora and RHEL-derivatives, the following command will ensure that the requ
 .. code:: bash
 
     $ sudo yum install gcc libffi-devel python-devel
+
+Alternatives
+============
+While bcrypt remains a good choice for password storage depending on your specific use case you may also want to consider using scrypt (either via `standard library`_ or a pypi package) or argon2id via `argon2_cffi`_.
 
 Changelog
 =========
@@ -177,3 +181,5 @@ Security
 identify a vulnerability, we ask you to contact us privately.
 
 .. _`same security policy as cryptography`: https://cryptography.io/en/latest/security/
+.. _`standard library`: https://docs.python.org/3/library/hashlib.html#hashlib.scrypt
+.. _`argon2_cffi`: https://argon2-cffi.readthedocs.io
