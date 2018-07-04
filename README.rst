@@ -36,6 +36,7 @@ For Fedora and RHEL-derivatives, the following command will ensure that the requ
 
 Alternatives
 ============
+
 While bcrypt remains a good choice for password storage depending on your specific use case you may also want to consider using scrypt (either via `standard library`_ or `cryptography`_) or argon2id via `argon2_cffi`_.
 
 Changelog
