@@ -36,7 +36,7 @@ For Fedora and RHEL-derivatives, the following command will ensure that the requ
 
 Alternatives
 ============
-While bcrypt remains a good choice for password storage depending on your specific use case you may also want to consider using scrypt (either via `standard library`_ or a pypi package) or argon2id via `argon2_cffi`_.
+While bcrypt remains a good choice for password storage depending on your specific use case you may also want to consider using scrypt (either via `standard library`_ or `cryptography`_) or argon2id via `argon2_cffi`_.
 
 Changelog
 =========
@@ -183,3 +183,4 @@ identify a vulnerability, we ask you to contact us privately.
 .. _`same security policy as cryptography`: https://cryptography.io/en/latest/security/
 .. _`standard library`: https://docs.python.org/3/library/hashlib.html#hashlib.scrypt
 .. _`argon2_cffi`: https://argon2-cffi.readthedocs.io
+.. _`cryptography`: https://cryptography.io/en/latest/hazmat/primitives/key-derivation-functions/#cryptography.hazmat.primitives.kdf.scrypt.Scrypt
