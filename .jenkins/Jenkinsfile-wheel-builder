@@ -1,22 +1,23 @@
 def configs = [
     [
         label: 'windows',
-        versions: ['py27', 'py34', 'py35', 'py36'],
+        versions: ['py27', 'py34', 'py35', 'py36', 'py37'],
     ],
     [
         label: 'windows64',
-        versions: ['py27', 'py34', 'py35', 'py36'],
+        versions: ['py27', 'py34', 'py35', 'py36', 'py37'],
     ],
     [
         label: 'sierra',
-        versions: ['py27', 'py34', 'py35', 'py36'],
+        versions: ['py27', 'py34', 'py35', 'py36', 'py37'],
     ],
     [
         label: 'docker',
         imageName: 'quay.io/pypa/manylinux1_x86_64',
         versions: [
             'cp27-cp27m', 'cp27-cp27mu',
-            'cp34-cp34m', 'cp35-cp35m', 'cp36-cp36m'
+            'cp34-cp34m', 'cp35-cp35m', 'cp36-cp36m',
+            'cp37-cp37m',
         ],
     ],
     [
@@ -25,6 +26,7 @@ def configs = [
         versions: [
             'cp27-cp27m', 'cp27-cp27mu',
             'cp34-cp34m', 'cp35-cp35m', 'cp36-cp36m'
+            'cp37-cp37m',
         ],
     ],
 ]
@@ -38,7 +40,8 @@ def build(version, label, imageName) {
                     py27: "C:\\Python27\\python.exe",
                     py34: "C:\\Python34\\python.exe",
                     py35: "C:\\Python35\\python.exe",
-                    py36: "C:\\Python36\\python.exe"
+                    py36: "C:\\Python36\\python.exe",
+                    py37: "C:\\Python37\\python.exe"
                 ]
                 bat """
                     wmic qfe
@@ -58,6 +61,7 @@ def build(version, label, imageName) {
                     py34: "/Library/Frameworks/Python.framework/Versions/3.4/bin/python3.4",
                     py35: "/Library/Frameworks/Python.framework/Versions/3.5/bin/python3.5",
                     py36: "/Library/Frameworks/Python.framework/Versions/3.6/bin/python3.6",
+                    py37: "/Library/Frameworks/Python.framework/Versions/3.7/bin/python3.7",
                 ]
                 ansiColor {
                     sh """#!/usr/bin/env bash
