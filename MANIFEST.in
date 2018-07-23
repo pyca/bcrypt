@@ -1,5 +1,7 @@
 include LICENSE README.rst
 
+include pyproject.toml
+
 include tox.ini .coveragerc
 include src/build_bcrypt.py
 
