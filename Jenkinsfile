@@ -7,10 +7,6 @@ def configs = [
         label: 'windows64',
         toxenvs: ['py27', 'py34', 'py35', 'py36', 'py37'],
     ],
-    [
-        label: 'freebsd11',
-        toxenvs: ['py27'],
-    ],
 ]
 
 def build(label, toxenv) {

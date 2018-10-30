@@ -41,11 +41,11 @@ matrix:
       env: TOXENV=py3pep8
     - language: generic
       os: osx
-      osx_image: xcode7.3
+      osx_image: xcode9.4
       env: TOXENV=py27
     - language: generic
       os: osx
-      osx_image: xcode7.3
+      osx_image: xcode9.4
       env: TOXENV=py35
 
 install: .travis/install.sh
@@ -55,3 +55,17 @@ script: .travis/run.sh
 branches:
   only:
     - master
+    - /\d+\.\d+\.x/
+    - /\d+\.\d+(\.\d+)?/
+
+notifications:
+irc:
+  channels:
+    # This is set to a secure variable to prevent forks from notifying the
+    # IRC channel whenever they fail a build. This can be removed when travis
+    # implements https://github.com/travis-ci/travis-ci/issues/1094.
+    # The value encrypted here was created via
+    # travis encrypt "irc.freenode.org#cryptography-dev"
+    - secure: "JPzgnGLaHrwuty/kp7MZVf3I4iOLNzq+ZmSmKJxwIaIpJ9rkxh65gCyMp7qoQqbpdp1KYjSgrtZ7wxEQjxljMFYRS22uTnEP2GnxRXGdC2MqhZ1+1UP0YvFuMlYDh3hx/9M6ObF/8MKrGCIlU54IIrBIYQoiEnGKyNK/snR5V9U="
+  use_notice: true
+  skip_join: true
