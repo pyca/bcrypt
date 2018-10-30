@@ -66,6 +66,6 @@ irc:
     # implements https://github.com/travis-ci/travis-ci/issues/1094.
     # The value encrypted here was created via
     # travis encrypt "irc.freenode.org#cryptography-dev"
-    - secure: "JPzgnGLaHrwuty/kp7MZVf3I4iOLNzq+ZmSmKJxwIaIpJ9rkxh65gCyMp7qoQqbpdp1KYjSgrtZ7wxEQjxljMFYRS22uTnEP2GnxRXGdC2MqhZ1+1UP0YvFuMlYDh3hx/9M6ObF/8MKrGCIlU54IIrBIYQoiEnGKyNK/snR5V9U="
+    - secure: "SYCVjMUGx5sJ5iEdgEz1iUG6QC7Ep1CGlAatbW8AmNTCurnJHN1Ezm1ix3mbGDevdeyQC/eC1iOXEEj6jhImUziUAG1YtpgHsJ1H3J5MNU/WUNuj6TGESa9iMq6K2cAAIWGvDR0hx4tO5/p09GevL9GVmc2IelUKuGKNkOVRGrI="
   use_notice: true
   skip_join: true
