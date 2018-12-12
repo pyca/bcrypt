@@ -42,6 +42,14 @@ While bcrypt remains a good choice for password storage depending on your specif
 Changelog
 =========
 
+3.1.5
+-----
+
+* Added support for compilation on AIX.
+* Dropped Python 2.6 and 3.3 support.
+* Switched to using ``abi3`` wheels for Python 3. If you are not getting a
+  wheel on a compatible platform please upgrade your ``pip`` version.
+
 3.1.4
 -----
 
