@@ -89,12 +89,38 @@ def build(version, label, imageName) {
                 }
                 sh """#!/usr/bin/env bash
                     set -x -e
+                    LIBFFI_SHA256="d06ebb8e1d9a22d19e38d63fdb83954253f39bedc5d46232a05645685722ca37"
+                    LIBFFI_VERSION="3.2.1"
+
+                    function check_sha256sum {
+                        local fname=\$1
+                        local sha256=\$2
+                        echo "\${sha256}  \${fname}" > \${fname}.sha256
+                        sha256sum -c \${fname}.sha256
+                    }
                     # Because we are doing this as root in the container, but we write to a mounted dir that is outside the container
                     # we need to make sure we set these files writable such that the jenkins user can delete them afterwards
                     mkdir -p tmpwheelhouse
                     mkdir -p wheelhouse
                     chmod -R 777 tmpwheelhouse
                     chmod -R 777 wheelhouse
+
+                    # We need libffi because pip wheel won't use wheels at all
+                    curl -#O https://mirrors.ocf.berkeley.edu/debian/pool/main/libf/libffi/libffi_\${LIBFFI_VERSION}.orig.tar.gz
+                    check_sha256sum libffi_\${LIBFFI_VERSION}.orig.tar.gz \${LIBFFI_SHA256}
+                    tar zxf libffi_\${LIBFFI_VERSION}.orig.tar.gz
+                    # More root use permission nonsense
+                    chmod -R 777 libffi*
+                    pushd libffi-\${LIBFFI_VERSION}
+                    # CFLAGS needed to override the Makefile and prevent -march optimization
+                    # This flag set taken from Ubuntu 14.04's defaults. We should update it
+                    # to use -fstack-protector-strong if/when gcc 4.9+ is added to the
+                    # manylinux1 images.
+                    $linux32 ./configure CFLAGS="-g -O2 -fstack-protector --param=ssp-buffer-size=4 -Wformat -Werror=format-security"
+                    $linux32 make install
+                    popd
+                    # More root use permission nonsense
+                    chmod -R 777 libffi*
 
                     $linux32 /opt/python/$version/bin/pip install cffi six
                     REGEX="cp3([0-9])*"
