@@ -42,6 +42,11 @@ While bcrypt remains a good choice for password storage depending on your specif
 Changelog
 =========
 
+3.1.6
+-----
+
+* Added support for compilation on Haiku.
+
 3.1.5
 -----
 
