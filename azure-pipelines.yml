@@ -98,5 +98,5 @@ jobs:
         PYTHON_DIR: 'Python37'
         WINDOWS_ARCH: 'x86_64'
   steps:
-  - script: tox
+    - script: C:/%PYTHON_DIR%/Scripts/tox
     displayName: 'Run tests'
