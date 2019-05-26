@@ -8,11 +8,9 @@ include src/build_bcrypt.py
 recursive-include src/_csrc *
 recursive-include tests *.py
 
-exclude requirements.txt tasks.py .travis.yml wheel-scripts Jenkinsfile azure-pipelines.yml
+exclude requirements.txt tasks.py .travis.yml azure-pipelines.yml
 
-exclude .jenkins
-recursive-exclude .jenkins *
-
-recursive-exclude wheel-scripts *
+exclude .azure-pipelines
+recursive-exclude .azure-pipelines *
 
 prune .travis
