@@ -8,6 +8,9 @@ bcrypt
 .. image:: https://travis-ci.org/pyca/bcrypt.svg?branch=master
     :target: https://travis-ci.org/pyca/bcrypt
 
+.. image:: https://dev.azure.com/pyca/bcrypt/_apis/build/status/bcrypt-CI?branchName=master
+    :target: https://dev.azure.com/pyca/bcrypt/_build/latest?definitionId=8&branchName=master
+
 Good password hashing for your software and your servers
 
 
