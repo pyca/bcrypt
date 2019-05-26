@@ -15,11 +15,18 @@ jobs:
       Python27:
         python.version: '2.7'
         TOXENV: py27
-        MACOS_VERSION: '10.14'
+      Python34:
+        python.version: '3.4'
+        TOXENV: py34
+      Python35:
+        python.version: '3.5'
+        TOXENV: py35
+      Python36:
+        python.version: '3.6'
+        TOXENV: py36
       Python37:
         python.version: '3.7'
         TOXENV: py37
-        MACOS_VERSION: '10.14'
   steps:
   - task: UsePythonVersion@0
     inputs:
