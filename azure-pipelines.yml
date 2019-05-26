@@ -99,4 +99,4 @@ jobs:
         WINDOWS_ARCH: 'x86_64'
   steps:
     - script: "C:/%PYTHON_DIR%/Scripts/tox"
-    displayName: 'Run tests'
+      displayName: 'Run tests'
