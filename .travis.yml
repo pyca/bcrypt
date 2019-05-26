@@ -39,14 +39,6 @@ matrix:
     - env: TOXENV=packaging
     - python: 3.5
       env: TOXENV=py3pep8
-    - language: generic
-      os: osx
-      osx_image: xcode9.4
-      env: TOXENV=py27
-    - language: generic
-      os: osx
-      osx_image: xcode9.4
-      env: TOXENV=py35
 
 install: .travis/install.sh
 
