@@ -1,0 +1,102 @@
+trigger:
+  branches:
+    include:
+      - "master"
+  tags:
+    include:
+      - "*"
+
+jobs:
+- job: 'mac'
+  pool:
+    vmImage: 'macOS-10.14'
+  strategy:
+    matrix:
+      Python27:
+        python.version: '2.7'
+        TOXENV: py27
+        MACOS_VERSION: '10.14'
+      Python37:
+        python.version: '3.7'
+        TOXENV: py37
+        MACOS_VERSION: '10.14'
+  steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '$(python.version)'
+      architecture: 'x64'
+
+  - script: pip install tox
+    displayName: 'Install tox'
+
+  - script: tox
+    displayName: 'Run tests'
+- job: 'win'
+  pool:
+    vmImage: 'windows-2019'
+  container: $[variables.containerImage]
+  strategy:
+    matrix:
+      Python27-x86:
+        TOXENV: py27
+        containerImage: 'pyca/cryptography-runner-windows:py27-x86'
+        OPENSSL_DIR: 'OpenSSL-Win32-2010'
+        PYTHON_DIR: 'Python27'
+        WINDOWS_ARCH: 'x86'
+      Python27-x86-64:
+        TOXENV: py27
+        containerImage: 'pyca/cryptography-runner-windows:py27-x86_64'
+        OPENSSL_DIR: 'OpenSSL-Win64-2010'
+        PYTHON_DIR: 'Python27'
+        WINDOWS_ARCH: 'x86_64'
+      Python34-x86:
+        TOXENV: py34
+        containerImage: 'pyca/cryptography-runner-windows:py34-x86'
+        OPENSSL_DIR: 'OpenSSL-Win32-2010'
+        PYTHON_DIR: 'Python34'
+        WINDOWS_ARCH: 'x86'
+      Python34-x86-64:
+        TOXENV: py34
+        containerImage: 'pyca/cryptography-runner-windows:py34-x86_64'
+        OPENSSL_DIR: 'OpenSSL-Win64-2010'
+        PYTHON_DIR: 'Python34'
+        WINDOWS_ARCH: 'x86_64'
+      Python35-x86:
+        TOXENV: py35
+        containerImage: 'pyca/cryptography-runner-windows:py35-x86'
+        OPENSSL_DIR: 'OpenSSL-Win32-2015'
+        PYTHON_DIR: 'Python35'
+        WINDOWS_ARCH: 'x86'
+      Python35-x86-64:
+        TOXENV: py35
+        containerImage: 'pyca/cryptography-runner-windows:py35-x86_64'
+        OPENSSL_DIR: 'OpenSSL-Win64-2015'
+        PYTHON_DIR: 'Python35'
+        WINDOWS_ARCH: 'x86_64'
+      Python36-x86:
+        TOXENV: py36
+        containerImage: 'pyca/cryptography-runner-windows:py3-x86'
+        OPENSSL_DIR: 'OpenSSL-Win32-2015'
+        PYTHON_DIR: 'Python36'
+        WINDOWS_ARCH: 'x86'
+      Python36-x86-64:
+        TOXENV: py36
+        containerImage: 'pyca/cryptography-runner-windows:py3-x86_64'
+        OPENSSL_DIR: 'OpenSSL-Win64-2015'
+        PYTHON_DIR: 'Python36'
+        WINDOWS_ARCH: 'x86_64'
+      Python37-x86:
+        TOXENV: py37
+        containerImage: 'pyca/cryptography-runner-windows:py3-x86'
+        OPENSSL_DIR: 'OpenSSL-Win32-2015'
+        PYTHON_DIR: 'Python37'
+        WINDOWS_ARCH: 'x86'
+      Python37-x86-64:
+        TOXENV: py37
+        containerImage: 'pyca/cryptography-runner-windows:py3-x86_64'
+        OPENSSL_DIR: 'OpenSSL-Win64-2015'
+        PYTHON_DIR: 'Python37'
+        WINDOWS_ARCH: 'x86_64'
+  steps:
+  - script: tox
+    displayName: 'Run tests'
