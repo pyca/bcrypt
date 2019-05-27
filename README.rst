@@ -2,13 +2,16 @@ bcrypt
 ======
 
 .. image:: https://img.shields.io/pypi/v/bcrypt.svg
-    :target: https://pypi.python.org/pypi/bcrypt/
+    :target: https://pypi.org/project/bcrypt/
     :alt: Latest Version
 
 .. image:: https://travis-ci.org/pyca/bcrypt.svg?branch=master
     :target: https://travis-ci.org/pyca/bcrypt
 
-Modern password hashing for your software and your servers
+.. image:: https://dev.azure.com/pyca/bcrypt/_apis/build/status/bcrypt-CI?branchName=master
+    :target: https://dev.azure.com/pyca/bcrypt/_build/latest?definitionId=8&branchName=master
+
+Good password hashing for your software and your servers
 
 
 Installation
@@ -34,8 +37,31 @@ For Fedora and RHEL-derivatives, the following command will ensure that the requ
 
     $ sudo yum install gcc libffi-devel python-devel
 
+Alternatives
+============
+
+While bcrypt remains a good choice for password storage depending on your specific use case you may also want to consider using scrypt (either via `standard library`_ or `cryptography`_) or argon2id via `argon2_cffi`_.
+
 Changelog
 =========
+
+3.1.6
+-----
+
+* Added support for compilation on Haiku.
+
+3.1.5
+-----
+
+* Added support for compilation on AIX.
+* Dropped Python 2.6 and 3.3 support.
+* Switched to using ``abi3`` wheels for Python 3. If you are not getting a
+  wheel on a compatible platform please upgrade your ``pip`` version.
+
+3.1.4
+-----
+
+* Fixed compilation with mingw and on illumos.
 
 3.1.3
 -----
@@ -158,7 +184,7 @@ Compatibility
 -------------
 
 This library should be compatible with py-bcrypt and it will run on Python
-2.6+, 3.3+, and PyPy 2.6+.
+2.7, 3.4+, and PyPy 2.6+.
 
 C Code
 ------
@@ -172,3 +198,6 @@ Security
 identify a vulnerability, we ask you to contact us privately.
 
 .. _`same security policy as cryptography`: https://cryptography.io/en/latest/security/
+.. _`standard library`: https://docs.python.org/3/library/hashlib.html#hashlib.scrypt
+.. _`argon2_cffi`: https://argon2-cffi.readthedocs.io
+.. _`cryptography`: https://cryptography.io/en/latest/hazmat/primitives/key-derivation-functions/#cryptography.hazmat.primitives.kdf.scrypt.Scrypt

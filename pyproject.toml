@@ -1,0 +1,10 @@
+[build-system]
+# Must be kept in sync with `setup_requirements` in `setup.py`
+requires = [
+    "setuptools>=40.8.0",
+    "wheel",
+    "cffi>=1.1; python_implementation != 'PyPy'",
+]
+# Point to the setuptools' PEP517 build backend explicitly to
+# disable Pip's fallback guessing
+build-backend = "setuptools.build_meta"

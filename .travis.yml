@@ -4,32 +4,34 @@ sudo: false
 
 matrix:
   include:
-    - python: 2.6
-      env: TOXENV=py26 CC=gcc
     - python: 2.7
       env: TOXENV=py27 CC=gcc
-    - python: 3.3
-      env: TOXENV=py33 CC=gcc
     - python: 3.4
       env: TOXENV=py34 CC=gcc
     - python: 3.5
       env: TOXENV=py35 CC=gcc
     - python: 3.6
       env: TOXENV=py36 CC=gcc
+    - python: 3.6
+      env: TOXENV=py36 CC=gcc
+    - python: 3.7
+      env: TOXENV=py37 CC=gcc
+      dist: xenial
+      sudo: true
     - python: pypy
       env: TOXENV=pypy CC=gcc
-    - python: 2.6
-      env: TOXENV=py26 CC=clang
     - python: 2.7
       env: TOXENV=py27 CC=clang
-    - python: 3.3
-      env: TOXENV=py33 CC=clang
     - python: 3.4
       env: TOXENV=py34 CC=clang
     - python: 3.5
       env: TOXENV=py35 CC=clang
     - python: 3.6
       env: TOXENV=py36 CC=clang
+    - python: 3.7
+      env: TOXENV=py37 CC=clang
+      dist: xenial
+      sudo: true
     - python: pypy
       env: TOXENV=pypy CC=clang
     - python: 2.7
@@ -37,14 +39,6 @@ matrix:
     - env: TOXENV=packaging
     - python: 3.5
       env: TOXENV=py3pep8
-    - language: generic
-      os: osx
-      osx_image: xcode7.3
-      env: TOXENV=py27
-    - language: generic
-      os: osx
-      osx_image: xcode7.3
-      env: TOXENV=py35
 
 install: .travis/install.sh
 
@@ -53,3 +47,17 @@ script: .travis/run.sh
 branches:
   only:
     - master
+    - /\d+\.\d+\.x/
+    - /\d+\.\d+(\.\d+)?/
+
+notifications:
+irc:
+  channels:
+    # This is set to a secure variable to prevent forks from notifying the
+    # IRC channel whenever they fail a build. This can be removed when travis
+    # implements https://github.com/travis-ci/travis-ci/issues/1094.
+    # The value encrypted here was created via
+    # travis encrypt "irc.freenode.org#cryptography-dev"
+    - secure: "SYCVjMUGx5sJ5iEdgEz1iUG6QC7Ep1CGlAatbW8AmNTCurnJHN1Ezm1ix3mbGDevdeyQC/eC1iOXEEj6jhImUziUAG1YtpgHsJ1H3J5MNU/WUNuj6TGESa9iMq6K2cAAIWGvDR0hx4tO5/p09GevL9GVmc2IelUKuGKNkOVRGrI="
+  use_notice: true
+  skip_join: true
