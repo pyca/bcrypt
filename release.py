@@ -6,7 +6,6 @@ from __future__ import absolute_import, division, print_function
 
 import getpass
 import glob
-import json
 import os
 import subprocess
 import tempfile
@@ -102,4 +101,3 @@ def release(version):
 
 if __name__ == "__main__":
     release()
-
