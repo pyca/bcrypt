@@ -90,7 +90,6 @@ def release(version):
     run("git", "push", "--tags")
 
     run("python", "setup.py", "sdist")
-    run("python", "setup.py", "sdist", "bdist_wheel", cwd="vectors/")
 
     packages = glob.glob("dist/bcrypt-{0}*".format(version))
     run("twine", "upload", "-s", *packages)
