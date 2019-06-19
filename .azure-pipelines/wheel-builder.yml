@@ -28,6 +28,8 @@ jobs:
             displayName: Install virtualenv
           - script: $PYTHON_BIN_PATH -m virtualenv .venv
             displayName: Create virtualenv
+          - script: .venv/bin/pip install -U pip==10.0.1
+            displayName: Downgrade pip lol
           - script: .venv/bin/pip install -U wheel
             displayName: Update wheel to the latest version
           - script: .venv/bin/pip install cffi six
@@ -42,7 +44,7 @@ jobs:
                   PY_LIMITED_API="--build-option --py-limited-api=cp3${BASH_REMATCH[1]}"
               fi
 
-              .venv/bin/pip wheel bcrypt --no-use-pep517 --wheel-dir=wheelhouse --no-binary bcrypt --no-deps $PY_LIMITED_API
+              .venv/bin/pip wheel bcrypt --wheel-dir=wheelhouse --no-binary bcrypt --no-deps $PY_LIMITED_API
             displayName: Build the wheel
           - script: .venv/bin/pip install --no-index -f wheelhouse bcrypt
             displayName: Test installing the wheel
@@ -69,6 +71,8 @@ jobs:
       steps:
           - script: /opt/python/$PYTHON_VERSION/bin/python -m virtualenv .venv
             displayName: Create virtualenv
+          - script: .venv/bin/pip install -U pip==10.0.1
+            displayName: Downgrade pip lol
           - script: .venv/bin/pip install cffi six
             displayName: Install our Python dependencies
           - script: |
@@ -79,7 +83,7 @@ jobs:
               if [[ "$PYTHON_VERSION" =~ $REGEX ]]; then
                   PY_LIMITED_API="--build-option --py-limited-api=cp3${BASH_REMATCH[1]}"
               fi
-              .venv/bin/pip wheel bcrypt --no-use-pep517 --no-binary bcrypt --no-deps --wheel-dir=tmpwheelhouse $PY_LIMITED_API
+              .venv/bin/pip wheel bcrypt --no-binary bcrypt --no-deps --wheel-dir=tmpwheelhouse $PY_LIMITED_API
             displayName: Build the wheel
           - script: auditwheel repair tmpwheelhouse/bcrypt*.whl -w wheelhouse/
             displayName: Run auditwheel
@@ -140,10 +144,12 @@ jobs:
                   PYTHON_VERSION: '37'
                   WINDOWS_ARCH: 'x86_64'
       steps:
+          - script: '"C:/Python%PYTHON_VERSION%/python.exe" -m pip install -U pip==10.0.1'
+            displayName: Downgrade pip lol
           - script: '"C:/Python%PYTHON_VERSION%/Scripts/pip" install wheel cffi six'
             displayName: Install wheel and our Python dependencies
           - script: |
-              C:/Python%PYTHON_VERSION%/Scripts/pip wheel bcrypt --no-use-pep517 --wheel-dir=wheelhouse --no-binary bcrypt
+              C:/Python%PYTHON_VERSION%/Scripts/pip wheel bcrypt --wheel-dir=wheelhouse --no-binary bcrypt
             displayName: Build the wheel
           - script: '"C:/Python%PYTHON_VERSION%/Scripts/pip" install -f wheelhouse bcrypt --no-index'
             displayName: Test installing the wheel
