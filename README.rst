@@ -45,6 +45,13 @@ While bcrypt remains a good choice for password storage depending on your specif
 Changelog
 =========
 
+3.1.7
+-----
+
+* Set a ``setuptools`` lower bound for PEP517 wheel building.
+* We no longer distribute 32-bit ``manylinux1`` wheels. Continuing to produce
+  them was a maintenance burden.
+
 3.1.6
 -----
 
