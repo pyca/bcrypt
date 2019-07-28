@@ -37,6 +37,12 @@ For Fedora and RHEL-derivatives, the following command will ensure that the requ
 
     $ sudo yum install gcc libffi-devel python-devel
 
+For Alpine,  the following command will ensure that the required dependencies are installed:
+
+.. code:: bash
+    apk add --update musl-dev gcc libffi-dev
+
+
 Alternatives
 ============
 
