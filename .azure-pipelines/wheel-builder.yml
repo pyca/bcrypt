@@ -143,6 +143,14 @@ jobs:
                   containerImage: 'pyca/cryptography-runner-windows:py3-x86_64'
                   PYTHON_VERSION: '37'
                   WINDOWS_ARCH: 'x86_64'
+              Python38-x86:
+                  containerImage: 'pyca/cryptography-runner-windows:py3-x86'
+                  PYTHON_VERSION: '38'
+                  WINDOWS_ARCH: 'x86'
+              Python38-x86-64:
+                  containerImage: 'pyca/cryptography-runner-windows:py3-x86_64'
+                  PYTHON_VERSION: '38'
+                  WINDOWS_ARCH: 'x86_64'
       steps:
           - script: '"C:/Python%PYTHON_VERSION%/python.exe" -m pip install -U pip==10.0.1'
             displayName: Downgrade pip lol
