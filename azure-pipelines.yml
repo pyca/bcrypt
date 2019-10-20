@@ -84,6 +84,14 @@ jobs:
         TOXENV: py37
         containerImage: 'pyca/cryptography-runner-windows:py3-x86_64'
         PYTHON_DIR: 'Python37'
+      Python38-x86:
+        TOXENV: py38
+        containerImage: 'pyca/cryptography-runner-windows:py3-x86'
+        PYTHON_DIR: 'Python38'
+      Python38-x86-64:
+        TOXENV: py38
+        containerImage: 'pyca/cryptography-runner-windows:py3-x86_64'
+        PYTHON_DIR: 'Python38'
   steps:
   - script: "C:/%PYTHON_DIR%/Scripts/tox"
     displayName: 'Run tests'
