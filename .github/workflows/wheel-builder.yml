@@ -3,6 +3,35 @@ on:
     types: [wheel-builder]
 
 jobs:
+  manylinux:
+    runs-on: ubuntu-latest
+    container: pyca/cryptography-manylinux1:x86_64
+    strategy:
+      matrix:
+        PYTHON: ["cp27-cp27m", "cp27-cp27mu", "cp35-cp35m"]
+    name: "Python ${{ matrix.PYTHON }} for manylinux1"
+    steps:
+      - run: /opt/python/${{ matrix.PYTHON }}/bin/python -m virtualenv .venv
+      # Downgrade pip, can't remember why
+      - run: .venv/bin/pip install -U pip==10.0.1
+      - run: |
+          REGEX="cp3([0-9])*"
+          if [[ "${{ matrix.PYTHON }}" =~ $REGEX ]]; then
+              PY_LIMITED_API="--build-option --py-limited-api=cp3${BASH_REMATCH[1]}"
+          fi
+          .venv/bin/pip wheel bcrypt --no-binary bcrypt --no-deps --wheel-dir=tmpwheelhouse $PY_LIMITED_API
+      - run: auditwheel repair tmpwheelhouse/bcrypt*.whl -w wheelhouse/
+      - run: .venv/bin/pip install bcrypt --no-index -f wheelhouse/
+      - run: |
+          .venv/bin/python -c "import bcrypt; password = b'super secret password';hashed = bcrypt.hashpw(password, bcrypt.gensalt());bcrypt.checkpw(password, hashed)"
+
+      - run: mkdir bcrypt-wheelhouse
+      - run: move wheelhouse/bcrypt*.whl bcrypt-wheelhouse/
+      - uses: actions/upload-artifact@v1
+        with:
+          name: "bcrypt-${{ github.event.client_payload.BUILD_VERSION }}-manylinux1-${{ matrix.PYTHON }}"
+          path: bcrypt-wheelhouse/
+
   macos:
     runs-on: macos-latest
     strategy:
