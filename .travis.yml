@@ -6,8 +6,6 @@ matrix:
   include:
     - python: 2.7
       env: TOXENV=py27 CC=gcc
-    - python: 3.4
-      env: TOXENV=py34 CC=gcc
     - python: 3.5
       env: TOXENV=py35 CC=gcc
     - python: 3.6
@@ -26,8 +24,6 @@ matrix:
       env: TOXENV=pypy CC=gcc
     - python: 2.7
       env: TOXENV=py27 CC=clang
-    - python: 3.4
-      env: TOXENV=py34 CC=clang
     - python: 3.5
       env: TOXENV=py35 CC=clang
     - python: 3.6

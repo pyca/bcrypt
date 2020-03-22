@@ -15,9 +15,6 @@ jobs:
       Python27:
         python.version: '2.7'
         TOXENV: py27
-      Python34:
-        python.version: '3.4'
-        TOXENV: py34
       Python35:
         python.version: '3.5'
         TOXENV: py35
@@ -27,6 +24,9 @@ jobs:
       Python37:
         python.version: '3.7'
         TOXENV: py37
+      Python38:
+        python.version: '3.8'
+        TOXENV: py38
   steps:
   - task: UsePythonVersion@0
     inputs:
@@ -37,61 +37,4 @@ jobs:
     displayName: 'Install tox'
 
   - script: tox
-    displayName: 'Run tests'
-- job: 'win'
-  pool:
-    vmImage: 'windows-2019'
-  container: $[variables.containerImage]
-  strategy:
-    matrix:
-      Python27-x86:
-        TOXENV: py27
-        containerImage: 'pyca/cryptography-runner-windows:py27-x86'
-        PYTHON_DIR: 'Python27'
-      Python27-x86-64:
-        TOXENV: py27
-        containerImage: 'pyca/cryptography-runner-windows:py27-x86_64'
-        PYTHON_DIR: 'Python27'
-      Python34-x86:
-        TOXENV: py34
-        containerImage: 'pyca/cryptography-runner-windows:py34-x86'
-        PYTHON_DIR: 'Python34'
-      Python34-x86-64:
-        TOXENV: py34
-        containerImage: 'pyca/cryptography-runner-windows:py34-x86_64'
-        PYTHON_DIR: 'Python34'
-      Python35-x86:
-        TOXENV: py35
-        containerImage: 'pyca/cryptography-runner-windows:py35-x86'
-        PYTHON_DIR: 'Python35'
-      Python35-x86-64:
-        TOXENV: py35
-        containerImage: 'pyca/cryptography-runner-windows:py35-x86_64'
-        PYTHON_DIR: 'Python35'
-      Python36-x86:
-        TOXENV: py36
-        containerImage: 'pyca/cryptography-runner-windows:py3-x86'
-        PYTHON_DIR: 'Python36'
-      Python36-x86-64:
-        TOXENV: py36
-        containerImage: 'pyca/cryptography-runner-windows:py3-x86_64'
-        PYTHON_DIR: 'Python36'
-      Python37-x86:
-        TOXENV: py37
-        containerImage: 'pyca/cryptography-runner-windows:py3-x86'
-        PYTHON_DIR: 'Python37'
-      Python37-x86-64:
-        TOXENV: py37
-        containerImage: 'pyca/cryptography-runner-windows:py3-x86_64'
-        PYTHON_DIR: 'Python37'
-      Python38-x86:
-        TOXENV: py38
-        containerImage: 'pyca/cryptography-runner-windows:py3-x86'
-        PYTHON_DIR: 'Python38'
-      Python38-x86-64:
-        TOXENV: py38
-        containerImage: 'pyca/cryptography-runner-windows:py3-x86_64'
-        PYTHON_DIR: 'Python38'
-  steps:
-  - script: "C:/%PYTHON_DIR%/Scripts/tox"
     displayName: 'Run tests'
