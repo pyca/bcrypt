@@ -7,6 +7,29 @@ on:
       - '*'
 
 jobs:
+  macos:
+    runs-on: macos-latest
+    strategy:
+      matrix:
+         PYTHON:
+          - {VERSION: "2.7", TOXENV: "py27"}
+          - {VERSION: "3.5", TOXENV: "py35"}
+          - {VERSION: "3.6", TOXENV: "py36"}
+          - {VERSION: "3.7", TOXENV: "py37"}
+          - {VERSION: "3.8", TOXENV: "py38"}
+    name: "Python ${{ matrix.PYTHON.VERSION }} on macOS"
+    steps:
+      - uses: actions/checkout@master
+      - name: Setup python
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.PYTHON.VERSION }}
+
+      - run: pip install tox
+      - run: tox
+        env:
+          TOXENV: ${{ matrix.PYTHON.TOXENV }}
+
   windows:
     runs-on: windows-latest
     strategy:
