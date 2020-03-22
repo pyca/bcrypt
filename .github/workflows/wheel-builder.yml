@@ -3,6 +3,46 @@ on:
     types: [wheel-builder]
 
 jobs:
+  macos:
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        PYTHON:
+          - {VERSION: '2.7', ABI_VERSION: '2.7'}
+          - {VERSION: '3.8', ABI_VERSION: '3.5'}
+    name: "Python ${{ matrix.PYTHON.VERSION }} on macOS"
+    steps:
+      - uses: actions/checkout@master
+      - name: Setup python
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.PYTHON.VERSION }}
+
+      # Downgrade pip, I can't remember why
+      - run: pip install -U pip==10.0.1
+      - run: pip install -U wheel cffi six
+
+      - name: Build the wheel
+        run: |
+            REGEX="3\.([0-9])*"
+            if [[ "$PYTHON_VERSION" =~ $REGEX ]]; then
+                PY_LIMITED_API="--build-option --py-limited-api=cp3${BASH_REMATCH[1]}"
+            fi
+
+            pip wheel bcrypt --wheel-dir=wheelhouse --no-binary bcrypt --no-deps $PY_LIMITED_API
+        env:
+          PYTHON_VERSION: ${{ matrix.PYTHON.ABI_VERSION }}
+      - run: pip install -f wheelhouse --no-index bcrypt
+      - run: |
+          python -c "import bcrypt;password = b'super secret password';hashed = bcrypt.hashpw(password, bcrypt.gensalt());bcrypt.checkpw(password, hashed)"
+
+      - run: mkdir bcrypt-wheelhouse
+      - run: move wheelhouse/bcrypt*.whl bcrypt-wheelhouse/
+      - uses: actions/upload-artifact@v1
+        with:
+          name: "bcrypt-${{ github.event.client_payload.BUILD_VERSION }}-macOS-${{ matrix.PYTHON.VERSION }}"
+          path: bcrypt-wheelhouse/
+
   windows:
     runs-on: windows-latest
     strategy:
@@ -16,6 +56,7 @@ jobs:
           - {VERSION: "3.7", TOXENV: "py37"}
           - {VERSION: "3.8", TOXENV: "py38"}
     name: "Python ${{ matrix.PYTHON.VERSION }} on ${{ matrix.WINDOWS.WINDOWS }}"
+    steps:
       - uses: actions/checkout@master
       - name: Setup python
         uses: actions/setup-python@v1
