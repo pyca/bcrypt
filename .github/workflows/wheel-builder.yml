@@ -12,8 +12,10 @@ jobs:
     name: "Python ${{ matrix.PYTHON }} for manylinux1"
     steps:
       - run: /opt/python/${{ matrix.PYTHON }}/bin/python -m virtualenv .venv
-      # Downgrade pip, can't remember why
-      - run: .venv/bin/pip install -U pip==10.0.1
+      - name: Downgrade pip, can't remember why
+        run: .venv/bin/pip install -U pip==10.0.1
+      - name: Install python dependencies
+        run: .venv/bin/pip install cffi six
       - run: |
           REGEX="cp3([0-9])*"
           if [[ "${{ matrix.PYTHON }}" =~ $REGEX ]]; then
