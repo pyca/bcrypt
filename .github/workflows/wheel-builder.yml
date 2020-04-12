@@ -1,3 +1,4 @@
+name: Wheel Builder
 on:
   repository_dispatch:
     types: [wheel-builder]
