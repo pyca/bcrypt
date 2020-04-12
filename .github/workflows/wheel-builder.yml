@@ -26,7 +26,7 @@ jobs:
           .venv/bin/python -c "import bcrypt; password = b'super secret password';hashed = bcrypt.hashpw(password, bcrypt.gensalt());bcrypt.checkpw(password, hashed)"
 
       - run: mkdir bcrypt-wheelhouse
-      - run: move wheelhouse/bcrypt*.whl bcrypt-wheelhouse/
+      - run: mv wheelhouse/bcrypt*.whl bcrypt-wheelhouse/
       - uses: actions/upload-artifact@v1
         with:
           name: "bcrypt-${{ github.event.client_payload.BUILD_VERSION }}-manylinux1-${{ matrix.PYTHON }}"
@@ -66,7 +66,7 @@ jobs:
           python -c "import bcrypt;password = b'super secret password';hashed = bcrypt.hashpw(password, bcrypt.gensalt());bcrypt.checkpw(password, hashed)"
 
       - run: mkdir bcrypt-wheelhouse
-      - run: move wheelhouse/bcrypt*.whl bcrypt-wheelhouse/
+      - run: mv wheelhouse/bcrypt*.whl bcrypt-wheelhouse/
       - uses: actions/upload-artifact@v1
         with:
           name: "bcrypt-${{ github.event.client_payload.BUILD_VERSION }}-macOS-${{ matrix.PYTHON.VERSION }}"
