@@ -75,6 +75,7 @@ jobs:
   windows:
     runs-on: windows-latest
     strategy:
+      matrix:
         WINDOWS:
           - {ARCH: 'x86', WINDOWS: 'win32'}
           - {ARCH: 'x64', WINDOWS: 'win64'}
