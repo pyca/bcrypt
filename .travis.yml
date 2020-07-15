@@ -43,6 +43,22 @@ matrix:
     - env: TOXENV=packaging
     - python: 3.5
       env: TOXENV=py3pep8
+    - python: 2.7
+      arch: arm64
+      env: TOXENV=py27 CC=gcc
+    - python: 3.8
+      arch: arm64
+      env: TOXENV=py38 CC=gcc
+      dist: xenial
+      sudo: true
+    - python: 2.7
+      arch: arm64
+      env: TOXENV=py27 CC=clang
+    - python: 3.8
+      arch: arm64
+      env: TOXENV=py38 CC=clang
+      dist: xenial
+      sudo: true
 
 install: .travis/install.sh
 
