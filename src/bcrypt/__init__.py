@@ -24,15 +24,30 @@ import six
 
 from . import _bcrypt
 from .__about__ import (
-    __author__, __copyright__, __email__, __license__, __summary__, __title__,
-    __uri__, __version__,
+    __author__,
+    __copyright__,
+    __email__,
+    __license__,
+    __summary__,
+    __title__,
+    __uri__,
+    __version__,
 )
 
 
 __all__ = [
-    "__title__", "__summary__", "__uri__", "__version__", "__author__",
-    "__email__", "__license__", "__copyright__",
-    "gensalt", "hashpw", "kdf", "checkpw",
+    "__title__",
+    "__summary__",
+    "__uri__",
+    "__version__",
+    "__author__",
+    "__email__",
+    "__license__",
+    "__copyright__",
+    "gensalt",
+    "hashpw",
+    "kdf",
+    "checkpw",
 ]
 
 
@@ -51,8 +66,12 @@ def gensalt(rounds=12, prefix=b"2b"):
     _bcrypt.lib.encode_base64(output, salt, len(salt))
 
     return (
-        b"$" + prefix + b"$" + ("%2.2u" % rounds).encode("ascii") + b"$" +
-        _bcrypt.ffi.string(output)
+        b"$"
+        + prefix
+        + b"$"
+        + ("%2.2u" % rounds).encode("ascii")
+        + b"$"
+        + _bcrypt.ffi.string(output)
     )
 
 
@@ -95,8 +114,9 @@ def hashpw(password, salt):
 
 
 def checkpw(password, hashed_password):
-    if (isinstance(password, six.text_type) or
-            isinstance(hashed_password, six.text_type)):
+    if isinstance(password, six.text_type) or isinstance(
+        hashed_password, six.text_type
+    ):
         raise TypeError("Unicode-objects must be encoded before checking")
 
     if b"\x00" in password or b"\x00" in hashed_password:
@@ -129,10 +149,11 @@ def kdf(password, salt, desired_key_bytes, rounds, ignore_few_rounds=False):
         # They probably think bcrypt.kdf()'s rounds parameter is logarithmic,
         # expecting this value to be slow enough (it probably would be if this
         # were bcrypt). Emit a warning.
-        warnings.warn((
-            "Warning: bcrypt.kdf() called with only {0} round(s). "
-            "This few is not secure: the parameter is linear, like PBKDF2.")
-            .format(rounds),
+        warnings.warn(
+            (
+                "Warning: bcrypt.kdf() called with only {0} round(s). "
+                "This few is not secure: the parameter is linear, like PBKDF2."
+            ).format(rounds),
             UserWarning,
             stacklevel=2,
         )
