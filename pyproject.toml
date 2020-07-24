@@ -8,3 +8,7 @@ requires = [
 # Point to the setuptools' PEP517 build backend explicitly to
 # disable Pip's fallback guessing
 build-backend = "setuptools.build_meta"
+
+[tool.black]
+line-length = 79
+target-version = ["py27"]

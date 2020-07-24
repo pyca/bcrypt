@@ -41,7 +41,7 @@ matrix:
     - python: 2.7
       env: TOXENV=pep8
     - env: TOXENV=packaging
-    - python: 3.5
+    - python: 3.8
       env: TOXENV=py3pep8
     - python: 2.7
       arch: arm64
