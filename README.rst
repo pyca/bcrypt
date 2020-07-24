@@ -8,8 +8,8 @@ bcrypt
 .. image:: https://travis-ci.org/pyca/bcrypt.svg?branch=master
     :target: https://travis-ci.org/pyca/bcrypt
 
-.. image:: https://dev.azure.com/pyca/bcrypt/_apis/build/status/bcrypt-CI?branchName=master
-    :target: https://dev.azure.com/pyca/bcrypt/_build/latest?definitionId=8&branchName=master
+.. image:: https://github.com/pyca/bcrypt/workflows/CI/badge.svg?branch=master
+    :target: https://github.com/pyca/bcrypt/actions?query=workflow%3ACI+branch%3Amaster
 
 Good password hashing for your software and your servers
 
@@ -37,6 +37,13 @@ For Fedora and RHEL-derivatives, the following command will ensure that the requ
 
     $ sudo yum install gcc libffi-devel python-devel
 
+For Alpine, the following command will ensure that the required dependencies are installed:
+
+.. code:: bash
+
+    $ apk add --update musl-dev gcc libffi-dev
+
+
 Alternatives
 ============
 
@@ -44,6 +51,19 @@ While bcrypt remains a good choice for password storage depending on your specif
 
 Changelog
 =========
+
+
+Unreleased
+----------
+
+* Dropped support for Python 3.4.
+
+3.1.7
+-----
+
+* Set a ``setuptools`` lower bound for PEP517 wheel building.
+* We no longer distribute 32-bit ``manylinux1`` wheels. Continuing to produce
+  them was a maintenance burden.
 
 3.1.6
 -----
@@ -184,7 +204,7 @@ Compatibility
 -------------
 
 This library should be compatible with py-bcrypt and it will run on Python
-2.7, 3.4+, and PyPy 2.6+.
+2.7, 3.5+, and PyPy 2.6+.
 
 C Code
 ------
