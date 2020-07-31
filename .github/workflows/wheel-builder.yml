@@ -116,3 +116,35 @@ jobs:
         with:
           name: "bcrypt-${{ github.event.client_payload.BUILD_VERSION }}-${{ matrix.WINDOWS.WINDOWS }}-${{ matrix.PYTHON.VERSION }}"
           path: bcrypt-wheelhouse\
+
+  manylinux-arm64:
+     name: "Python ${{ matrix.PYTHON }} for manylinux2014-aarch64"
+     runs-on: ubuntu-latest
+     strategy:
+       matrix:
+         PYTHON: ["cp35-cp35m"]
+       fail-fast: false
+     steps:
+     - uses: actions/checkout@v2
+     - run: |
+         docker run --rm --privileged hypriot/qemu-register
+     - uses: docker://quay.io/pypa/manylinux2014_aarch64
+       with:
+        args: |
+              bash -c "/opt/python/${{ matrix.PYTHON }}/bin/pip install virtualenv;
+              /opt/python/${{ matrix.PYTHON }}/bin/python -m virtualenv .venv;
+              .venv/bin/pip install setuptools wheel cffi six;
+              REGEX='cp3([0-9])*';
+              if [[ ${{ matrix.PYTHON }} =~ $REGEX ]]; then
+                  PY_LIMITED_API=\"--py-limited-api=cp3${BASH_REMATCH[1]}\";
+              fi;
+              .venv/bin/python setup.py bdist_wheel $PY_LIMITED_API -d tmpwheelhouse;
+              auditwheel repair tmpwheelhouse/bcrypt*.whl -w wheelhouse/;
+              .venv/bin/pip install bcrypt --no-index -f wheelhouse/;
+              .venv/bin/python -c \"import bcrypt; password = b'super secret password';hashed = bcrypt.hashpw(password, bcrypt.gensalt());bcrypt.checkpw(password, hashed)\";"
+     - run: mkdir bcrypt-wheelhouse
+     - run: sudo mv wheelhouse/bcrypt*.whl bcrypt-wheelhouse/
+     - uses: actions/upload-artifact@v1
+       with:
+          name: "bcrypt-${{ github.event.client_payload.BUILD_VERSION }}-manylinux2014-aarch64-${{ matrix.PYTHON }}"
+          path: bcrypt-wheelhouse/
