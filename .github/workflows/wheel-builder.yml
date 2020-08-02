@@ -137,7 +137,7 @@ jobs:
               .venv/bin/pip install setuptools wheel cffi six;
               REGEX='cp3([0-9])*';
               if [[ ${{ matrix.PYTHON }} =~ $REGEX ]]; then
-                  PY_LIMITED_API=\"--py-limited-api=cp3${BASH_REMATCH[1]}\";
+                  PY_LIMITED_API=\"--build-option --py-limited-api=cp3${BASH_REMATCH[1]}\";
               fi;
               .venv/bin/pip wheel bcrypt --no-binary bcrypt --no-deps --wheel-dir=tmpwheelhouse $PY_LIMITED_API              
               auditwheel repair tmpwheelhouse/bcrypt*.whl -w wheelhouse/;
