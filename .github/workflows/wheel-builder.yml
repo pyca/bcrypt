@@ -134,7 +134,7 @@ jobs:
               /opt/python/${{ matrix.PYTHON }}/bin/pip install virtualenv;
               /opt/python/${{ matrix.PYTHON }}/bin/python -m virtualenv .venv;
               .venv/bin/pip install setuptools wheel cffi six;
-              .venv/bin/pip install -U pip==10.0.1; # downgrade pip for reasons we can't remember but are definitely needed
+              .venv/bin/pip install -U pip==18.0.0; # downgrade pip for reasons we can't remember but are definitely needed
               REGEX='cp3([0-9])*';
               if [[ ${{ matrix.PYTHON }} =~ $REGEX ]]; then
                   PY_LIMITED_API=\"--build-option --py-limited-api=cp3${BASH_REMATCH[1]}\";
