@@ -208,7 +208,7 @@ setup(
     author_email=__about__["__email__"],
     python_requires=">=3.6",
     install_requires=[CFFI_DEPENDENCY, SIX_DEPENDENCY],
-    extras_require={"tests": ["pytest>=3.2.1,!=3.3.0"]},
+    extras_require={"tests": ["pytest>=3.2.1,!=3.3.0"], "typecheck": ["mypy"]},
     tests_require=["pytest>=3.2.1,!=3.3.0"],
     package_dir={"": "src"},
     packages=["bcrypt"],
