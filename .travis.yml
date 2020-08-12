@@ -20,8 +20,8 @@ matrix:
       env: TOXENV=py38 CC=gcc
       dist: xenial
       sudo: true
-    - python: pypy
-      env: TOXENV=pypy CC=gcc
+    - python: pypy3.6-7.3.1
+      env: TOXENV=pypy3 CC=gcc
     - python: 2.7
       env: TOXENV=py27 CC=clang
     - python: 3.5
@@ -36,8 +36,8 @@ matrix:
       env: TOXENV=py38 CC=clang
       dist: xenial
       sudo: true
-    - python: pypy
-      env: TOXENV=pypy CC=clang
+    - python: pypy3.6-7.3.1
+      env: TOXENV=pypy3 CC=clang
     - python: 2.7
       env: TOXENV=pep8
     - env: TOXENV=packaging
