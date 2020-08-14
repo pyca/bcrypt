@@ -9,7 +9,7 @@ jobs:
     container: pyca/cryptography-manylinux1:x86_64
     strategy:
       matrix:
-        PYTHON: ["cp27-cp27m", "cp27-cp27mu", "cp35-cp35m"]
+        PYTHON: ["cp36-cp36m"]
     name: "Python ${{ matrix.PYTHON }} for manylinux1"
     steps:
       - run: /opt/python/${{ matrix.PYTHON }}/bin/python -m virtualenv .venv
@@ -40,8 +40,7 @@ jobs:
     strategy:
       matrix:
         PYTHON:
-          - {VERSION: '2.7', ABI_VERSION: '2.7'}
-          - {VERSION: '3.8', ABI_VERSION: '3.5'}
+          - {VERSION: '3.8', ABI_VERSION: '3.6'}
     name: "Python ${{ matrix.PYTHON.VERSION }} on macOS"
     steps:
       - uses: actions/checkout@master
@@ -83,8 +82,6 @@ jobs:
           - {ARCH: 'x86', WINDOWS: 'win32'}
           - {ARCH: 'x64', WINDOWS: 'win64'}
         PYTHON:
-          - {VERSION: "2.7", TOXENV: "py27"}
-          - {VERSION: "3.5", TOXENV: "py35"}
           - {VERSION: "3.6", TOXENV: "py36"}
           - {VERSION: "3.7", TOXENV: "py37"}
           - {VERSION: "3.8", TOXENV: "py38"}
@@ -96,14 +93,6 @@ jobs:
         with:
           python-version: ${{ matrix.PYTHON.VERSION }}
           architecture: ${{ matrix.WINDOWS.ARCH }}
-      - name: Install MSVC for Python 2.7
-        run: |
-            Invoke-WebRequest -Uri https://download.microsoft.com/download/7/9/6/796EF2E4-801B-4FC4-AB28-B59FBF6D907B/VCForPython27.msi -OutFile VCForPython27.msi
-            Start-Process msiexec -Wait -ArgumentList @('/i', 'VCForPython27.msi', '/qn', 'ALLUSERS=1')
-            Remove-Item VCForPython27.msi -Force
-        shell: powershell
-        if: matrix.PYTHON.VERSION == '2.7'
-
       - run: pip install wheel cffi six
       - run: pip wheel bcrypt==${{ github.event.client_payload.BUILD_VERSION }} --wheel-dir=wheelhouse --no-binary bcrypt
       - run: pip install -f wheelhouse --no-index bcrypt
@@ -116,3 +105,37 @@ jobs:
         with:
           name: "bcrypt-${{ github.event.client_payload.BUILD_VERSION }}-${{ matrix.WINDOWS.WINDOWS }}-${{ matrix.PYTHON.VERSION }}"
           path: bcrypt-wheelhouse\
+
+  manylinux-arm64:
+     name: "Python ${{ matrix.PYTHON }} for manylinux2014-aarch64"
+     runs-on: ubuntu-latest
+     strategy:
+       matrix:
+         PYTHON: ["cp36-cp36m"]
+     steps:
+     - uses: actions/checkout@v2
+     - run: |
+         docker run --rm --privileged hypriot/qemu-register
+     - uses: docker://quay.io/pypa/manylinux2014_aarch64
+       with:
+        args: |
+              bash -c "set -xe;
+              /opt/python/${{ matrix.PYTHON }}/bin/pip install virtualenv;
+              /opt/python/${{ matrix.PYTHON }}/bin/python -m virtualenv .venv;
+              .venv/bin/pip install setuptools wheel cffi six;
+              .venv/bin/pip install -U pip==18.0.0; # downgrade pip for reasons we can't remember but are definitely needed
+              REGEX='cp3([0-9])*';
+              if [[ ${{ matrix.PYTHON }} =~ $REGEX ]]; then
+                  PY_LIMITED_API=\"--build-option --py-limited-api=cp3${BASH_REMATCH[1]}\";
+              fi;
+              .venv/bin/pip wheel bcrypt --no-binary bcrypt --no-deps --wheel-dir=tmpwheelhouse $PY_LIMITED_API;
+              auditwheel repair tmpwheelhouse/bcrypt*.whl -w wheelhouse/;
+              .venv/bin/pip install -U pip; # upgrade so it knows how to install a manylinux2014 wheel, sigh
+              .venv/bin/pip install bcrypt --no-index -f wheelhouse/;
+              .venv/bin/python -c \"import bcrypt; password = b'super secret password';hashed = bcrypt.hashpw(password, bcrypt.gensalt());bcrypt.checkpw(password, hashed)\";"
+     - run: mkdir bcrypt-wheelhouse
+     - run: sudo mv wheelhouse/bcrypt*.whl bcrypt-wheelhouse/
+     - uses: actions/upload-artifact@v1
+       with:
+          name: "bcrypt-${{ github.event.client_payload.BUILD_VERSION }}-manylinux2014-aarch64-${{ matrix.PYTHON }}"
+          path: bcrypt-wheelhouse/

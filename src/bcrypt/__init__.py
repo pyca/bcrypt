@@ -22,7 +22,7 @@ import warnings
 
 import six
 
-from . import _bcrypt
+from . import _bcrypt  # type: ignore
 from .__about__ import (
     __author__,
     __copyright__,
@@ -54,7 +54,7 @@ __all__ = [
 _normalize_re = re.compile(br"^\$2y\$")
 
 
-def gensalt(rounds=12, prefix=b"2b"):
+def gensalt(rounds: int = 12, prefix: bytes = b"2b") -> bytes:
     if prefix not in (b"2a", b"2b"):
         raise ValueError("Supported prefixes are b'2a' or b'2b'")
 
@@ -75,7 +75,7 @@ def gensalt(rounds=12, prefix=b"2b"):
     )
 
 
-def hashpw(password, salt):
+def hashpw(password: bytes, salt: bytes) -> bytes:
     if isinstance(password, six.text_type) or isinstance(salt, six.text_type):
         raise TypeError("Unicode-objects must be encoded before hashing")
 
@@ -113,7 +113,7 @@ def hashpw(password, salt):
     return original_salt[:4] + _bcrypt.ffi.string(hashed)[4:]
 
 
-def checkpw(password, hashed_password):
+def checkpw(password: bytes, hashed_password: bytes) -> bool:
     if isinstance(password, six.text_type) or isinstance(
         hashed_password, six.text_type
     ):
@@ -132,7 +132,13 @@ def checkpw(password, hashed_password):
     return _bcrypt.lib.timingsafe_bcmp(ret, hashed_password, len(ret)) == 0
 
 
-def kdf(password, salt, desired_key_bytes, rounds, ignore_few_rounds=False):
+def kdf(
+    password: bytes,
+    salt: bytes,
+    desired_key_bytes: int,
+    rounds: int,
+    ignore_few_rounds: bool = False,
+) -> bytes:
     if isinstance(password, six.text_type) or isinstance(salt, six.text_type):
         raise TypeError("Unicode-objects must be encoded before hashing")
 
@@ -167,6 +173,6 @@ def kdf(password, salt, desired_key_bytes, rounds, ignore_few_rounds=False):
     return _bcrypt.ffi.buffer(key, desired_key_bytes)[:]
 
 
-def _bcrypt_assert(ok):
+def _bcrypt_assert(ok: bool) -> None:
     if not ok:
         raise SystemError("bcrypt assertion failed")

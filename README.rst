@@ -56,7 +56,9 @@ Changelog
 Unreleased
 ----------
 
-* Dropped support for Python 3.4.
+* Add typehints for library functions
+
+* Dropped support for Python versions less than 3.6 (2.7, 3.4, 3.5).
 
 3.1.7
 -----
@@ -204,7 +206,7 @@ Compatibility
 -------------
 
 This library should be compatible with py-bcrypt and it will run on Python
-2.7, 3.5+, and PyPy 2.6+.
+3.6+, and PyPy 3.
 
 C Code
 ------
