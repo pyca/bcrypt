@@ -32,6 +32,8 @@ matrix:
       env: TOXENV=pypy3 CC=clang
     - python: 3.8
       env: TOXENV=pep8
+    - python: 3.8
+      env: TOXENV=mypy
     - env: TOXENV=packaging
     - python: 3.8
       arch: arm64
