@@ -6,23 +6,21 @@ on:
 jobs:
   manylinux:
     runs-on: ubuntu-latest
-    container: pyca/cryptography-manylinux1:x86_64
     strategy:
       matrix:
-        PYTHON: ["cp36-cp36m"]
-    name: "Python ${{ matrix.PYTHON }} for manylinux1"
+        PYTHON:
+          - {VERSION: "cp36-cp36m", ABI_VERSION: 'cp36'}
+        CONTAINER:
+          - {IMAGE: "pyca/cryptography-manylinux1:x86_64", NAME: "manylinux1"}
+          - {IMAGE: "pyca/cryptography-manylinux2010:x86_64", NAME: "manylinux2010"}
+    name: "${{ matrix.PYTHON.ABI_VERSION }} ${{ matrix.CONTAINER.NAME }}"
+    container: ${{ matrix.CONTAINER.IMAGE }}
     steps:
-      - run: /opt/python/${{ matrix.PYTHON }}/bin/python -m virtualenv .venv
-      - name: Downgrade pip, can't remember why
-        run: .venv/bin/pip install -U pip==10.0.1
+      - run: /opt/python/${{ matrix.PYTHON.VERSION }}/bin/python -m venv .venv
       - name: Install python dependencies
-        run: .venv/bin/pip install cffi six
-      - run: |
-          REGEX="cp3([0-9])*"
-          if [[ "${{ matrix.PYTHON }}" =~ $REGEX ]]; then
-              PY_LIMITED_API="--build-option --py-limited-api=cp3${BASH_REMATCH[1]}"
-          fi
-          .venv/bin/pip wheel bcrypt --no-binary bcrypt --no-deps --wheel-dir=tmpwheelhouse $PY_LIMITED_API
+        run: .venv/bin/pip install -U wheel cffi six
+      - run: .venv/bin/pip download bcrypt==${{ github.event.client_payload.BUILD_VERSION }} --no-deps --no-binary bcrypt && tar zxvf bcrypt*.tar.gz && mkdir tmpwheelhouse
+      - run: cd bcrypt* && ../.venv/bin/python setup.py bdist_wheel --py-limited-api=${{ matrix.PYTHON.ABI_VERSION }} && mv dist/bcrypt*.whl ../tmpwheelhouse
       - run: auditwheel repair tmpwheelhouse/bcrypt*.whl -w wheelhouse/
       - run: .venv/bin/pip install bcrypt --no-index -f wheelhouse/
       - run: |
@@ -32,7 +30,7 @@ jobs:
       - run: mv wheelhouse/bcrypt*.whl bcrypt-wheelhouse/
       - uses: actions/upload-artifact@v1
         with:
-          name: "bcrypt-${{ github.event.client_payload.BUILD_VERSION }}-manylinux1-${{ matrix.PYTHON }}"
+          name: "bcrypt-${{ github.event.client_payload.BUILD_VERSION }}-${{ matrix.CONTAINER.NAME }} -${{ matrix.PYTHON.ABI_VERSION }}"
           path: bcrypt-wheelhouse/
 
   macos:
@@ -40,29 +38,18 @@ jobs:
     strategy:
       matrix:
         PYTHON:
-          - {VERSION: '3.8', ABI_VERSION: '3.6'}
-    name: "Python ${{ matrix.PYTHON.VERSION }} on macOS"
+          - {VERSION: '3.8', ABI_VERSION: 'cp36'}
+    name: "${{ matrix.PYTHON.ABI_VERSION }} macOS"
     steps:
       - uses: actions/checkout@master
       - name: Setup python
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.PYTHON.VERSION }}
 
-      # Downgrade pip, I can't remember why
-      - run: pip install -U pip==10.0.1
       - run: pip install -U wheel cffi six
-
-      - name: Build the wheel
-        run: |
-            REGEX="3\.([0-9])*"
-            if [[ "$PYTHON_VERSION" =~ $REGEX ]]; then
-                PY_LIMITED_API="--build-option --py-limited-api=cp3${BASH_REMATCH[1]}"
-            fi
-
-            pip wheel bcrypt --wheel-dir=wheelhouse --no-binary bcrypt --no-deps $PY_LIMITED_API
-        env:
-          PYTHON_VERSION: ${{ matrix.PYTHON.ABI_VERSION }}
+      - run: pip download bcrypt==${{ github.event.client_payload.BUILD_VERSION }} --no-deps --no-binary bcrypt && tar zxvf bcrypt*.tar.gz && mkdir wheelhouse
+      - run: cd bcrypt* && python setup.py bdist_wheel --py-limited-api=${{ matrix.PYTHON.ABI_VERSION }} && mv dist/bcrypt*.whl ../wheelhouse
       - run: pip install -f wheelhouse --no-index bcrypt
       - run: |
           python -c "import bcrypt;password = b'super secret password';hashed = bcrypt.hashpw(password, bcrypt.gensalt());bcrypt.checkpw(password, hashed)"
@@ -71,7 +58,7 @@ jobs:
       - run: mv wheelhouse/bcrypt*.whl bcrypt-wheelhouse/
       - uses: actions/upload-artifact@v1
         with:
-          name: "bcrypt-${{ github.event.client_payload.BUILD_VERSION }}-macOS-${{ matrix.PYTHON.VERSION }}"
+          name: "bcrypt-${{ github.event.client_payload.BUILD_VERSION }}-macOS-${{ matrix.PYTHON.ABI_VERSION }}"
           path: bcrypt-wheelhouse/
 
   windows:
@@ -82,60 +69,61 @@ jobs:
           - {ARCH: 'x86', WINDOWS: 'win32'}
           - {ARCH: 'x64', WINDOWS: 'win64'}
         PYTHON:
-          - {VERSION: "3.6", TOXENV: "py36"}
-          - {VERSION: "3.7", TOXENV: "py37"}
-          - {VERSION: "3.8", TOXENV: "py38"}
-    name: "Python ${{ matrix.PYTHON.VERSION }} on ${{ matrix.WINDOWS.WINDOWS }}"
+          - {VERSION: "3.6", ABI_VERSION: "cp36"}
+    name: "${{ matrix.PYTHON.ABI_VERSION }} ${{ matrix.WINDOWS.WINDOWS }}"
     steps:
       - uses: actions/checkout@master
       - name: Setup python
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.PYTHON.VERSION }}
           architecture: ${{ matrix.WINDOWS.ARCH }}
-      - run: pip install wheel cffi six
-      - run: pip wheel bcrypt==${{ github.event.client_payload.BUILD_VERSION }} --wheel-dir=wheelhouse --no-binary bcrypt
+      - run: pip install -U wheel cffi six
+      - run: pip download bcrypt==${{ github.event.client_payload.BUILD_VERSION }} --no-deps --no-binary bcrypt && tar zxvf bcrypt*.tar.gz && mkdir wheelhouse
+        shell: bash
+      - run: cd bcrypt* && python setup.py bdist_wheel --py-limited-api=${{ matrix.PYTHON.ABI_VERSION }} && mv dist/bcrypt*.whl ../wheelhouse
       - run: pip install -f wheelhouse --no-index bcrypt
       - run: |
           python -c "import bcrypt; password = b'super secret password';hashed = bcrypt.hashpw(password, bcrypt.gensalt());bcrypt.checkpw(password, hashed)"
 
+      # TODO: can we setup another python and test in the same job? this would catch bad linking problems (e.g. build and test on py36, but then install py38 and see if it works
       - run: mkdir bcrypt-wheelhouse
       - run: move wheelhouse\bcrypt*.whl bcrypt-wheelhouse\
       - uses: actions/upload-artifact@v1
         with:
-          name: "bcrypt-${{ github.event.client_payload.BUILD_VERSION }}-${{ matrix.WINDOWS.WINDOWS }}-${{ matrix.PYTHON.VERSION }}"
+          name: "bcrypt-${{ github.event.client_payload.BUILD_VERSION }}-${{ matrix.WINDOWS.WINDOWS }}-${{ matrix.PYTHON.ABI_VERSION }}"
           path: bcrypt-wheelhouse\
 
   manylinux-arm64:
-     name: "Python ${{ matrix.PYTHON }} for manylinux2014-aarch64"
-     runs-on: ubuntu-latest
-     strategy:
+    name: "${{ matrix.PYTHON.ABI_VERSION }} manylinux2014-aarch64"
+    runs-on: ubuntu-latest
+    strategy:
        matrix:
-         PYTHON: ["cp36-cp36m"]
-     steps:
-     - uses: actions/checkout@v2
-     - run: |
-         docker run --rm --privileged hypriot/qemu-register
-     - uses: docker://quay.io/pypa/manylinux2014_aarch64
-       with:
-        args: |
+        PYTHON:
+          - {VERSION: "cp36-cp36m", ABI_VERSION: 'cp36'}
+    steps:
+      - uses: actions/checkout@v2
+      - run: |
+          docker run --rm --privileged hypriot/qemu-register
+      - uses: docker://quay.io/pypa/manylinux2014_aarch64
+        with:
+          args: |
               bash -c "set -xe;
-              /opt/python/${{ matrix.PYTHON }}/bin/pip install virtualenv;
-              /opt/python/${{ matrix.PYTHON }}/bin/python -m virtualenv .venv;
-              .venv/bin/pip install setuptools wheel cffi six;
-              .venv/bin/pip install -U pip==18.0.0; # downgrade pip for reasons we can't remember but are definitely needed
-              REGEX='cp3([0-9])*';
-              if [[ ${{ matrix.PYTHON }} =~ $REGEX ]]; then
-                  PY_LIMITED_API=\"--build-option --py-limited-api=cp3${BASH_REMATCH[1]}\";
-              fi;
-              .venv/bin/pip wheel bcrypt --no-binary bcrypt --no-deps --wheel-dir=tmpwheelhouse $PY_LIMITED_API;
+              /opt/python/${{ matrix.PYTHON.VERSION }}/bin/python -m venv .venv;
+              .venv/bin/pip install -U wheel cffi six pip;
+              .venv/bin/pip download bcrypt==${{ github.event.client_payload.BUILD_VERSION }} --no-deps --no-binary bcrypt;
+              tar zxvf bcrypt*.tar.gz;
+              mkdir tmpwheelhouse;
+              pushd bcrypt*;
+              ../.venv/bin/python setup.py bdist_wheel --py-limited-api=${{ matrix.PYTHON.ABI_VERSION }};
+              mv dist/bcrypt*.whl ../tmpwheelhouse;
+              popd;
               auditwheel repair tmpwheelhouse/bcrypt*.whl -w wheelhouse/;
-              .venv/bin/pip install -U pip; # upgrade so it knows how to install a manylinux2014 wheel, sigh
               .venv/bin/pip install bcrypt --no-index -f wheelhouse/;
               .venv/bin/python -c \"import bcrypt; password = b'super secret password';hashed = bcrypt.hashpw(password, bcrypt.gensalt());bcrypt.checkpw(password, hashed)\";"
-     - run: mkdir bcrypt-wheelhouse
-     - run: sudo mv wheelhouse/bcrypt*.whl bcrypt-wheelhouse/
-     - uses: actions/upload-artifact@v1
-       with:
-          name: "bcrypt-${{ github.event.client_payload.BUILD_VERSION }}-manylinux2014-aarch64-${{ matrix.PYTHON }}"
+      - run: mkdir bcrypt-wheelhouse
+      - run: sudo mv wheelhouse/bcrypt*.whl bcrypt-wheelhouse/
+      - uses: actions/upload-artifact@v1
+        with:
+          name: "bcrypt-${{ github.event.client_payload.BUILD_VERSION }}-manylinux2014-aarch64-${{ matrix.PYTHON.ABI_VERSION }}"
           path: bcrypt-wheelhouse/
