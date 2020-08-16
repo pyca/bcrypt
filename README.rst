@@ -53,12 +53,12 @@ Changelog
 =========
 
 
-Unreleased
-----------
+3.2.0
+-----
 
-* Add typehints for library functions
-
+* Added typehints for library functions.
 * Dropped support for Python versions less than 3.6 (2.7, 3.4, 3.5).
+* Shipped ``abi3`` Windows wheels (requires pip >= 20).
 
 3.1.7
 -----
