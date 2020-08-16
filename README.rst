@@ -52,6 +52,9 @@ While bcrypt remains a good choice for password storage depending on your specif
 Changelog
 =========
 
+UNRELEASED
+----------
+
 
 3.2.0
 -----
