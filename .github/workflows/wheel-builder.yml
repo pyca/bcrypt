@@ -73,16 +73,7 @@ jobs:
           - 'x86'
           - 'x64'
         PYTHON:
-          - {VERSION: "3.6", USE_ABI3: "True", ABI_VERSION: "cp36"}
-          # These jobs are temporary until we feel comfortable shipping wheels that
-          # require pip >= 19.x. Note that the actual pyd file still links against
-          # python3.dll and sets limited API because cffi 1.14.2 (and hopefully above)
-          # unconditionally sets that. These wheels simply have the tags that older
-          # versions of pip can understand. We could hypothetically also just rename
-          # the abi3 wheel but let's be conservative for now...
-          - {VERSION: "3.6", USE_ABI3: "False"}
-          - {VERSION: "3.7", USE_ABI3: "False"}
-          - {VERSION: "3.8", USE_ABI3: "False"}
+          - {VERSION: "3.6", ABI_VERSION: "cp36"}
     name: "${{ matrix.PYTHON.VERSION }} ${{ matrix.PYTHON.ABI_VERSION }} ${{ matrix.WINDOWS}}"
     steps:
       - uses: actions/checkout@master
@@ -95,9 +86,6 @@ jobs:
       - run: pip download bcrypt==${{ github.event.inputs.version }} --no-deps --no-binary bcrypt && tar zxvf bcrypt*.tar.gz && mkdir wheelhouse
         shell: bash
       - run: cd bcrypt* && python setup.py bdist_wheel --py-limited-api=${{ matrix.PYTHON.ABI_VERSION }} && mv dist/bcrypt*.whl ../wheelhouse
-        if: matrix.PYTHON.USE_ABI3 == 'True'
-      - run: cd bcrypt* && python setup.py bdist_wheel && mv dist/bcrypt*.whl ../wheelhouse
-        if: matrix.PYTHON.USE_ABI3 == 'False'
       - run: pip install -f wheelhouse --no-index bcrypt
       - run: |
           python -c "import bcrypt; password = b'super secret password';hashed = bcrypt.hashpw(password, bcrypt.gensalt());bcrypt.checkpw(password, hashed)"
@@ -107,7 +95,7 @@ jobs:
       - run: move wheelhouse\bcrypt*.whl bcrypt-wheelhouse\
       - uses: actions/upload-artifact@v1
         with:
-          name: "bcrypt-${{ github.event.inputs.version }}-${{ matrix.WINDOWS }}-${{ matrix.PYTHON.VERSION }}-${{ matrix.PYTHON.ABI_VERSION }}"
+          name: "bcrypt-${{ github.event.inputs.version }}-${{ matrix.WINDOWS }}-${{ matrix.PYTHON.ABI_VERSION }}"
           path: bcrypt-wheelhouse\
 
   manylinux-arm64:
