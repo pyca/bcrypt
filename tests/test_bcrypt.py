@@ -2,8 +2,6 @@ import os
 
 import pytest
 
-import six
-
 import bcrypt
 
 
@@ -264,30 +262,22 @@ def test_checkpw_bad_salt():
 
 def test_checkpw_str_password():
     with pytest.raises(TypeError):
-        bcrypt.checkpw(
-            six.text_type("password"), b"$2b$04$cVWp4XaNU8a4v1uMRum2SO",
-        )
+        bcrypt.checkpw("password", b"$2b$04$cVWp4XaNU8a4v1uMRum2SO")
 
 
 def test_checkpw_str_salt():
     with pytest.raises(TypeError):
-        bcrypt.checkpw(
-            b"password", six.text_type("$2b$04$cVWp4XaNU8a4v1uMRum2SO"),
-        )
+        bcrypt.checkpw(b"password", "$2b$04$cVWp4XaNU8a4v1uMRum2SO")
 
 
 def test_hashpw_str_password():
     with pytest.raises(TypeError):
-        bcrypt.hashpw(
-            six.text_type("password"), b"$2b$04$cVWp4XaNU8a4v1uMRum2SO",
-        )
+        bcrypt.hashpw("password", b"$2b$04$cVWp4XaNU8a4v1uMRum2SO")
 
 
 def test_hashpw_str_salt():
     with pytest.raises(TypeError):
-        bcrypt.hashpw(
-            b"password", six.text_type("$2b$04$cVWp4XaNU8a4v1uMRum2SO"),
-        )
+        bcrypt.hashpw(b"password", "$2b$04$cVWp4XaNU8a4v1uMRum2SO")
 
 
 def test_checkpw_nul_byte():
@@ -440,14 +430,12 @@ def test_kdf(rounds, password, salt, expected):
 
 def test_kdf_str_password():
     with pytest.raises(TypeError):
-        bcrypt.kdf(
-            six.text_type("password"), b"$2b$04$cVWp4XaNU8a4v1uMRum2SO", 10, 10
-        )
+        bcrypt.kdf("password", b"$2b$04$cVWp4XaNU8a4v1uMRum2SO", 10, 10)
 
 
 def test_kdf_str_salt():
     with pytest.raises(TypeError):
-        bcrypt.kdf(b"password", six.text_type("salt"), 10, 10)
+        bcrypt.kdf(b"password", "salt", 10, 10)
 
 
 def test_kdf_no_warn_rounds():
