@@ -20,8 +20,6 @@ import os
 import re
 import warnings
 
-import six
-
 from . import _bcrypt  # type: ignore
 from .__about__ import (
     __author__,
@@ -76,8 +74,8 @@ def gensalt(rounds: int = 12, prefix: bytes = b"2b") -> bytes:
 
 
 def hashpw(password: bytes, salt: bytes) -> bytes:
-    if isinstance(password, six.text_type) or isinstance(salt, six.text_type):
-        raise TypeError("Unicode-objects must be encoded before hashing")
+    if isinstance(password, str) or isinstance(salt, str):
+        raise TypeError("Strings must be encoded before hashing")
 
     if b"\x00" in password:
         raise ValueError("password may not contain NUL bytes")
@@ -114,10 +112,8 @@ def hashpw(password: bytes, salt: bytes) -> bytes:
 
 
 def checkpw(password: bytes, hashed_password: bytes) -> bool:
-    if isinstance(password, six.text_type) or isinstance(
-        hashed_password, six.text_type
-    ):
-        raise TypeError("Unicode-objects must be encoded before checking")
+    if isinstance(password, str) or isinstance(hashed_password, str):
+        raise TypeError("Strings must be encoded before checking")
 
     if b"\x00" in password or b"\x00" in hashed_password:
         raise ValueError(
@@ -139,8 +135,8 @@ def kdf(
     rounds: int,
     ignore_few_rounds: bool = False,
 ) -> bytes:
-    if isinstance(password, six.text_type) or isinstance(salt, six.text_type):
-        raise TypeError("Unicode-objects must be encoded before hashing")
+    if isinstance(password, str) or isinstance(salt, str):
+        raise TypeError("Strings must be encoded before hashing")
 
     if len(password) == 0 or len(salt) == 0:
         raise ValueError("password and salt must not be empty")

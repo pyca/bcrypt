@@ -8,7 +8,6 @@ from setuptools.command.test import test
 
 
 CFFI_DEPENDENCY = "cffi>=1.1"
-SIX_DEPENDENCY = "six>=1.4.1"
 
 
 CFFI_MODULES = [
@@ -54,7 +53,7 @@ setup(
     author_email=__about__["__email__"],
     python_requires=">=3.6",
     setup_requires=[CFFI_DEPENDENCY],
-    install_requires=[CFFI_DEPENDENCY, SIX_DEPENDENCY],
+    install_requires=[CFFI_DEPENDENCY],
     extras_require={"tests": ["pytest>=3.2.1,!=3.3.0"], "typecheck": ["mypy"]},
     tests_require=["pytest>=3.2.1,!=3.3.0"],
     package_dir={"": "src"},
