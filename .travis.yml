@@ -38,13 +38,17 @@ matrix:
     - python: 3.8
       arch: arm64
       env: TOXENV=py38 CC=gcc
-      dist: xenial
-      sudo: true
+      dist: focal
+      arch: arm64-graviton2
+      virt: lxd
+      group: edge
     - python: 3.8
       arch: arm64
       env: TOXENV=py38 CC=clang
-      dist: xenial
-      sudo: true
+      dist: focal
+      arch: arm64-graviton2
+      virt: lxd
+      group: edge
 
 install: .travis/install.sh
 
