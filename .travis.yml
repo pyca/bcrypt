@@ -36,14 +36,12 @@ matrix:
       env: TOXENV=mypy
     - env: TOXENV=packaging
     - python: 3.8
-      arch: arm64
       env: TOXENV=py38 CC=gcc
       dist: focal
       arch: arm64-graviton2
       virt: lxd
       group: edge
     - python: 3.8
-      arch: arm64
       env: TOXENV=py38 CC=clang
       dist: focal
       arch: arm64-graviton2
