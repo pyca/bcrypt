@@ -112,9 +112,6 @@ jobs:
       - uses: docker://quay.io/pypa/manylinux2014_aarch64
         # The weird pip cache nonsense below is due to docker ownership issues. We want
         # a cache because otherwise we end up building cffi twice.
-        # The bizarro max-page-size linker flag is to enforce 64k alignment even on 4k
-        # systems so we don't get ELF load command alignment not page-aligned on 64k
-        # systems.
         with:
           args: |
               bash -c "set -xe;
@@ -126,7 +123,7 @@ jobs:
               tar zxvf bcrypt*.tar.gz;
               mkdir tmpwheelhouse;
               pushd bcrypt*;
-              CFLAGS=\"-Wl,-z,max-page-size=0x10000\" ../.venv/bin/python setup.py bdist_wheel --py-limited-api=${{ matrix.PYTHON.ABI_VERSION }};
+              ../.venv/bin/python setup.py bdist_wheel --py-limited-api=${{ matrix.PYTHON.ABI_VERSION }};
               mv dist/bcrypt*.whl ../tmpwheelhouse;
               popd;
               auditwheel repair tmpwheelhouse/bcrypt*.whl -w wheelhouse/;
