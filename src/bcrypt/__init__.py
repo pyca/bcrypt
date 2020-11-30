@@ -88,7 +88,7 @@ def hashpw(password: bytes, salt: bytes) -> bytes:
     # on $2a$, so we do it here to preserve compatibility with 2.0.0
     password = password[:72]
 
-    # When the original 8bit bug was found the original library we supported
+    # When the original 8bit bug was found the original library we
     # added a new prefix, $2y$, that fixes it. This prefix is exactly the same
     # as the $2b$ prefix added by OpenBSD other than the name. Since the
     # OpenBSD library does not support the $2y$ prefix, if the salt given to us
