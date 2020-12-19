@@ -18,7 +18,7 @@ CFFI_MODULES = [
 # Manually extract the __about__
 __about__ = {}
 with open("src/bcrypt/__about__.py") as fp:
-    exec (fp.read(), __about__)
+    exec(fp.read(), __about__)
 
 
 if platform.python_implementation() == "PyPy":
@@ -66,9 +66,11 @@ setup(
         "Programming Language :: Python :: Implementation :: CPython",
         "Programming Language :: Python :: Implementation :: PyPy",
         "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3 :: Only",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
     ],
     ext_package="bcrypt",
     cffi_modules=CFFI_MODULES,

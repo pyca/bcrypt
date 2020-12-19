@@ -16,6 +16,7 @@ jobs:
           - {VERSION: "3.6", TOXENV: "py36"}
           - {VERSION: "3.7", TOXENV: "py37"}
           - {VERSION: "3.8", TOXENV: "py38"}
+          - {VERSION: "3.9", TOXENV: "py39"}
     name: "Python ${{ matrix.PYTHON.VERSION }} on macOS"
     steps:
       - uses: actions/checkout@master
@@ -40,6 +41,7 @@ jobs:
           - {VERSION: "3.6", TOXENV: "py36"}
           - {VERSION: "3.7", TOXENV: "py37"}
           - {VERSION: "3.8", TOXENV: "py38"}
+          - {VERSION: "3.9", TOXENV: "py39"}
     name: "Python ${{ matrix.PYTHON.VERSION }} on ${{ matrix.WINDOWS.WINDOWS }}"
     steps:
       - uses: actions/checkout@master

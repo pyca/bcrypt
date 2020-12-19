@@ -450,8 +450,8 @@ def test_kdf_warn_rounds():
 @pytest.mark.parametrize(
     ("password", "salt", "desired_key_bytes", "rounds", "error"),
     [
-        (u"pass", b"$2b$04$cVWp4XaNU8a4v1uMRum2SO", 10, 10, TypeError),
-        (b"password", u"salt", 10, 10, TypeError),
+        ("pass", b"$2b$04$cVWp4XaNU8a4v1uMRum2SO", 10, 10, TypeError),
+        (b"password", "salt", 10, 10, TypeError),
         (b"", b"$2b$04$cVWp4XaNU8a4v1uMRum2SO", 10, 10, ValueError),
         (b"password", b"", 10, 10, ValueError),
         (b"password", b"$2b$04$cVWp4XaNU8a4v1uMRum2SO", 0, 10, ValueError),
