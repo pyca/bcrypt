@@ -5,9 +5,6 @@ bcrypt
     :target: https://pypi.org/project/bcrypt/
     :alt: Latest Version
 
-.. image:: https://travis-ci.org/pyca/bcrypt.svg?branch=master
-    :target: https://travis-ci.org/pyca/bcrypt
-
 .. image:: https://github.com/pyca/bcrypt/workflows/CI/badge.svg?branch=master
     :target: https://github.com/pyca/bcrypt/actions?query=workflow%3ACI+branch%3Amaster
 
