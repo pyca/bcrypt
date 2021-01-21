@@ -219,7 +219,7 @@ Security
 ``bcrypt`` follows the `same security policy as cryptography`_, if you
 identify a vulnerability, we ask you to contact us privately.
 
-.. _`same security policy as cryptography`: https://cryptography.io/en/latest/security/
+.. _`same security policy as cryptography`: https://cryptography.io/en/latest/security.html
 .. _`standard library`: https://docs.python.org/3/library/hashlib.html#hashlib.scrypt
 .. _`argon2_cffi`: https://argon2-cffi.readthedocs.io
 .. _`cryptography`: https://cryptography.io/en/latest/hazmat/primitives/key-derivation-functions/#cryptography.hazmat.primitives.kdf.scrypt.Scrypt
