@@ -5,8 +5,8 @@ bcrypt
     :target: https://pypi.org/project/bcrypt/
     :alt: Latest Version
 
-.. image:: https://github.com/pyca/bcrypt/workflows/CI/badge.svg?branch=master
-    :target: https://github.com/pyca/bcrypt/actions?query=workflow%3ACI+branch%3Amaster
+.. image:: https://github.com/pyca/bcrypt/workflows/CI/badge.svg?branch=main
+    :target: https://github.com/pyca/bcrypt/actions?query=workflow%3ACI+branch%3Amain
 
 Good password hashing for your software and your servers
 
