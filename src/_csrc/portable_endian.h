@@ -212,6 +212,22 @@
 #               define htobe16(x) be16toh(x)
 #       endif
 
+#elif defined(__MVS__)
+
+#           define htobe16(x) (x)
+#           define htole16(x) (((((uint16_t)(x)) >> 8))|((((uint16_t)(x)) << 8)))
+#           define be16toh(x) (x)
+#           define le16toh(x) (((((uint16_t)(x)) >> 8))|((((uint16_t)(x)) << 8)))
+
+#           define htobe32(x) (x)
+#           define htole32(x) (((uint32_t)htole16(((uint16_t)(((uint32_t)(x)) >> 16)))) | (((uint32_t)htole16(((uint16_t)(x)))) << 16))
+#           define be32toh(x) (x)
+#           define le32toh(x) (((uint32_t)le16toh(((uint16_t)(((uint32_t)(x)) >> 16)))) | (((uint32_t)le16toh(((uint16_t)(x)))) << 16))
+
+#           define htobe64(x) (x)
+#           define htole64(x) (((uint64_t)htole32(((uint32_t)(((uint64_t)(x)) >> 32)))) | (((uint64_t)htole32(((uint32_t)(x)))) << 32))
+#           define be64toh(x) (x)
+#           define le64toh(x) (((uint64_t)le32toh(((uint32_t)(((uint64_t)(x)) >> 32)))) | (((uint64_t)le32toh(((uint32_t)(x)))) << 32))
 
 #else
 
