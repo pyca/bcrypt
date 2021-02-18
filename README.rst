@@ -51,7 +51,7 @@ Changelog
 
 UNRELEASED
 ----------
-
+* Added support for compilation on z/OS
 
 3.2.0
 -----
