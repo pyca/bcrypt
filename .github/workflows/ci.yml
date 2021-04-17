@@ -22,6 +22,10 @@ jobs:
       - run: tox
         env:
           TOXENV: ${{ matrix.PYTHON.TOXENV }}
+      - uses: alex/github-actions-coverage-merge
+        with:
+          mode: upload
+          name: ${{ matrix.PYTHON.VERSION }}-macOS-coverage
 
   windows:
     runs-on: windows-latest
@@ -46,6 +50,10 @@ jobs:
       - run: tox
         env:
           TOXENV: ${{ matrix.PYTHON.TOXENV }}
+      - uses: alex/github-actions-coverage-merge
+        with:
+          mode: upload
+          name: ${{ matrix.PYTHON.VERSION }}-${{ matrix.WINDOWS.WINDOWS }}-coverage
   linux:
     runs-on: ubuntu-latest
     strategy:
@@ -69,3 +77,16 @@ jobs:
       - run: tox
         env:
           TOXENV: ${{ matrix.PYTHON.TOXENV }}
+      - uses: alex/github-actions-coverage-merge
+        with:
+          mode: upload
+          name: ${{ matrix.PYTHON.VERSION }}-linux-coverage
+  merged-coverage:
+    runs-on: ubuntu-latest
+    name: "Merge that coverage"
+    needs: [linux, windows, macos]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: alex/github-actions-coverage-merge
+        with:
+          mode: merge
