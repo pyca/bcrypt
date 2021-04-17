@@ -8,13 +8,10 @@ jobs:
     strategy:
       matrix:
         PYTHON:
-          - {VERSION: "3.9", TOXENV: "pep8,packaging"}
-          - {VERSION: "3.9", TOXENV: "mypy"}
           - {VERSION: "3.6", TOXENV: "py36"}
           - {VERSION: "3.7", TOXENV: "py37"}
           - {VERSION: "3.8", TOXENV: "py38"}
           - {VERSION: "3.9", TOXENV: "py39"}
-          - {VERSION: "pypy3", TOXENV: "pypy3"}
     name: "${{ matrix.PYTHON.TOXENV }} on linux"
     steps:
       - uses: actions/checkout@v2
