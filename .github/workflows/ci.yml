@@ -17,7 +17,7 @@ jobs:
           - {VERSION: "3.9", TOXENV: "py39"}
     name: "Python ${{ matrix.PYTHON.VERSION }} on macOS"
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2.3.4
       - name: Setup python
         uses: actions/setup-python@v2.2.2
         with:
@@ -40,7 +40,7 @@ jobs:
           - {VERSION: "3.9", TOXENV: "py39"}
     name: "Python ${{ matrix.PYTHON.VERSION }} on ${{ matrix.WINDOWS.WINDOWS }}"
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2.3.4
       - name: Setup python
         uses: actions/setup-python@v2.2.2
         with:
@@ -65,7 +65,7 @@ jobs:
           - {VERSION: "pypy3", TOXENV: "pypy3"}
     name: "${{ matrix.PYTHON.TOXENV }} on linux"
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2.3.4
       - name: Setup python
         uses: actions/setup-python@v2.2.2
         with:
@@ -83,7 +83,7 @@ jobs:
         PYTHON:
           - {VERSION: "cp36-cp36m", TOXENV: 'py36'}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2.3.4
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
         with:
