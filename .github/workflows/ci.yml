@@ -85,7 +85,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2.3.4
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action@v1.1.0
         with:
           platforms: arm64
       - uses: docker://quay.io/pypa/manylinux2014_aarch64
