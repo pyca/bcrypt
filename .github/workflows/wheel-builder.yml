@@ -46,7 +46,7 @@ jobs:
             BIN_PATH: '/Library/Frameworks/Python.framework/Versions/3.8/bin/python3'
     name: "${{ matrix.PYTHON.ABI_VERSION }} macOS"
     steps:
-      - uses: actions/checkout@v2.3.4
+      - uses: actions/checkout@v2.3.5
       - run: |
           curl "${{ matrix.PYTHON.DOWNLOAD_URL }}" -o python.pkg
           sudo installer -pkg python.pkg -target /
@@ -76,7 +76,7 @@ jobs:
           - {VERSION: "3.6", ABI_VERSION: "cp36"}
     name: "${{ matrix.PYTHON.VERSION }} ${{ matrix.PYTHON.ABI_VERSION }} ${{ matrix.WINDOWS}}"
     steps:
-      - uses: actions/checkout@v2.3.4
+      - uses: actions/checkout@v2.3.5
       - name: Setup python
         uses: actions/setup-python@v2.2.2
         with:
@@ -106,7 +106,7 @@ jobs:
         PYTHON:
           - {VERSION: "cp36-cp36m", ABI_VERSION: 'cp36'}
     steps:
-      - uses: actions/checkout@v2.3.4
+      - uses: actions/checkout@v2.3.5
       - run: |
           docker run --rm --privileged hypriot/qemu-register
       - uses: docker://quay.io/pypa/manylinux2014_aarch64
