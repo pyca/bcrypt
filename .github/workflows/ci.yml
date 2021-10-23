@@ -75,6 +75,22 @@ jobs:
         env:
           TOXENV: ${{ matrix.PYTHON.TOXENV }}
 
+  linux-distros:
+    runs-on: ubuntu-latest
+    container: ghcr.io/pyca/cryptography-runner-${{ matrix.IMAGE.IMAGE }}
+    strategy:
+      matrix:
+        IMAGE:
+          - {IMAGE: "alpine", TOXENV: "py39"}
+    name: "${{ matrix.IMAGE.TOXENV }} on ${{ matrix.IMAGE.IMAGE }}"
+    steps:
+      - uses: actions/checkout@v2.3.5
+        with:
+          persist-credentials: false
+      - run: 'tox'
+        env:
+          TOXENV: ${{ matrix.IMAGE.TOXENV }}
+
   manylinux-arm64:
     name: "${{ matrix.PYTHON.TOXENV }} on manylinux2014-aarch64"
     runs-on: ubuntu-20.04
@@ -93,23 +109,5 @@ jobs:
           args: |
               bash -c "set -xe;
               /opt/python/${{ matrix.PYTHON.VERSION }}/bin/python -m venv .venv;
-              .venv/bin/pip install -U tox;
-              .venv/bin/tox -e ${{ matrix.PYTHON.TOXENV }};"
-
-  musllinux:
-    name: "${{ matrix.PYTHON.TOXENV }} on musllinux"
-    runs-on: ubuntu-20.04
-    strategy:
-      matrix:
-        PYTHON:
-          - {VERSION: "3.9", TOXENV: "py39"}
-    steps:
-      - uses: actions/checkout@v2.3.5
-      - uses: docker://registry.hub.docker.com/library/python:3.9-alpine
-        with:
-          args: |
-              sh -c "set -xe;
-              python -m venv .venv;
-              apk add gcc py3-wheel libc-dev libffi-dev alpine-sdk;
               .venv/bin/pip install -U tox;
               .venv/bin/tox -e ${{ matrix.PYTHON.TOXENV }};"
