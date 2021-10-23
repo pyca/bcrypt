@@ -16,6 +16,7 @@ jobs:
         CONTAINER:
           - {IMAGE: "pyca/cryptography-manylinux1:x86_64", NAME: "manylinux1"}
           - {IMAGE: "pyca/cryptography-manylinux2010:x86_64", NAME: "manylinux2010"}
+          - {IMAGE: "pyca/cryptography-musllinux_1_1:x86_64", NAME: "cryptography-musllinux_1_1"}
     name: "${{ matrix.PYTHON.ABI_VERSION }} ${{ matrix.CONTAINER.NAME }}"
     container: ${{ matrix.CONTAINER.IMAGE }}
     steps:

@@ -95,3 +95,21 @@ jobs:
               /opt/python/${{ matrix.PYTHON.VERSION }}/bin/python -m venv .venv;
               .venv/bin/pip install -U tox;
               .venv/bin/tox -e ${{ matrix.PYTHON.TOXENV }};"
+
+  musllinux:
+    name: "${{ matrix.PYTHON.TOXENV }} on musllinux"
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        PYTHON:
+          - {VERSION: "3.9", TOXENV: "py39"}
+    steps:
+      - uses: actions/checkout@v2.3.5
+      - uses: docker://registry.hub.docker.com/library/python:3.9-alpine
+        with:
+          args: |
+              sh -c "set -xe;
+              python -m venv .venv;
+              apk add gcc py3-wheel libc-dev libffi-dev alpine-sdk;
+              .venv/bin/pip install -U tox;
+              .venv/bin/tox -e ${{ matrix.PYTHON.TOXENV }};"
