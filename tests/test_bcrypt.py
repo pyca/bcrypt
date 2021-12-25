@@ -5,10 +5,16 @@ import pytest
 import bcrypt
 
 
+_empty_bytes = b""
+_test_password = b"password"
+_test_large_salt = b"$2b$04$cVWp4XaNU8a4v1uMRum2SO"
+_test_small_salt = b"salt"
+
+
 _test_vectors = [
     (
         b"Kk4DQuMMfZL9o",
-        b"$2b$04$cVWp4XaNU8a4v1uMRum2SO",
+        _test_large_salt,
         b"$2b$04$cVWp4XaNU8a4v1uMRum2SO026BWLIoQMD/TXg5uZV.0P.uO8m3YEm",
     ),
     (
@@ -239,7 +245,7 @@ def test_checkpw_2y_prefix(password, hashed, expected):
 
 def test_hashpw_invalid():
     with pytest.raises(ValueError):
-        bcrypt.hashpw(b"password", b"$2z$04$cVWp4XaNU8a4v1uMRum2SO")
+        bcrypt.hashpw(_test_password, b"$2z$04$cVWp4XaNU8a4v1uMRum2SO")
 
 
 def test_checkpw_wrong_password():
@@ -262,22 +268,22 @@ def test_checkpw_bad_salt():
 
 def test_checkpw_str_password():
     with pytest.raises(TypeError):
-        bcrypt.checkpw("password", b"$2b$04$cVWp4XaNU8a4v1uMRum2SO")
+        bcrypt.checkpw(_test_password.decode(), _test_large_salt)
 
 
 def test_checkpw_str_salt():
     with pytest.raises(TypeError):
-        bcrypt.checkpw(b"password", "$2b$04$cVWp4XaNU8a4v1uMRum2SO")
+        bcrypt.checkpw(_test_password, _test_large_salt.decode())
 
 
 def test_hashpw_str_password():
     with pytest.raises(TypeError):
-        bcrypt.hashpw("password", b"$2b$04$cVWp4XaNU8a4v1uMRum2SO")
+        bcrypt.hashpw(_test_password.decode(), _test_large_salt)
 
 
 def test_hashpw_str_salt():
     with pytest.raises(TypeError):
-        bcrypt.hashpw(b"password", "$2b$04$cVWp4XaNU8a4v1uMRum2SO")
+        bcrypt.hashpw(_test_password, _test_large_salt.decode())
 
 
 def test_checkpw_nul_byte():
@@ -314,21 +320,21 @@ def test_checkpw_extra_data():
     [
         [
             4,
-            b"password",
-            b"salt",
+            _test_password,
+            _test_small_salt,
             b"\x5b\xbf\x0c\xc2\x93\x58\x7f\x1c\x36\x35\x55\x5c\x27\x79\x65\x98"
             b"\xd4\x7e\x57\x90\x71\xbf\x42\x7e\x9d\x8f\xbe\x84\x2a\xba\x34\xd9",
         ],
         [
             4,
-            b"password",
+            _test_password,
             b"\x00",
             b"\xc1\x2b\x56\x62\x35\xee\xe0\x4c\x21\x25\x98\x97\x0a\x57\x9a\x67",
         ],
         [
             4,
             b"\x00",
-            b"salt",
+            _test_small_salt,
             b"\x60\x51\xbe\x18\xc2\xf4\xf8\x2c\xbf\x0e\xfe\xe5\x47\x1b\x4b\xb9",
         ],
         [
@@ -354,8 +360,8 @@ def test_checkpw_extra_data():
         [
             # bigger key
             8,
-            b"password",
-            b"salt",
+            _test_password,
+            _test_small_salt,
             b"\xe1\x36\x7e\xc5\x15\x1a\x33\xfa\xac\x4c\xc1\xc1\x44\xcd\x23\xfa"
             b"\x15\xd5\x54\x84\x93\xec\xc9\x9b\x9b\x5d\x9c\x0d\x3b\x27\xbe\xc7"
             b"\x62\x27\xea\x66\x08\x8b\x84\x9b\x20\xab\x7a\xa4\x78\x01\x02\x46"
@@ -364,8 +370,8 @@ def test_checkpw_extra_data():
         [
             # more rounds
             42,
-            b"password",
-            b"salt",
+            _test_password,
+            _test_small_salt,
             b"\x83\x3c\xf0\xdc\xf5\x6d\xb6\x56\x08\xe8\xf0\xdc\x0c\xe8\x82\xbd",
         ],
         [
@@ -430,34 +436,34 @@ def test_kdf(rounds, password, salt, expected):
 
 def test_kdf_str_password():
     with pytest.raises(TypeError):
-        bcrypt.kdf("password", b"$2b$04$cVWp4XaNU8a4v1uMRum2SO", 10, 10)
+        bcrypt.kdf(_test_password.decode(), _test_large_salt, 10, 10)
 
 
 def test_kdf_str_salt():
     with pytest.raises(TypeError):
-        bcrypt.kdf(b"password", "salt", 10, 10)
+        bcrypt.kdf(_test_password, _test_small_salt, 10, 10)
 
 
 def test_kdf_no_warn_rounds():
-    bcrypt.kdf(b"password", b"salt", 10, 10, True)
+    bcrypt.kdf(_test_password, _test_small_salt, 10, 10, True)
 
 
 def test_kdf_warn_rounds():
     with pytest.warns(UserWarning):
-        bcrypt.kdf(b"password", b"salt", 10, 10)
+        bcrypt.kdf(_test_password, _test_small_salt, 10, 10)
 
 
 @pytest.mark.parametrize(
     ("password", "salt", "desired_key_bytes", "rounds", "error"),
     [
-        ("pass", b"$2b$04$cVWp4XaNU8a4v1uMRum2SO", 10, 10, TypeError),
-        (b"password", "salt", 10, 10, TypeError),
-        (b"", b"$2b$04$cVWp4XaNU8a4v1uMRum2SO", 10, 10, ValueError),
-        (b"password", b"", 10, 10, ValueError),
-        (b"password", b"$2b$04$cVWp4XaNU8a4v1uMRum2SO", 0, 10, ValueError),
-        (b"password", b"$2b$04$cVWp4XaNU8a4v1uMRum2SO", -3, 10, ValueError),
-        (b"password", b"$2b$04$cVWp4XaNU8a4v1uMRum2SO", 513, 10, ValueError),
-        (b"password", b"$2b$04$cVWp4XaNU8a4v1uMRum2SO", 20, 0, ValueError),
+        ("pass", _test_large_salt, 10, 10, TypeError),
+        (_test_password, _test_small_salt, 10, 10, TypeError),
+        (_empty_bytes, _test_large_salt, 10, 10, ValueError),
+        (_test_password, _empty_bytes, 10, 10, ValueError),
+        (_test_password, _test_large_salt, 0, 10, ValueError),
+        (_test_password, _test_large_salt, -3, 10, ValueError),
+        (_test_password, _test_large_salt, 513, 10, ValueError),
+        (_test_password, _test_large_salt, 20, 0, ValueError),
     ],
 )
 def test_invalid_params(password, salt, desired_key_bytes, rounds, error):

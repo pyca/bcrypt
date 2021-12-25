@@ -188,12 +188,12 @@ def kdf(
             stacklevel=2,
         )
 
-    key = _generate_key(password, salt, desired_key_bytes, rounds)
+    key = _derive_key(password, salt, desired_key_bytes, rounds)
 
     return _bcrypt.ffi.buffer(key, desired_key_bytes)[:]
 
 
-def _generate_key(
+def _derive_key(
     password: bytes, salt: bytes, desired_key_bytes: int, rounds: int
 ) -> bytes:
     key = _bcrypt.ffi.new("uint8_t[]", desired_key_bytes)
