@@ -55,7 +55,6 @@ __all__ = [
     "checkpw",
 ]
 
-
 _normalize_re = re.compile(br"^\$2y\$")
 
 
@@ -207,7 +206,7 @@ def _generate_key(
 
     _bcrypt_assert(result == 0)
 
-    return result
+    return key
 
 
 def _bcrypt_assert(ok: bool) -> None:
