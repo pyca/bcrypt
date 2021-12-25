@@ -16,7 +16,16 @@ from cffi import FFI
 
 
 BLOWFISH_DIR = os.path.join(os.path.dirname(__file__), "_csrc")
-
+SOURCE_FILENAMES = [
+    "blf.c",
+    "bcrypt.c",
+    "bcrypt_pbkdf.c",
+    "sha2.c",
+    "timingsafe_bcmp.c",
+]
+SOURCES = [
+    os.path.join(BLOWFISH_DIR, filename) for filename in SOURCE_FILENAMES
+]
 
 ffi = FFI()
 
@@ -35,12 +44,6 @@ ffi.set_source(
     """
     #include "pycabcrypt.h"
     """,
-    sources=[
-        os.path.join(BLOWFISH_DIR, "blf.c"),
-        os.path.join(BLOWFISH_DIR, "bcrypt.c"),
-        os.path.join(BLOWFISH_DIR, "bcrypt_pbkdf.c"),
-        os.path.join(BLOWFISH_DIR, "sha2.c"),
-        os.path.join(BLOWFISH_DIR, "timingsafe_bcmp.c"),
-    ],
+    sources=SOURCES,
     include_dirs=[BLOWFISH_DIR],
 )
