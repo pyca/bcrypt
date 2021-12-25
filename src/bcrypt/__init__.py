@@ -112,9 +112,10 @@ def hashpw(password: bytes, salt: bytes) -> bytes:
     # added a new prefix, $2y$, that fixes it. This prefix is exactly the same
     # as the $2b$ prefix added by OpenBSD other than the name. Since the
     # OpenBSD library does not support the $2y$ prefix, if the salt given to us
-    # is for the $2y$ prefix, we'll just mugne it so that it's a $2b$ prior to
+    # is for the $2y$ prefix, we'll just mung it so that it's a $2b$ prior to
     # passing it into the C library.
-    original_salt, salt = salt, _normalize_re.sub(b"$2b$", salt)
+    replacement_prefix = b"$2b$"
+    original_salt, salt = salt, _normalize_re.sub(replacement_prefix, salt)
 
     hashed = _bcrypt.ffi.new("char[]", HASHED_BYTES)
     retval = _bcrypt.lib.bcrypt_hashpass(password, salt, hashed, len(hashed))
@@ -128,7 +129,10 @@ def hashpw(password: bytes, salt: bytes) -> bytes:
     # the return value's prefix). This will ensure that if someone passed in a
     # salt with a $2y$ prefix, that they get back a hash with a $2y$ prefix
     # even though we munged it to $2b$.
-    return original_salt[:4] + _bcrypt.ffi.string(hashed)[4:]
+    prefix_length = len(replacement_prefix)
+    original_prefix = original_salt[:prefix_length]
+
+    return original_prefix + _bcrypt.ffi.string(hashed)[prefix_length:]
 
 
 def _unencoded(*args: bytes) -> bool:
@@ -166,10 +170,10 @@ def kdf(
     if _unencoded(password, salt):
         raise TypeError("Strings must be encoded before hashing")
 
-    if len(password) == 0 or len(salt) == 0:
+    if _empty(password, salt):
         raise ValueError("password and salt must not be empty")
 
-    if not (1 <= desired_key_bytes <= 512):
+    if not _acceptable_byte_size(desired_key_bytes):
         raise ValueError("desired_key_bytes must be 1-512")
 
     if rounds < 1:
@@ -191,6 +195,14 @@ def kdf(
     key = _generate_key(password, salt, desired_key_bytes, rounds)
 
     return _bcrypt.ffi.buffer(key, desired_key_bytes)[:]
+
+
+def _empty(*args: bytes) -> bool:
+    return any(len(input_) == 0 for input_ in args)
+
+
+def _acceptable_byte_size(desired_key_bytes: int) -> bool:
+    return 1 <= desired_key_bytes <= 512
 
 
 def _generate_key(
