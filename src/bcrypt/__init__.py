@@ -194,10 +194,7 @@ def kdf(
 
 
 def _generate_key(
-    password: bytes,
-    salt: bytes,
-    desired_key_bytes: int,
-    rounds: int
+    password: bytes, salt: bytes, desired_key_bytes: int, rounds: int
 ) -> bytes:
     key = _bcrypt.ffi.new("uint8_t[]", desired_key_bytes)
     result = _bcrypt.lib.bcrypt_pbkdf(
