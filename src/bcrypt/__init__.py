@@ -33,6 +33,13 @@ from .__about__ import (
 )
 
 
+NULL_BYTE = b"\x00"
+
+HASHED_BYTES = 128
+OUTPUT_BYTES = 30
+SALT_BYTES = 16
+SUPPORTED_PREFIXES = (b"2a", b"2b")
+
 __all__ = [
     "__title__",
     "__summary__",
@@ -53,15 +60,13 @@ _normalize_re = re.compile(br"^\$2y\$")
 
 
 def gensalt(rounds: int = 12, prefix: bytes = b"2b") -> bytes:
-    if prefix not in (b"2a", b"2b"):
+    if not _supported(prefix):
         raise ValueError("Supported prefixes are b'2a' or b'2b'")
 
-    if rounds < 4 or rounds > 31:
+    if not _valid(rounds):
         raise ValueError("Invalid rounds")
 
-    salt = os.urandom(16)
-    output = _bcrypt.ffi.new("char[]", 30)
-    _bcrypt.lib.encode_base64(output, salt, len(salt))
+    output = _get_encoded_salted_output()
 
     return (
         b"$"
@@ -73,11 +78,27 @@ def gensalt(rounds: int = 12, prefix: bytes = b"2b") -> bytes:
     )
 
 
+def _supported(prefix: bytes) -> bool:
+    return prefix in SUPPORTED_PREFIXES
+
+
+def _valid(rounds: int) -> bool:
+    return 4 <= rounds <= 31
+
+
+def _get_encoded_salted_output() -> bytes:
+    salt = os.urandom(SALT_BYTES)
+    output = _bcrypt.ffi.new("char[]", OUTPUT_BYTES)
+    _bcrypt.lib.encode_base64(output, salt, len(salt))
+
+    return output
+
+
 def hashpw(password: bytes, salt: bytes) -> bytes:
-    if isinstance(password, str) or isinstance(salt, str):
+    if _unencoded(password, salt):
         raise TypeError("Strings must be encoded before hashing")
 
-    if b"\x00" in password:
+    if _contains_null_bytes(password):
         raise ValueError("password may not contain NUL bytes")
 
     # bcrypt originally suffered from a wraparound bug:
@@ -96,7 +117,7 @@ def hashpw(password: bytes, salt: bytes) -> bytes:
     # passing it into the C library.
     original_salt, salt = salt, _normalize_re.sub(b"$2b$", salt)
 
-    hashed = _bcrypt.ffi.new("char[]", 128)
+    hashed = _bcrypt.ffi.new("char[]", HASHED_BYTES)
     retval = _bcrypt.lib.bcrypt_hashpass(password, salt, hashed, len(hashed))
 
     if retval != 0:
@@ -111,11 +132,19 @@ def hashpw(password: bytes, salt: bytes) -> bytes:
     return original_salt[:4] + _bcrypt.ffi.string(hashed)[4:]
 
 
+def _unencoded(*args: bytes) -> bool:
+    return any(isinstance(input_, str) for input_ in args)
+
+
+def _contains_null_bytes(*args: bytes) -> bool:
+    return any(NULL_BYTE in input_ for input_ in args)
+
+
 def checkpw(password: bytes, hashed_password: bytes) -> bool:
-    if isinstance(password, str) or isinstance(hashed_password, str):
+    if _unencoded(password, hashed_password):
         raise TypeError("Strings must be encoded before checking")
 
-    if b"\x00" in password or b"\x00" in hashed_password:
+    if _contains_null_bytes(password, hashed_password):
         raise ValueError(
             "password and hashed_password may not contain NUL bytes"
         )
@@ -135,13 +164,13 @@ def kdf(
     rounds: int,
     ignore_few_rounds: bool = False,
 ) -> bytes:
-    if isinstance(password, str) or isinstance(salt, str):
+    if _unencoded(password, salt):
         raise TypeError("Strings must be encoded before hashing")
 
     if len(password) == 0 or len(salt) == 0:
         raise ValueError("password and salt must not be empty")
 
-    if desired_key_bytes <= 0 or desired_key_bytes > 512:
+    if not (1 <= desired_key_bytes <= 512):
         raise ValueError("desired_key_bytes must be 1-512")
 
     if rounds < 1:
@@ -160,13 +189,25 @@ def kdf(
             stacklevel=2,
         )
 
-    key = _bcrypt.ffi.new("uint8_t[]", desired_key_bytes)
-    res = _bcrypt.lib.bcrypt_pbkdf(
-        password, len(password), salt, len(salt), key, len(key), rounds
-    )
-    _bcrypt_assert(res == 0)
+    key = _generate_key(desired_key_bytes)
 
     return _bcrypt.ffi.buffer(key, desired_key_bytes)[:]
+
+
+def _generate_key(
+    password: bytes,
+    salt: bytes,
+    desired_key_bytes: int,
+    rounds: int
+) -> bytes:
+    key = _bcrypt.ffi.new("uint8_t[]", desired_key_bytes)
+    result = _bcrypt.lib.bcrypt_pbkdf(
+        password, len(password), salt, len(salt), key, len(key), rounds
+    )
+
+    _bcrypt_assert(result == 0)
+
+    return result
 
 
 def _bcrypt_assert(ok: bool) -> None:
