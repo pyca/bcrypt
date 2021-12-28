@@ -48,6 +48,7 @@ __all__ = [
     "checkpw",
 ]
 
+NULL_BYTE = b"\x00"
 
 _normalize_re = re.compile(br"^\$2y\$")
 
@@ -74,10 +75,10 @@ def gensalt(rounds: int = 12, prefix: bytes = b"2b") -> bytes:
 
 
 def hashpw(password: bytes, salt: bytes) -> bytes:
-    if isinstance(password, str) or isinstance(salt, str):
+    if _unencoded(password, salt):
         raise TypeError("Strings must be encoded before hashing")
 
-    if b"\x00" in password:
+    if _contains_null_bytes(password):
         raise ValueError("password may not contain NUL bytes")
 
     # bcrypt originally suffered from a wraparound bug:
@@ -92,7 +93,7 @@ def hashpw(password: bytes, salt: bytes) -> bytes:
     # added a new prefix, $2y$, that fixes it. This prefix is exactly the same
     # as the $2b$ prefix added by OpenBSD other than the name. Since the
     # OpenBSD library does not support the $2y$ prefix, if the salt given to us
-    # is for the $2y$ prefix, we'll just mugne it so that it's a $2b$ prior to
+    # is for the $2y$ prefix, we'll just mung it so that it's a $2b$ prior to
     # passing it into the C library.
     original_salt, salt = salt, _normalize_re.sub(b"$2b$", salt)
 
@@ -111,11 +112,19 @@ def hashpw(password: bytes, salt: bytes) -> bytes:
     return original_salt[:4] + _bcrypt.ffi.string(hashed)[4:]
 
 
+def _unencoded(*args: bytes) -> bool:
+    return any(isinstance(input_, str) for input_ in args)
+
+
+def _contains_null_bytes(*args: bytes) -> bool:
+    return any(NULL_BYTE in input_ for input_ in args)
+
+
 def checkpw(password: bytes, hashed_password: bytes) -> bool:
-    if isinstance(password, str) or isinstance(hashed_password, str):
+    if _unencoded(password, hashed_password):
         raise TypeError("Strings must be encoded before checking")
 
-    if b"\x00" in password or b"\x00" in hashed_password:
+    if _contains_null_bytes(password, hashed_password):
         raise ValueError(
             "password and hashed_password may not contain NUL bytes"
         )
@@ -135,7 +144,7 @@ def kdf(
     rounds: int,
     ignore_few_rounds: bool = False,
 ) -> bytes:
-    if isinstance(password, str) or isinstance(salt, str):
+    if _unencoded(password, salt):
         raise TypeError("Strings must be encoded before hashing")
 
     if len(password) == 0 or len(salt) == 0:
