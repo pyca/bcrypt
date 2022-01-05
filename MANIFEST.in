@@ -8,6 +8,7 @@ include src/build_bcrypt.py
 recursive-include src/_csrc *
 recursive-include tests *.py
 
-exclude requirements.txt release.py .travis.yml mypy.ini
+exclude requirements.txt release.py mypy.ini
 
-prune .travis
+recursive-exclude .github *
+recursive-exclude .circleci *
