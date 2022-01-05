@@ -90,24 +90,3 @@ jobs:
       - run: 'tox'
         env:
           TOXENV: ${{ matrix.IMAGE.TOXENV }}
-
-  manylinux-arm64:
-    name: "${{ matrix.PYTHON.TOXENV }} on manylinux2014-aarch64"
-    runs-on: ubuntu-20.04
-    strategy:
-      matrix:
-        PYTHON:
-          - {VERSION: "cp36-cp36m", TOXENV: 'py36'}
-    steps:
-      - uses: actions/checkout@v2.4.0
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1.2.0
-        with:
-          platforms: arm64
-      - uses: docker://quay.io/pypa/manylinux2014_aarch64
-        with:
-          args: |
-              bash -c "set -xe;
-              /opt/python/${{ matrix.PYTHON.VERSION }}/bin/python -m venv .venv;
-              .venv/bin/pip install -U tox;
-              .venv/bin/tox -e ${{ matrix.PYTHON.TOXENV }};"
