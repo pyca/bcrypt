@@ -49,7 +49,7 @@ __all__ = [
 ]
 
 
-_normalize_re = re.compile(br"^\$2y\$")
+_normalize_re = re.compile(rb"^\$2y\$")
 
 
 def gensalt(rounds: int = 12, prefix: bytes = b"2b") -> bytes:
