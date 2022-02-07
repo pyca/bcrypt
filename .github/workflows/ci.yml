@@ -19,7 +19,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2.4.0
       - name: Setup python
-        uses: actions/setup-python@v2.3.1
+        uses: actions/setup-python@v2.3.2
         with:
           python-version: ${{ matrix.PYTHON.VERSION }}
 
@@ -42,7 +42,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2.4.0
       - name: Setup python
-        uses: actions/setup-python@v2.3.1
+        uses: actions/setup-python@v2.3.2
         with:
           python-version: ${{ matrix.PYTHON.VERSION }}
           architecture: ${{ matrix.WINDOWS.ARCH }}
@@ -67,7 +67,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2.4.0
       - name: Setup python
-        uses: actions/setup-python@v2.3.1
+        uses: actions/setup-python@v2.3.2
         with:
           python-version: ${{ matrix.PYTHON.VERSION }}
       - run: pip install tox
