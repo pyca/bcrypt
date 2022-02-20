@@ -20,7 +20,6 @@ import os
 import re
 import warnings
 
-from . import _bcrypt  # type: ignore
 from .__about__ import (
     __author__,
     __copyright__,
@@ -31,6 +30,7 @@ from .__about__ import (
     __uri__,
     __version__,
 )
+from . import _bcrypt  # noqa: I100
 
 
 __all__ = [
