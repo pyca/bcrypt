@@ -20,7 +20,8 @@ BLOWFISH_DIR = os.path.join(os.path.dirname(__file__), "_csrc")
 
 ffi = FFI()
 
-ffi.cdef("""
+ffi.cdef(
+    """
 int bcrypt_hashpass(const char *, size_t, const char *, char *, size_t);
 int encode_base64(char *, const uint8_t *, size_t);
 int bcrypt_pbkdf(const char *, size_t, const uint8_t *, size_t,

@@ -94,8 +94,9 @@ def hashpw(password: bytes, salt: bytes) -> bytes:
     original_salt, salt = salt, _normalize_re.sub(b"$2b$", salt)
 
     hashed = _bcrypt.ffi.new("char[]", 128)
-    retval = _bcrypt.lib.bcrypt_hashpass(password, len(password), salt,
-                                         hashed, len(hashed))
+    retval = _bcrypt.lib.bcrypt_hashpass(
+        password, len(password), salt, hashed, len(hashed)
+    )
 
     if retval != 0:
         raise ValueError("Invalid salt")
