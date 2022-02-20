@@ -16,6 +16,7 @@
 from __future__ import absolute_import
 from __future__ import division
 
+import hmac
 import os
 import re
 import warnings
@@ -121,11 +122,7 @@ def checkpw(password: bytes, hashed_password: bytes) -> bool:
         )
 
     ret = hashpw(password, hashed_password)
-
-    if len(ret) != len(hashed_password):
-        return False
-
-    return _bcrypt.lib.timingsafe_bcmp(ret, hashed_password, len(ret)) == 0
+    return hmac.compare_digest(ret, hashed_password)
 
 
 def kdf(
