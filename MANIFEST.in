@@ -5,6 +5,7 @@ include pyproject.toml
 include tox.ini .coveragerc
 include src/build_bcrypt.py
 
+recursive-include src py.typed *.pyi
 recursive-include src/_csrc *
 recursive-include tests *.py
 
