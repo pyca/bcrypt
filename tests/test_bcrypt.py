@@ -150,7 +150,14 @@ _test_vectors = [
         b'\xdfM\x88q\xf7\xff\x1b\x82~z\x13\xdd\xe9\x84\x00\xdd4',
         b'$2b$10$keO.ZZs22YtygVF6BLfhGO',
         b'$2b$10$keO.ZZs22YtygVF6BLfhGOI/JjshJYPp8DZsUtym6mJV2Eha2Hdd.'
-    )
+    ),
+    (
+        b'g7\r\x01\xf3\xd4\xd0\xa9JB^\x18\x007P\xb2N\xc7\x1c\xee\x87&\x83C'
+        b'\x8b\xe8\x18\xc5>\x86\x14/\xd6\xcc\x1cJ\xde\xd7ix\xeb\xdeO\xef'
+        b"\xe1i\xac\xcb\x03\x96v1' \xd6@.m\xa5!\xa0\xef\xc0(",
+        b'$2a$04$tecY.9ylRInW/rAAzXCXPO',
+        b'$2a$04$tecY.9ylRInW/rAAzXCXPOOlyYeCNzmNTzPDNSIFztFMKbvs/s5XG',
+    ),
 ]
 
 _2y_test_vectors = [
