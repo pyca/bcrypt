@@ -94,6 +94,10 @@
 
 #   include <sys/endian.h>
 
+#elif defined(__HAIKU__)
+
+#   include <endian.h>
+
 #elif defined(__NetBSD__) || defined(__FreeBSD__) || defined(__DragonFly__)
 
 #   include <sys/endian.h>
@@ -179,6 +183,51 @@
 #   define htole64(x) LE_64(x)
 #   define be64toh(x) BE_64(x)
 #   define le64toh(x) LE_64(x)
+
+#elif defined _AIX      /* AIX is always big endian */
+#       define be64toh(x) (x)
+#       define be32toh(x) (x)
+#       define be16toh(x) (x)
+#       define le32toh(x)                              \
+         ((((x) & 0xff) << 24) |                 \
+           (((x) & 0xff00) << 8) |                \
+           (((x) & 0xff0000) >> 8) |              \
+           (((x) & 0xff000000) >> 24))
+#       define   le64toh(x)                               \
+         ((((x) & 0x00000000000000ffL) << 56) |   \
+          (((x) & 0x000000000000ff00L) << 40) |   \
+          (((x) & 0x0000000000ff0000L) << 24) |   \
+          (((x) & 0x00000000ff000000L) << 8)  |   \
+          (((x) & 0x000000ff00000000L) >> 8)  |   \
+          (((x) & 0x0000ff0000000000L) >> 24) |   \
+          (((x) & 0x00ff000000000000L) >> 40) |   \
+          (((x) & 0xff00000000000000L) >> 56))
+#       ifndef htobe64
+#               define htobe64(x) be64toh(x)
+#       endif
+#       ifndef htobe32
+#               define htobe32(x) be32toh(x)
+#       endif
+#       ifndef htobe16
+#               define htobe16(x) be16toh(x)
+#       endif
+
+#elif defined(__MVS__)
+
+#           define htobe16(x) (x)
+#           define htole16(x) (((((uint16_t)(x)) >> 8))|((((uint16_t)(x)) << 8)))
+#           define be16toh(x) (x)
+#           define le16toh(x) (((((uint16_t)(x)) >> 8))|((((uint16_t)(x)) << 8)))
+
+#           define htobe32(x) (x)
+#           define htole32(x) (((uint32_t)htole16(((uint16_t)(((uint32_t)(x)) >> 16)))) | (((uint32_t)htole16(((uint16_t)(x)))) << 16))
+#           define be32toh(x) (x)
+#           define le32toh(x) (((uint32_t)le16toh(((uint16_t)(((uint32_t)(x)) >> 16)))) | (((uint32_t)le16toh(((uint16_t)(x)))) << 16))
+
+#           define htobe64(x) (x)
+#           define htole64(x) (((uint64_t)htole32(((uint32_t)(((uint64_t)(x)) >> 32)))) | (((uint64_t)htole32(((uint32_t)(x)))) << 32))
+#           define be64toh(x) (x)
+#           define le64toh(x) (((uint64_t)le32toh(((uint32_t)(((uint64_t)(x)) >> 32)))) | (((uint64_t)le32toh(((uint32_t)(x)))) << 32))
 
 #else
 

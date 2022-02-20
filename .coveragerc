@@ -1,5 +1,12 @@
 [run]
 branch = True
+parallel = True
 source =
     bcrypt
     tests/
+
+[paths]
+source =
+    src/bcrypt
+    .tox/*/lib/python*/site-packages/bcrypt
+    .tox/pypy/site-packages/bcrypt

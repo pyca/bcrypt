@@ -1,0 +1,129 @@
+name: Wheel Builder
+permissions:
+  contents: read
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: The version to build
+        required: true
+
+
+jobs:
+  manylinux:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        PYTHON:
+          - {VERSION: "cp36-cp36m", ABI_VERSION: 'cp36'}
+        CONTAINER:
+          - {IMAGE: "cryptography-manylinux2010:x86_64", NAME: "manylinux2010"}
+          - {IMAGE: "cryptography-manylinux_2_24:x86_64", NAME: "manylinux_2_24"}
+          - {IMAGE: "cryptography-musllinux_1_1:x86_64", NAME: "musllinux_1_1"}
+    name: "${{ matrix.PYTHON.ABI_VERSION }} ${{ matrix.CONTAINER.NAME }}"
+    container: ghcr.io/pyca/${{ matrix.CONTAINER.IMAGE }}
+    steps:
+      - uses: actions/checkout@v1 # Need v1 because manylinux2010 can't run node from v2
+        with:
+          # The tag to build or the tag received by the tag event
+          ref: ${{ github.event.inputs.version || github.ref }}
+      - run: /opt/python/${{ matrix.PYTHON.VERSION }}/bin/python -m venv .venv
+      - name: Install python dependencies
+        run: .venv/bin/pip install -U pip wheel cffi six
+      - name: Make sdist
+        run: .venv/bin/python setup.py sdist
+      - run: tar zxvf dist/bcrypt*.tar.gz && mkdir tmpwheelhouse
+      - run: cd bcrypt* && ../.venv/bin/python setup.py bdist_wheel --py-limited-api=${{ matrix.PYTHON.ABI_VERSION }} && mv dist/bcrypt*.whl ../tmpwheelhouse
+      - run: auditwheel repair tmpwheelhouse/bcrypt*.whl -w wheelhouse/
+      - run: .venv/bin/pip install bcrypt --no-index -f wheelhouse/
+      - run: |
+          .venv/bin/python -c "import bcrypt; password = b'super secret password';hashed = bcrypt.hashpw(password, bcrypt.gensalt());bcrypt.checkpw(password, hashed)"
+
+      - run: mkdir bcrypt-wheelhouse
+      - run: mv wheelhouse/bcrypt*.whl bcrypt-wheelhouse/
+      - uses: actions/upload-artifact@v1
+        with:
+          name: "bcrypt-${{ github.event.inputs.version }}-${{ matrix.CONTAINER.NAME }} -${{ matrix.PYTHON.ABI_VERSION }}"
+          path: bcrypt-wheelhouse/
+
+  macos:
+    runs-on: macos-11
+    strategy:
+      matrix:
+        PYTHON:
+          - VERSION: '3.10'
+            ABI_VERSION: 'cp36'
+            DOWNLOAD_URL: 'https://www.python.org/ftp/python/3.10.1/python-3.10.1-macos11.pkg'
+            BIN_PATH: '/Library/Frameworks/Python.framework/Versions/3.10/bin/python3'
+    name: "Python ${{ matrix.PYTHON.VERSION }} for ABI ${{ matrix.PYTHON.ABI_VERSION }} on macOS"
+    steps:
+      - uses: actions/checkout@v2.4.0
+        with:
+          # The tag to build or the tag received by the tag event
+          ref: ${{ github.event.inputs.version || github.ref }}
+          persist-credentials: false
+      - run: |
+          curl "${{ matrix.PYTHON.DOWNLOAD_URL }}" -o python.pkg
+          sudo installer -pkg python.pkg -target /
+      - run: ${{ matrix.PYTHON.BIN_PATH }} -m venv venv
+      - run: venv/bin/pip install -U pip wheel cffi six
+      - name: Make sdist
+        run: venv/bin/python setup.py sdist
+      - run: tar zxvf dist/bcrypt*.tar.gz && mkdir wheelhouse
+      - name: Build the wheel
+        run: cd bcrypt* && ../venv/bin/python setup.py bdist_wheel --py-limited-api=${{ matrix.PYTHON.ABI_VERSION }} && mv dist/bcrypt*.whl ../wheelhouse
+        env:
+          PYTHON_VERSION: ${{ matrix.PYTHON.ABI_VERSION }}
+          MACOSX_DEPLOYMENT_TARGET: '10.10'
+          CFLAGS: '-arch arm64 -arch x86_64'
+          ARCHFLAGS: '-arch arm64 -arch x86_64'
+          _PYTHON_HOST_PLATFORM: 'macosx-10.9-universal2'
+      - run: venv/bin/pip install -f wheelhouse --no-index bcrypt
+      - run: |
+          venv/bin/python -c "import bcrypt;password = b'super secret password';hashed = bcrypt.hashpw(password, bcrypt.gensalt());bcrypt.checkpw(password, hashed)"
+
+      - run: mkdir bcrypt-wheelhouse
+      - run: mv wheelhouse/bcrypt*.whl bcrypt-wheelhouse/
+      - uses: actions/upload-artifact@v1
+        with:
+          name: "bcrypt-${{ github.event.inputs.version }}-macOS-${{ matrix.PYTHON.ABI_VERSION }}"
+          path: bcrypt-wheelhouse/
+
+  windows:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        WINDOWS:
+          - 'x86'
+          - 'x64'
+        PYTHON:
+          - {VERSION: "3.6", ABI_VERSION: "cp36"}
+    name: "${{ matrix.PYTHON.VERSION }} ${{ matrix.PYTHON.ABI_VERSION }} ${{ matrix.WINDOWS}}"
+    steps:
+      - uses: actions/checkout@v2.4.0
+        with:
+          # The tag to build or the tag received by the tag event
+          ref: ${{ github.event.inputs.version || github.ref }}
+          persist-credentials: false
+      - name: Setup python
+        uses: actions/setup-python@v2.3.2
+        with:
+          python-version: ${{ matrix.PYTHON.VERSION }}
+          architecture: ${{ matrix.WINDOWS }}
+      - run: python -m pip install -U pip wheel cffi six
+      - name: Make sdist
+        run: python setup.py sdist
+      - run: tar zxvf dist/bcrypt*.tar.gz && mkdir wheelhouse
+        shell: bash
+      - run: cd bcrypt* && python setup.py bdist_wheel --py-limited-api=${{ matrix.PYTHON.ABI_VERSION }} && mv dist/bcrypt*.whl ../wheelhouse
+      - run: pip install -f wheelhouse --no-index bcrypt
+      - run: |
+          python -c "import bcrypt; password = b'super secret password';hashed = bcrypt.hashpw(password, bcrypt.gensalt());bcrypt.checkpw(password, hashed)"
+
+      # TODO: can we setup another python and test in the same job? this would catch bad linking problems (e.g. build and test on py36, but then install py38 and see if it works
+      - run: mkdir bcrypt-wheelhouse
+      - run: move wheelhouse\bcrypt*.whl bcrypt-wheelhouse\
+      - uses: actions/upload-artifact@v1
+        with:
+          name: "bcrypt-${{ github.event.inputs.version }}-${{ matrix.WINDOWS }}-${{ matrix.PYTHON.ABI_VERSION }}"
+          path: bcrypt-wheelhouse\

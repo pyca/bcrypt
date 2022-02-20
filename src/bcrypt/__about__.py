@@ -18,18 +18,24 @@ from __future__ import division
 from __future__ import unicode_literals
 
 __all__ = [
-    "__title__", "__summary__", "__uri__", "__version__", "__author__",
-    "__email__", "__license__", "__copyright__",
+    "__title__",
+    "__summary__",
+    "__uri__",
+    "__version__",
+    "__author__",
+    "__email__",
+    "__license__",
+    "__copyright__",
 ]
 
 __title__ = "bcrypt"
 __summary__ = "Modern password hashing for your software and your servers"
 __uri__ = "https://github.com/pyca/bcrypt/"
 
-__version__ = "3.1.3"
+__version__ = "3.2.1.dev1"
 
 __author__ = "The Python Cryptographic Authority developers"
 __email__ = "cryptography-dev@python.org"
 
 __license__ = "Apache License, Version 2.0"
-__copyright__ = "Copyright 2013-2016 {0}".format(__author__)
+__copyright__ = "Copyright 2013-2020 {0}".format(__author__)
