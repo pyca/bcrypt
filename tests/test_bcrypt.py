@@ -309,7 +309,13 @@ def test_checkpw_nul_byte():
 
 def test_hashpw_nul_byte():
     salt = bcrypt.gensalt(4)
-    bcrypt.hashpw(b"abc\0def", salt)
+    hashed = bcrypt.hashpw(b"abc\0def", salt)
+    assert bcrypt.checkpw(b"abc\0def", hashed)
+    # assert that we are sensitive to changes in the password after the first
+    # null byte:
+    assert not bcrypt.checkpw(b"abc\0deg", hashed)
+    assert not bcrypt.checkpw(b"abc\0def\0", hashed)
+    assert not bcrypt.checkpw(b"abc\0def\0\0", hashed)
 
 
 def test_checkpw_extra_data():
