@@ -6,7 +6,7 @@ on:
     inputs:
       version:
         description: The version to build
-        required: true
+        required: false
 
 
 jobs:
