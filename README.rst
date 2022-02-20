@@ -20,25 +20,26 @@ To install bcrypt, simply:
 
     $ pip install bcrypt
 
-Note that bcrypt should build very easily on Linux provided you have a C compiler, headers for Python (if you're not using pypy), and headers for the libffi libraries available on your system.
+Note that bcrypt should build very easily on Linux provided you have a C
+compiler and a Rust compiler (the minimum supported Rust version is 1.56.0).
 
 For Debian and Ubuntu, the following command will ensure that the required dependencies are installed:
 
 .. code:: bash
 
-    $ sudo apt-get install build-essential libffi-dev python-dev
+    $ sudo apt-get install build-essential cargo
 
 For Fedora and RHEL-derivatives, the following command will ensure that the required dependencies are installed:
 
 .. code:: bash
 
-    $ sudo yum install gcc libffi-devel python-devel
+    $ sudo yum install gcc cargo
 
 For Alpine, the following command will ensure that the required dependencies are installed:
 
 .. code:: bash
 
-    $ apk add --update musl-dev gcc libffi-dev
+    $ apk add --update musl-dev gcc cargo
 
 
 Alternatives
@@ -48,6 +49,13 @@ While bcrypt remains a good choice for password storage depending on your specif
 
 Changelog
 =========
+
+UNRELEASED
+----------
+
+* ``bcrypt`` is now implemented in Rust. Users building from source will need
+  to have a Rust compiler available. Nothing will change for users downloading
+  wheels.
 
 3.2.1
 -----

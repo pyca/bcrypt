@@ -10,7 +10,7 @@ mkdir -p /test/wheelhouse.final
 
 "${PYBIN}"/python -m venv .venv
 
-.venv/bin/pip install -U pip wheel cffi
+.venv/bin/pip install -U pip wheel setuptools-rust
 
 .venv/bin/python setup.py sdist
 cd dist

@@ -33,8 +33,8 @@ jobs:
     strategy:
       matrix:
         WINDOWS:
-          - {ARCH: 'x86', WINDOWS: 'win32'}
-          - {ARCH: 'x64', WINDOWS: 'win64'}
+          - {ARCH: 'x86', WINDOWS: 'win32', RUST_TRIPLE: 'i686-pc-windows-msvc'}
+          - {ARCH: 'x64', WINDOWS: 'win64', RUST_TRIPLE: 'x86_64-pc-windows-msvc'}
         PYTHON:
           - {VERSION: "3.6", TOXENV: "py36"}
           - {VERSION: "3.10", TOXENV: "py310"}
@@ -46,6 +46,13 @@ jobs:
         with:
           python-version: ${{ matrix.PYTHON.VERSION }}
           architecture: ${{ matrix.WINDOWS.ARCH }}
+      - uses: actions-rs/toolchain@v1.0.7
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+          default: true
+          target: ${{ matrix.WINDOWS.RUST_TRIPLE }}
 
       - run: pip install tox
       - run: tox
@@ -66,13 +73,25 @@ jobs:
           - {VERSION: "pypy-3.7", TOXENV: "pypy3"}
           - {VERSION: "pypy-3.8", TOXENV: "pypy3"}
           - {VERSION: "pypy-3.9", TOXENV: "pypy3"}
-    name: "${{ matrix.PYTHON.TOXENV }} on linux"
+
+          # MSRV
+          - {VERSION: "3.10", TOXENV: "py310", RUST_VERSION: "1.56.0"}
+          - {VERSION: "3.10", TOXENV: "py310", RUST_VERSION: "beta"}
+          - {VERSION: "3.10", TOXENV: "py310", RUST_VERSION: "nightly"}
+    name: "${{ matrix.PYTHON.TOXENV }} on linux, Rust ${{ matrix.PYTHON.RUST_VERSION || 'stable' }}"
     steps:
       - uses: actions/checkout@v2.4.0
       - name: Setup python
         uses: actions/setup-python@v3
         with:
           python-version: ${{ matrix.PYTHON.VERSION }}
+      - uses: actions-rs/toolchain@v1.0.7
+        with:
+          profile: minimal
+          toolchain: ${{ matrix.PYTHON.RUST_VERSION || 'stable' }}
+          override: true
+          default: true
+
       - run: pip install tox
       - run: tox
         env:
@@ -93,3 +112,4 @@ jobs:
       - run: '/venv/bin/tox'
         env:
           TOXENV: ${{ matrix.IMAGE.TOXENV }}
+          RUSTUP_HOME: /root/.rustup

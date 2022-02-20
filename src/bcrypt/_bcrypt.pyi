@@ -1,4 +1,7 @@
 import typing
 
-ffi: typing.Any
-lib: typing.Any
+def encode_base64(data: bytes) -> bytes: ...
+def hashpass(password: bytes, salt: bytes) -> bytes: ...
+def pbkdf(
+    password: bytes, salt: bytes, rounds: int, desired_key_bytes: int
+) -> bytes: ...
