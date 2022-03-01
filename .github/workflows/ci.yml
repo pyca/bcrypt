@@ -62,8 +62,8 @@ jobs:
           - {VERSION: "3.7", TOXENV: "py37"}
           - {VERSION: "3.8", TOXENV: "py38"}
           - {VERSION: "3.9", TOXENV: "py39"}
-          - {VERSION: "pypy3-3.7", TOXENV: "pypy3"}
-          - {VERSION: "pypy3-3.8", TOXENV: "pypy3"}
+          - {VERSION: "pypy-3.7", TOXENV: "pypy3"}
+          - {VERSION: "pypy-3.8", TOXENV: "pypy3"}
     name: "${{ matrix.PYTHON.TOXENV }} on linux"
     steps:
       - uses: actions/checkout@v2.4.0
