@@ -88,6 +88,6 @@ jobs:
       - uses: actions/checkout@v2.4.0
         with:
           persist-credentials: false
-      - run: 'tox'
+      - run: '/venv/bin/tox'
         env:
           TOXENV: ${{ matrix.IMAGE.TOXENV }}
