@@ -1,6 +1,7 @@
 __pycache__/
 *.py[co]
 *.so
+target/
 
 # Packages
 *.egg

@@ -3,7 +3,7 @@
 requires = [
     "setuptools>=40.8.0",
     "wheel",
-    "cffi>=1.1; python_implementation != 'PyPy'",
+    "setuptools-rust",
 ]
 # Point to the setuptools' PEP517 build backend explicitly to
 # disable Pip's fallback guessing

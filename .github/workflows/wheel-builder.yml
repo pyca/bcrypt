@@ -30,11 +30,13 @@ jobs:
           ref: ${{ github.event.inputs.version || github.ref }}
       - run: /opt/python/${{ matrix.PYTHON.VERSION }}/bin/python -m venv .venv
       - name: Install python dependencies
-        run: .venv/bin/pip install -U pip wheel cffi six
+        run: .venv/bin/pip install -U pip wheel setuptools-rust
       - name: Make sdist
         run: .venv/bin/python setup.py sdist
       - run: tar zxvf dist/bcrypt*.tar.gz && mkdir tmpwheelhouse
       - run: cd bcrypt* && ../.venv/bin/python setup.py bdist_wheel --py-limited-api=${{ matrix.PYTHON.ABI_VERSION }} && mv dist/bcrypt*.whl ../tmpwheelhouse
+        env:
+          RUSTUP_HOME: /root/.rustup
       - run: auditwheel repair tmpwheelhouse/bcrypt*.whl -w wheelhouse/
       - run: .venv/bin/pip install bcrypt --no-index -f wheelhouse/
       - run: |
@@ -66,8 +68,17 @@ jobs:
       - run: |
           curl "${{ matrix.PYTHON.DOWNLOAD_URL }}" -o python.pkg
           sudo installer -pkg python.pkg -target /
+      - uses: actions-rs/toolchain@v1.0.7
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+          default: true
+          # Add the arm64 target in addition to the native arch (x86_64)
+          target: aarch64-apple-darwin
+
       - run: ${{ matrix.PYTHON.BIN_PATH }} -m venv venv
-      - run: venv/bin/pip install -U pip wheel cffi six
+      - run: venv/bin/pip install -U pip wheel setuptools-rust
       - name: Make sdist
         run: venv/bin/python setup.py sdist
       - run: tar zxvf dist/bcrypt*.tar.gz && mkdir wheelhouse
@@ -95,11 +106,11 @@ jobs:
     strategy:
       matrix:
         WINDOWS:
-          - 'x86'
-          - 'x64'
+          - {ARCH: 'x86', RUST_TRIPLE: 'i686-pc-windows-msvc'}
+          - {ARCH: 'x64', RUST_TRIPLE: 'x86_64-pc-windows-msvc'}
         PYTHON:
           - {VERSION: "3.6", ABI_VERSION: "cp36"}
-    name: "${{ matrix.PYTHON.VERSION }} ${{ matrix.PYTHON.ABI_VERSION }} ${{ matrix.WINDOWS}}"
+    name: "${{ matrix.PYTHON.VERSION }} ${{ matrix.PYTHON.ABI_VERSION }} ${{ matrix.WINDOWS.ARCH }}"
     steps:
       - uses: actions/checkout@v2.4.0
         with:
@@ -110,8 +121,16 @@ jobs:
         uses: actions/setup-python@v3
         with:
           python-version: ${{ matrix.PYTHON.VERSION }}
-          architecture: ${{ matrix.WINDOWS }}
-      - run: python -m pip install -U pip wheel cffi six
+          architecture: ${{ matrix.WINDOWS.ARCH }}
+      - uses: actions-rs/toolchain@v1.0.7
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+          default: true
+          target: ${{ matrix.WINDOWS.RUST_TRIPLE }}
+
+      - run: python -m pip install -U pip wheel setuptools-rust
       - name: Make sdist
         run: python setup.py sdist
       - run: tar zxvf dist/bcrypt*.tar.gz && mkdir wheelhouse
@@ -126,5 +145,5 @@ jobs:
       - run: move wheelhouse\bcrypt*.whl bcrypt-wheelhouse\
       - uses: actions/upload-artifact@v1
         with:
-          name: "bcrypt-${{ github.event.inputs.version }}-${{ matrix.WINDOWS }}-${{ matrix.PYTHON.ABI_VERSION }}"
+          name: "bcrypt-${{ github.event.inputs.version }}-${{ matrix.WINDOWS.ARCH }}-${{ matrix.PYTHON.ABI_VERSION }}"
           path: bcrypt-wheelhouse\

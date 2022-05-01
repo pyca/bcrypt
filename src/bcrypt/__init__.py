@@ -61,8 +61,7 @@ def gensalt(rounds: int = 12, prefix: bytes = b"2b") -> bytes:
         raise ValueError("Invalid rounds")
 
     salt = os.urandom(16)
-    output = _bcrypt.ffi.new("char[]", 30)
-    _bcrypt.lib.encode_base64(output, salt, len(salt))
+    output = _bcrypt.encode_base64(salt)
 
     return (
         b"$"
@@ -70,7 +69,7 @@ def gensalt(rounds: int = 12, prefix: bytes = b"2b") -> bytes:
         + b"$"
         + ("%2.2u" % rounds).encode("ascii")
         + b"$"
-        + _bcrypt.ffi.string(output)
+        + output
     )
 
 
@@ -97,11 +96,7 @@ def hashpw(password: bytes, salt: bytes) -> bytes:
     # passing it into the C library.
     original_salt, salt = salt, _normalize_re.sub(b"$2b$", salt)
 
-    hashed = _bcrypt.ffi.new("char[]", 128)
-    retval = _bcrypt.lib.bcrypt_hashpass(password, salt, hashed, len(hashed))
-
-    if retval != 0:
-        raise ValueError("Invalid salt")
+    hashed = _bcrypt.hashpass(password, salt)
 
     # Now that we've gotten our hashed password, we want to ensure that the
     # prefix we return is the one that was passed in, so we'll use the prefix
@@ -109,7 +104,7 @@ def hashpw(password: bytes, salt: bytes) -> bytes:
     # the return value's prefix). This will ensure that if someone passed in a
     # salt with a $2y$ prefix, that they get back a hash with a $2y$ prefix
     # even though we munged it to $2b$.
-    return original_salt[:4] + _bcrypt.ffi.string(hashed)[4:]
+    return original_salt[:4] + hashed[4:]
 
 
 def checkpw(password: bytes, hashed_password: bytes) -> bool:
@@ -157,15 +152,4 @@ def kdf(
             stacklevel=2,
         )
 
-    key = _bcrypt.ffi.new("uint8_t[]", desired_key_bytes)
-    res = _bcrypt.lib.bcrypt_pbkdf(
-        password, len(password), salt, len(salt), key, len(key), rounds
-    )
-    _bcrypt_assert(res == 0)
-
-    return _bcrypt.ffi.buffer(key, desired_key_bytes)[:]
-
-
-def _bcrypt_assert(ok: bool) -> None:
-    if not ok:
-        raise SystemError("bcrypt assertion failed")
+    return _bcrypt.pbkdf(password, salt, rounds, desired_key_bytes)

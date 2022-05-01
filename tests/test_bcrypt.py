@@ -465,11 +465,6 @@ def test_invalid_params(password, salt, desired_key_bytes, rounds, error):
         bcrypt.kdf(password, salt, desired_key_bytes, rounds)
 
 
-def test_bcrypt_assert():
-    with pytest.raises(SystemError):
-        bcrypt._bcrypt_assert(False)
-
-
 def test_2a_wraparound_bug():
     assert (
         bcrypt.hashpw(
