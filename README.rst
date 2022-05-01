@@ -49,6 +49,11 @@ While bcrypt remains a good choice for password storage depending on your specif
 Changelog
 =========
 
+3.2.2
+-----
+
+* Fixed packaging of ``py.typed`` files in wheels so that ``mypy`` works.
+
 3.2.1
 -----
 
