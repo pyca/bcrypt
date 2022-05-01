@@ -49,10 +49,20 @@ While bcrypt remains a good choice for password storage depending on your specif
 Changelog
 =========
 
-UNRELEASED
-----------
+3.2.1
+-----
 
 * Added support for compilation on z/OS
+* The next release of ``bcrypt`` with be 4.0 and it will require Rust at
+  compile time, for users building from source. There will be no additional
+  requirement for users who are installing from wheels. Users on most
+  platforms will be able to obtain a wheel by making sure they have an up to
+  date ``pip``. The minimum supported Rust version will be 1.56.0.
+* This will be the final release for which we ship ``manylinux2010`` wheels.
+  Going forward the minimum supported manylinux ABI for our wheels will be
+  ``manylinux2014``. The vast majority of users will continue to receive
+  ``manylinux`` wheels provided they have an up to date ``pip``.
+
 
 3.2.0
 -----

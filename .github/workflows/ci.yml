@@ -14,7 +14,7 @@ jobs:
       matrix:
          PYTHON:
           - {VERSION: "3.6", TOXENV: "py36"}
-          - {VERSION: "3.9", TOXENV: "py39"}
+          - {VERSION: "3.10", TOXENV: "py310"}
     name: "Python ${{ matrix.PYTHON.VERSION }} on macOS"
     steps:
       - uses: actions/checkout@v2.4.0
@@ -37,7 +37,7 @@ jobs:
           - {ARCH: 'x64', WINDOWS: 'win64'}
         PYTHON:
           - {VERSION: "3.6", TOXENV: "py36"}
-          - {VERSION: "3.9", TOXENV: "py39"}
+          - {VERSION: "3.10", TOXENV: "py310"}
     name: "Python ${{ matrix.PYTHON.VERSION }} on ${{ matrix.WINDOWS.WINDOWS }}"
     steps:
       - uses: actions/checkout@v2.4.0
@@ -62,8 +62,10 @@ jobs:
           - {VERSION: "3.7", TOXENV: "py37"}
           - {VERSION: "3.8", TOXENV: "py38"}
           - {VERSION: "3.9", TOXENV: "py39"}
+          - {VERSION: "3.10", TOXENV: "py310"}
           - {VERSION: "pypy-3.7", TOXENV: "pypy3"}
           - {VERSION: "pypy-3.8", TOXENV: "pypy3"}
+          - {VERSION: "pypy-3.9", TOXENV: "pypy3"}
     name: "${{ matrix.PYTHON.TOXENV }} on linux"
     steps:
       - uses: actions/checkout@v2.4.0
