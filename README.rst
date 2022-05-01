@@ -57,6 +57,11 @@ UNRELEASED
   to have a Rust compiler available. Nothing will change for users downloading
   wheels.
 
+3.2.2
+-----
+
+* Fixed packaging of ``py.typed`` files in wheels so that ``mypy`` works.
+
 3.2.1
 -----
 
