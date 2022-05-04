@@ -77,9 +77,6 @@ def hashpw(password: bytes, salt: bytes) -> bytes:
     if isinstance(password, str) or isinstance(salt, str):
         raise TypeError("Strings must be encoded before hashing")
 
-    if b"\x00" in password:
-        raise ValueError("password may not contain NUL bytes")
-
     # bcrypt originally suffered from a wraparound bug:
     # http://www.openwall.com/lists/oss-security/2012/01/02/4
     # This bug was corrected in the OpenBSD source by truncating inputs to 72
@@ -110,11 +107,6 @@ def hashpw(password: bytes, salt: bytes) -> bytes:
 def checkpw(password: bytes, hashed_password: bytes) -> bool:
     if isinstance(password, str) or isinstance(hashed_password, str):
         raise TypeError("Strings must be encoded before checking")
-
-    if b"\x00" in password or b"\x00" in hashed_password:
-        raise ValueError(
-            "password and hashed_password may not contain NUL bytes"
-        )
 
     ret = hashpw(password, hashed_password)
     return hmac.compare_digest(ret, hashed_password)
