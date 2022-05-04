@@ -4,6 +4,8 @@
 
 #![deny(rust_2018_idioms)]
 
+use std::convert::TryInto;
+
 #[pyo3::prelude::pyfunction]
 fn encode_base64<'p>(py: pyo3::Python<'p>, data: &[u8]) -> &'p pyo3::types::PyBytes {
     let output = base64::encode_config(data, base64::BCRYPT);
@@ -41,9 +43,11 @@ fn hashpass<'p>(
     // the result hash, depending on if the `salt` value come from `hashpw` or
     // `gensalt`.
     let raw_salt = base64::decode_config(&raw_parts[2][..22], base64::BCRYPT)
+        .map_err(|_| pyo3::exceptions::PyValueError::new_err("Invalid salt"))?
+        .try_into()
         .map_err(|_| pyo3::exceptions::PyValueError::new_err("Invalid salt"))?;
 
-    let hashed = bcrypt::hash_with_salt(password, cost, &raw_salt).unwrap();
+    let hashed = bcrypt::hash_with_salt(password, cost, raw_salt).unwrap();
     Ok(pyo3::types::PyBytes::new(
         py,
         hashed.format_for_version(bcrypt::Version::TwoB).as_bytes(),
