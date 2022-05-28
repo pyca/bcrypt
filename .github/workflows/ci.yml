@@ -45,6 +45,7 @@ jobs:
       - run: tox
         env:
           TOXENV: ${{ matrix.PYTHON.TOXENV }}
+          CARGO_TARGET_DIR: ${{ format('{0}/src/_bcrypt/target/', github.workspace) }}
 
   windows:
     runs-on: windows-latest
@@ -89,6 +90,7 @@ jobs:
       - run: tox
         env:
           TOXENV: ${{ matrix.PYTHON.TOXENV }}
+          CARGO_TARGET_DIR: ${{ format('{0}/src/_bcrypt/target/', github.workspace) }}
   linux:
     runs-on: ubuntu-latest
     strategy:
@@ -141,6 +143,7 @@ jobs:
       - run: tox
         env:
           TOXENV: ${{ matrix.PYTHON.TOXENV }}
+          CARGO_TARGET_DIR: ${{ format('{0}/src/_bcrypt/target/', github.workspace) }}
 
   linux-distros:
     runs-on: ubuntu-latest
@@ -151,10 +154,23 @@ jobs:
           - {IMAGE: "alpine", TOXENV: "py310"}
     name: "${{ matrix.IMAGE.TOXENV }} on ${{ matrix.IMAGE.IMAGE }}"
     steps:
-      - uses: actions/checkout@v3.0.1
+      - uses: actions/checkout@v3.0.2
         with:
           persist-credentials: false
+      - uses: actions/cache@v3.0.2
+        timeout-minutes: 5
+        with:
+          path: |
+            ~/.cache/pip/
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/registry/src/
+            ~/.cargo/git/db/
+            src/_bcrypt/target/
+          key: ${{ runner.os }}-${{ matrix.IMAGE.IMAGE }}-cargo-${{ hashFiles('**/Cargo.lock') }}
       - run: '/venv/bin/tox'
         env:
           TOXENV: ${{ matrix.IMAGE.TOXENV }}
           RUSTUP_HOME: /root/.rustup
+          CARGO_TARGET_DIR: ${{ format('{0}/src/_bcrypt/target/', github.workspace) }}
