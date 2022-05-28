@@ -76,8 +76,8 @@ jobs:
             ~/.cargo/registry/src/
             ~/.cargo/git/db/
             src/_bcrypt/target/
-          key: ${{ runner.os }}-${{ matrix.WINDOWS.ARCH }}-${{ steps.setup-python.outputs.python-version }}-cargo-3-${{ hashFiles('**/Cargo.lock') }}      
-        - uses: actions-rs/toolchain@16499b5e05bf2e26879000db0c1d13f7e13fa3af
+          key: ${{ runner.os }}-${{ matrix.WINDOWS.ARCH }}-${{ steps.setup-python.outputs.python-version }}-cargo-${{ hashFiles('**/Cargo.lock') }}      
+      - uses: actions-rs/toolchain@16499b5e05bf2e26879000db0c1d13f7e13fa3af
         with:
           profile: minimal
           toolchain: stable
