@@ -18,7 +18,6 @@ from __future__ import division
 
 import hmac
 import os
-import re
 import warnings
 
 from .__about__ import (
@@ -48,9 +47,6 @@ __all__ = [
     "kdf",
     "checkpw",
 ]
-
-
-_normalize_re = re.compile(rb"^\$2y\$")
 
 
 def gensalt(rounds: int = 12, prefix: bytes = b"2b") -> bytes:
@@ -88,23 +84,7 @@ def hashpw(password: bytes, salt: bytes) -> bytes:
     # on $2a$, so we do it here to preserve compatibility with 2.0.0
     password = password[:72]
 
-    # When the original 8bit bug was found the original library we supported
-    # added a new prefix, $2y$, that fixes it. This prefix is exactly the same
-    # as the $2b$ prefix added by OpenBSD other than the name. Since the
-    # OpenBSD library does not support the $2y$ prefix, if the salt given to us
-    # is for the $2y$ prefix, we'll just mugne it so that it's a $2b$ prior to
-    # passing it into the C library.
-    original_salt, salt = salt, _normalize_re.sub(b"$2b$", salt)
-
-    hashed = _bcrypt.hashpass(password, salt)
-
-    # Now that we've gotten our hashed password, we want to ensure that the
-    # prefix we return is the one that was passed in, so we'll use the prefix
-    # from the original salt and concatenate that with the return value (minus
-    # the return value's prefix). This will ensure that if someone passed in a
-    # salt with a $2y$ prefix, that they get back a hash with a $2y$ prefix
-    # even though we munged it to $2b$.
-    return original_salt[:4] + hashed[4:]
+    return _bcrypt.hashpass(password, salt)
 
 
 def checkpw(password: bytes, hashed_password: bytes) -> bool:
