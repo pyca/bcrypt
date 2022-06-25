@@ -28,13 +28,15 @@ fn hashpass<'p>(
     if raw_parts.len() != 3 {
         return Err(pyo3::exceptions::PyValueError::new_err("Invalid salt"));
     }
-    if raw_parts[0] != b"2y"
-        && raw_parts[0] != b"2b"
-        && raw_parts[0] != b"2a"
-        && raw_parts[0] != b"2x"
-    {
-        return Err(pyo3::exceptions::PyValueError::new_err("Invalid salt"));
-    }
+    let version = match raw_parts[0] {
+        b"2y" => bcrypt::Version::TwoY,
+        b"2b" => bcrypt::Version::TwoB,
+        b"2a" => bcrypt::Version::TwoA,
+        b"2x" => bcrypt::Version::TwoX,
+        _ => {
+            return Err(pyo3::exceptions::PyValueError::new_err("Invalid salt"));
+        }
+    };
     let cost = std::str::from_utf8(raw_parts[1])
         .map_err(|_| pyo3::exceptions::PyValueError::new_err("Invalid salt"))?
         .parse::<u32>()
@@ -50,7 +52,7 @@ fn hashpass<'p>(
     let hashed = bcrypt::hash_with_salt(password, cost, raw_salt).unwrap();
     Ok(pyo3::types::PyBytes::new(
         py,
-        hashed.format_for_version(bcrypt::Version::TwoB).as_bytes(),
+        hashed.format_for_version(version).as_bytes(),
     ))
 }
 
@@ -62,8 +64,8 @@ fn pbkdf<'p>(
     rounds: u32,
     desired_key_bytes: usize,
 ) -> pyo3::PyResult<&'p pyo3::types::PyBytes> {
-    pyo3::types::PyBytes::new_with(py, desired_key_bytes, |mut output| {
-        bcrypt_pbkdf::bcrypt_pbkdf(password, salt, rounds, &mut output).unwrap();
+    pyo3::types::PyBytes::new_with(py, desired_key_bytes, |output| {
+        bcrypt_pbkdf::bcrypt_pbkdf(password, salt, rounds, output).unwrap();
         Ok(())
     })
 }
