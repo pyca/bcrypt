@@ -49,7 +49,7 @@ fn hashpass<'p>(
         .try_into()
         .map_err(|_| pyo3::exceptions::PyValueError::new_err("Invalid salt"))?;
 
-    let hashed = bcrypt::hash_with_salt(password, cost, raw_salt).unwrap();
+    let hashed = py.allow_threads(|| bcrypt::hash_with_salt(password, cost, raw_salt).unwrap());
     Ok(pyo3::types::PyBytes::new(
         py,
         hashed.format_for_version(version).as_bytes(),
@@ -65,7 +65,9 @@ fn pbkdf<'p>(
     desired_key_bytes: usize,
 ) -> pyo3::PyResult<&'p pyo3::types::PyBytes> {
     pyo3::types::PyBytes::new_with(py, desired_key_bytes, |output| {
-        bcrypt_pbkdf::bcrypt_pbkdf(password, salt, rounds, output).unwrap();
+        py.allow_threads(|| {
+            bcrypt_pbkdf::bcrypt_pbkdf(password, salt, rounds, output).unwrap();
+        });
         Ok(())
     })
 }
