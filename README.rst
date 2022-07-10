@@ -8,7 +8,7 @@ bcrypt
 .. image:: https://github.com/pyca/bcrypt/workflows/CI/badge.svg?branch=main
     :target: https://github.com/pyca/bcrypt/actions?query=workflow%3ACI+branch%3Amain
 
-Good password hashing for your software and your servers
+Acceptable password hashing for your software and your servers
 
 
 Installation
