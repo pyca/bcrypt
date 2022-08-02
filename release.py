@@ -132,8 +132,8 @@ def release(version):
         github_token, version
     )
 
-    run("twine", "upload", "-s", *packages)
     run("twine", "upload", *github_actions_wheel_paths)
+    run("twine", "upload", "-s", *packages)
 
 
 if __name__ == "__main__":
