@@ -59,7 +59,7 @@ Changelog
 * We no longer ship ``manylinux2010`` wheels. Users should upgrade to the latest
   ``pip`` to ensure this doesn’t cause issues downloading wheels on their
   platform. We now ship ``manylinux_2_28`` wheels for users on new enough platforms.
-* Null bytes are now allowed in inputs.
+* `NUL` bytes are now allowed in inputs.
 
 
 3.2.2
