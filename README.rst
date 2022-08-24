@@ -50,12 +50,17 @@ While bcrypt remains an acceptable choice for password storage, depending on you
 Changelog
 =========
 
-UNRELEASED
-----------
+4.0.0
+-----
 
 * ``bcrypt`` is now implemented in Rust. Users building from source will need
   to have a Rust compiler available. Nothing will change for users downloading
   wheels.
+* We no longer ship ``manylinux2010`` wheels. Users should upgrade to the latest
+  ``pip`` to ensure this doesn’t cause issues downloading wheels on their
+  platform. We now ship ``manylinux_2_28`` wheels for users on new enough platforms.
+* Null bytes are now allowed in inputs.
+
 
 3.2.2
 -----
