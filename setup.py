@@ -100,4 +100,3 @@ except:  # noqa: E722
     """
     )
     raise
-
