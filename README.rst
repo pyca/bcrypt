@@ -231,6 +231,8 @@ encode it to prevent NULL byte problems before hashing the result with
     ...     bcrypt.gensalt()
     ... )
 
+Note, however, that this practice is generally `recommended against`_, as it may expose the system to  `hash shucking`_ attacks, and to denial of service attacks if an attacker rapidly sends many extremely long passwords.
+
 Compatibility
 -------------
 
@@ -252,3 +254,5 @@ identify a vulnerability, we ask you to contact us privately.
 .. _`standard library`: https://docs.python.org/3/library/hashlib.html#hashlib.scrypt
 .. _`argon2_cffi`: https://argon2-cffi.readthedocs.io
 .. _`cryptography`: https://cryptography.io/en/latest/hazmat/primitives/key-derivation-functions/#cryptography.hazmat.primitives.kdf.scrypt.Scrypt
+.. _`recommended against`: https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html#pre-hashing-passwords
+.. _`hash shucking`: https://security.stackexchange.com/a/234795/
