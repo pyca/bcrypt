@@ -217,21 +217,28 @@ As of 3.0.0 the ``$2y$`` prefix is still supported in ``hashpw`` but deprecated.
 Maximum Password Length
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-The bcrypt algorithm only handles passwords up to 72 characters, any characters
+The bcrypt algorithm only handles passwords up to 72 characters; any characters
 beyond that are ignored. To work around this, a common approach is to hash a
-password with a cryptographic hash (such as ``sha256``) and then base64
-encode it to prevent NULL byte problems before hashing the result with
+password with a keyed cryptographic hash (such as ``bcrypt_pbkdf``) and then
+base64 encode it to prevent NULL byte problems before hashing the result with
 ``bcrypt``:
 
 .. code:: pycon
 
+    >>> import base64
+    >>> import bcrypt
     >>> password = b"an incredibly long password" * 10
     >>> hashed = bcrypt.hashpw(
-    ...     base64.b64encode(hashlib.sha256(password).digest()),
+    ...     base64.b64encode(bcrypt.kdf(password=password,
+    ...                                 salt=pepper,
+    ...                                 desired_key_bytes=32,
+    ...                                 rounds=100)),
     ...     bcrypt.gensalt()
     ... )
 
-Note, however, that this practice is generally `recommended against`_, as it may expose the system to  `hash shucking`_ attacks, and to denial of service attacks if an attacker rapidly sends many extremely long passwords.
+Using a hash function without a hash is `recommended against`_ as it may expose
+the system to `hash shucking`_ attacks. Instead, the hash function should use a
+global `pepper`_ or a per-hash salt.
 
 Compatibility
 -------------
@@ -256,3 +263,4 @@ identify a vulnerability, we ask you to contact us privately.
 .. _`cryptography`: https://cryptography.io/en/latest/hazmat/primitives/key-derivation-functions/#cryptography.hazmat.primitives.kdf.scrypt.Scrypt
 .. _`recommended against`: https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html#pre-hashing-passwords
 .. _`hash shucking`: https://security.stackexchange.com/a/234795/
+.. _`pepper`: https://en.wikipedia.org/wiki/Pepper_(cryptography)
