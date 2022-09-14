@@ -8,7 +8,8 @@ bcrypt
 .. image:: https://github.com/pyca/bcrypt/workflows/CI/badge.svg?branch=main
     :target: https://github.com/pyca/bcrypt/actions?query=workflow%3ACI+branch%3Amain
 
-Acceptable password hashing for your software and your servers
+Acceptable password hashing for your software and your servers (but you should
+really use argon2id or scrypt)
 
 
 Installation
