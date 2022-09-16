@@ -49,7 +49,9 @@ fn hashpass<'p>(
         .try_into()
         .map_err(|_| pyo3::exceptions::PyValueError::new_err("Invalid salt"))?;
 
-    let hashed = py.allow_threads(|| bcrypt::hash_with_salt(password, cost, raw_salt).unwrap());
+    let hashed = py
+        .allow_threads(|| bcrypt::hash_with_salt(password, cost, raw_salt))
+        .map_err(|_| pyo3::exceptions::PyValueError::new_err("Invalid salt"))?;
     Ok(pyo3::types::PyBytes::new(
         py,
         hashed.format_for_version(version).as_bytes(),
