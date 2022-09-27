@@ -157,3 +157,20 @@ jobs:
           TOXENV: ${{ matrix.IMAGE.TOXENV }}
           RUSTUP_HOME: /root/.rustup
           CARGO_TARGET_DIR: ${{ format('{0}/src/_bcrypt/target/', github.workspace) }}
+
+  all-green:  # This job does nothing and is only used for the branch protection
+    if: always()
+
+    needs:
+    - macos
+    - windows
+    - linux
+    - linux-distros
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Decide whether the needed jobs succeeded or failed
+      uses: re-actors/alls-green@release/v1
+      with:
+        jobs: ${{ toJSON(needs) }}
