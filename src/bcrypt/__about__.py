@@ -32,7 +32,7 @@ __title__ = "bcrypt"
 __summary__ = "Modern password hashing for your software and your servers"
 __uri__ = "https://github.com/pyca/bcrypt/"
 
-__version__ = "4.0.0"
+__version__ = "4.0.1"
 
 __author__ = "The Python Cryptographic Authority developers"
 __email__ = "cryptography-dev@python.org"

@@ -51,10 +51,12 @@ While bcrypt remains an acceptable choice for password storage, depending on you
 Changelog
 =========
 
-4.1.0
+4.0.1
 -----
 
 * We now build PyPy ``manylinux`` wheels.
+* Fixed a bug where passing an invalid ``salt`` to ``checkpw`` could result in
+  a ``pyo3_runtime.PanicException``. It now correctly raises a ``ValueError``.
 
 4.0.0
 -----
