@@ -8,7 +8,7 @@ publish = false
 [dependencies]
 pyo3 = { version = "0.15.2" }
 bcrypt = "0.13"
-bcrypt-pbkdf = "0.8.1"
+bcrypt-pbkdf = "0.9.0"
 base64 = "0.13.1"
 
 [features]
