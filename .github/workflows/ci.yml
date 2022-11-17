@@ -129,7 +129,7 @@ jobs:
           CARGO_TARGET_DIR: ${{ format('{0}/src/_bcrypt/target/', github.workspace) }}
 
   linux-distros:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     container: ghcr.io/pyca/cryptography-runner-${{ matrix.IMAGE.IMAGE }}
     strategy:
       matrix:
