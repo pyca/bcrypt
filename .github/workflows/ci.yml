@@ -90,9 +90,9 @@ jobs:
           - {VERSION: "3.8", TOXENV: "py38"}
           - {VERSION: "3.9", TOXENV: "py39"}
           - {VERSION: "3.10", TOXENV: "py310"}
-          - {VERSION: "pypy-3.7", TOXENV: "pypy3"}
-          - {VERSION: "pypy-3.8", TOXENV: "pypy3"}
-          - {VERSION: "pypy-3.9", TOXENV: "pypy3"}
+          - {VERSION: "pypy-3.7-v7.3.9", TOXENV: "pypy3"}
+          - {VERSION: "pypy-3.8-v7.3.9", TOXENV: "pypy3"}
+          - {VERSION: "pypy-3.9-v7.3.9", TOXENV: "pypy3"}
 
           # MSRV
           - {VERSION: "3.10", TOXENV: "py310", RUST_VERSION: "1.56.0"}
