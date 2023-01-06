@@ -152,6 +152,7 @@ jobs:
             ~/.cargo/git/db/
             src/_bcrypt/target/
           key: ${{ runner.os }}-${{ matrix.IMAGE.IMAGE }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+      - run: /venv/bin/pip install tox
       - run: '/venv/bin/tox'
         env:
           TOXENV: ${{ matrix.IMAGE.TOXENV }}
