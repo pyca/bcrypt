@@ -65,7 +65,7 @@ workflows:
           # the required checks on GH
           name: linux-arm64-ci
           image: ghcr.io/pyca/cryptography-runner-ubuntu-jammy:aarch64
-          toxenv: py38
+          toxenv: py310
           # This makes sure it runs on all tags in addition to PRs/branches.
           # By default CircleCI ignores tags.
           filters:
