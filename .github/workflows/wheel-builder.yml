@@ -89,7 +89,7 @@ jobs:
       - run: |
           curl "${{ matrix.PYTHON.DOWNLOAD_URL }}" -o python.pkg
           sudo installer -pkg python.pkg -target /
-      - uses: dtolnay/rust-toolchain@25dc93b901a87e864900a8aec6c12e9aa794c0c3
+      - uses: dtolnay/rust-toolchain@52e69531e6f69a396bc9d1226284493a5db969ff
         with:
           toolchain: stable
           # Add the arm64 target in addition to the native arch (x86_64)
@@ -140,7 +140,7 @@ jobs:
         with:
           python-version: ${{ matrix.PYTHON.VERSION }}
           architecture: ${{ matrix.WINDOWS.ARCH }}
-      - uses: dtolnay/rust-toolchain@25dc93b901a87e864900a8aec6c12e9aa794c0c3
+      - uses: dtolnay/rust-toolchain@52e69531e6f69a396bc9d1226284493a5db969ff
         with:
           toolchain: stable
           target: ${{ matrix.WINDOWS.RUST_TRIPLE }}

@@ -118,7 +118,7 @@ jobs:
             ~/.cargo/git/db/
             src/_bcrypt/target/
           key: ${{ runner.os }}-${{ matrix.PYTHON.VERSION }}-${{ steps.setup-python.outputs.python-version }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-      - uses: dtolnay/rust-toolchain@25dc93b901a87e864900a8aec6c12e9aa794c0c3
+      - uses: dtolnay/rust-toolchain@52e69531e6f69a396bc9d1226284493a5db969ff
         with:
           toolchain: ${{ matrix.PYTHON.RUST_VERSION || 'stable' }}
 
