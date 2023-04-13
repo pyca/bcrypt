@@ -40,7 +40,7 @@ jobs:
     name: "${{ matrix.PYTHON.VERSION }} for ${{ matrix.MANYLINUX.NAME }}"
     container: ghcr.io/pyca/${{ matrix.MANYLINUX.CONTAINER }}
     steps:
-      - uses: actions/checkout@v3.5.0
+      - uses: actions/checkout@v3.5.1
         with:
           # The tag to build or the tag received by the tag event
           ref: ${{ github.event.inputs.version || github.ref }}
@@ -81,7 +81,7 @@ jobs:
             BIN_PATH: '/Library/Frameworks/Python.framework/Versions/3.10/bin/python3'
     name: "Python ${{ matrix.PYTHON.VERSION }} for ABI ${{ matrix.PYTHON.ABI_VERSION }} on macOS"
     steps:
-      - uses: actions/checkout@v3.5.0
+      - uses: actions/checkout@v3.5.1
         with:
           # The tag to build or the tag received by the tag event
           ref: ${{ github.event.inputs.version || github.ref }}
@@ -130,7 +130,7 @@ jobs:
           - {VERSION: "3.6", ABI_VERSION: "cp36"}
     name: "${{ matrix.PYTHON.VERSION }} ${{ matrix.PYTHON.ABI_VERSION }} ${{ matrix.WINDOWS.ARCH }}"
     steps:
-      - uses: actions/checkout@v3.5.0
+      - uses: actions/checkout@v3.5.1
         with:
           # The tag to build or the tag received by the tag event
           ref: ${{ github.event.inputs.version || github.ref }}
