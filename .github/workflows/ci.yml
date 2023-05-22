@@ -13,7 +13,7 @@ jobs:
     strategy:
       matrix:
          PYTHON:
-          - {VERSION: "3.6", TOXENV: "py36"}
+          - {VERSION: "3.7", TOXENV: "py37"}
           - {VERSION: "3.10", TOXENV: "py310"}
     name: "Python ${{ matrix.PYTHON.VERSION }} on macOS"
     steps:
@@ -49,7 +49,7 @@ jobs:
           - {ARCH: 'x86', WINDOWS: 'win32', RUST_TRIPLE: 'i686-pc-windows-msvc'}
           - {ARCH: 'x64', WINDOWS: 'win64', RUST_TRIPLE: 'x86_64-pc-windows-msvc'}
         PYTHON:
-          - {VERSION: "3.6", TOXENV: "py36"}
+          - {VERSION: "3.7", TOXENV: "py37"}
           - {VERSION: "3.10", TOXENV: "py310"}
     name: "Python ${{ matrix.PYTHON.VERSION }} on ${{ matrix.WINDOWS.WINDOWS }}"
     steps:
@@ -71,7 +71,7 @@ jobs:
             ~/.cargo/registry/src/
             ~/.cargo/git/db/
             src/_bcrypt/target/
-          key: ${{ runner.os }}-${{ matrix.WINDOWS.ARCH }}-${{ steps.setup-python.outputs.python-version }}-cargo-${{ hashFiles('**/Cargo.lock') }}      
+          key: ${{ runner.os }}-${{ matrix.WINDOWS.ARCH }}-${{ steps.setup-python.outputs.python-version }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
       - run: pip install tox
       - run: tox
@@ -85,19 +85,18 @@ jobs:
         PYTHON:
           - {VERSION: "3.9", TOXENV: "pep8,packaging"}
           - {VERSION: "3.9", TOXENV: "mypy"}
-          - {VERSION: "3.6", TOXENV: "py36"}
           - {VERSION: "3.7", TOXENV: "py37"}
           - {VERSION: "3.8", TOXENV: "py38"}
           - {VERSION: "3.9", TOXENV: "py39"}
           - {VERSION: "3.10", TOXENV: "py310"}
-          - {VERSION: "pypy-3.7-v7.3.9", TOXENV: "pypy3"}
-          - {VERSION: "pypy-3.8-v7.3.9", TOXENV: "pypy3"}
-          - {VERSION: "pypy-3.9-v7.3.9", TOXENV: "pypy3"}
+          - {VERSION: "3.11", TOXENV: "py311"}
+          - {VERSION: "pypy-3.8", TOXENV: "pypy3"}
+          - {VERSION: "pypy-3.9", TOXENV: "pypy3"}
 
           # MSRV
-          - {VERSION: "3.10", TOXENV: "py310", RUST_VERSION: "1.56.0"}
-          - {VERSION: "3.10", TOXENV: "py310", RUST_VERSION: "beta"}
-          - {VERSION: "3.10", TOXENV: "py310", RUST_VERSION: "nightly"}
+          - {VERSION: "3.11", TOXENV: "py311", RUST_VERSION: "1.56.0"}
+          - {VERSION: "3.11", TOXENV: "py311", RUST_VERSION: "beta"}
+          - {VERSION: "3.11", TOXENV: "py311", RUST_VERSION: "nightly"}
     name: "${{ matrix.PYTHON.TOXENV }} on linux, Rust ${{ matrix.PYTHON.RUST_VERSION || 'stable' }}"
     steps:
       - uses: actions/checkout@v3.5.2
