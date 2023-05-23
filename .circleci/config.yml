@@ -74,7 +74,7 @@ workflows:
       - linux-arm64-wheel:
           name: manylinux2014_aarch64-wheel
           image: ghcr.io/pyca/cryptography-manylinux2014_aarch64:latest
-          python: cp36-cp36m
+          python: cp37-cp37m
           platform: manylinux2014_aarch64
           filters:
             tags:
@@ -82,7 +82,7 @@ workflows:
       - linux-arm64-wheel:
           name: manylinux_2_28_aarch64-wheel
           image: ghcr.io/pyca/cryptography-manylinux_2_28:aarch64
-          python: cp36-cp36m
+          python: cp37-cp37m
           platform: manylinux_2_28_aarch64
           filters:
             tags:
@@ -90,7 +90,7 @@ workflows:
       - linux-arm64-wheel:
           name: musllinux_1_1_aarch64-wheel
           image: ghcr.io/pyca/cryptography-musllinux_1_1:aarch64
-          python: cp36-cp36m
+          python: cp37-cp37m
           platform: musllinux_1_1_aarch64
           filters:
             tags:

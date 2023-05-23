@@ -21,8 +21,7 @@ jobs:
     strategy:
       matrix:
         PYTHON:
-          - { VERSION: "cp36-cp36m", ABI_VERSION: 'cp36' }
-          - { VERSION: "pp37-pypy37_pp73" }
+          - { VERSION: "cp37-cp37m", ABI_VERSION: 'cp37' }
           - { VERSION: "pp38-pypy38_pp73" }
           - { VERSION: "pp39-pypy39_pp73" }
         MANYLINUX:
@@ -31,8 +30,6 @@ jobs:
           - { CONTAINER: "cryptography-musllinux_1_1:x86_64", NAME: "musllinux_1_1" }
         exclude:
           # There are no readily available musllinux PyPy distributions
-          - PYTHON: { VERSION: "pp37-pypy37_pp73" }
-            MANYLINUX: { NAME: "musllinux_1_1", CONTAINER: "cryptography-musllinux_1_1:x86_64" }
           - PYTHON: { VERSION: "pp38-pypy38_pp73" }
             MANYLINUX: { NAME: "musllinux_1_1", CONTAINER: "cryptography-musllinux_1_1:x86_64"}
           - PYTHON: { VERSION: "pp39-pypy39_pp73" }
@@ -75,10 +72,10 @@ jobs:
     strategy:
       matrix:
         PYTHON:
-          - VERSION: '3.10'
-            ABI_VERSION: 'cp36'
-            DOWNLOAD_URL: 'https://www.python.org/ftp/python/3.10.1/python-3.10.1-macos11.pkg'
-            BIN_PATH: '/Library/Frameworks/Python.framework/Versions/3.10/bin/python3'
+          - VERSION: '3.11'
+            ABI_VERSION: 'cp37'
+            DOWNLOAD_URL: 'https://www.python.org/ftp/python/3.11.3/python-3.11.3-macos11.pkg'
+            BIN_PATH: '/Library/Frameworks/Python.framework/Versions/3.11/bin/python3'
     name: "Python ${{ matrix.PYTHON.VERSION }} for ABI ${{ matrix.PYTHON.ABI_VERSION }} on macOS"
     steps:
       - uses: actions/checkout@v3.5.2
@@ -127,7 +124,7 @@ jobs:
           - {ARCH: 'x86', RUST_TRIPLE: 'i686-pc-windows-msvc'}
           - {ARCH: 'x64', RUST_TRIPLE: 'x86_64-pc-windows-msvc'}
         PYTHON:
-          - {VERSION: "3.6", ABI_VERSION: "cp36"}
+          - {VERSION: "3.7", ABI_VERSION: "cp37"}
     name: "${{ matrix.PYTHON.VERSION }} ${{ matrix.PYTHON.ABI_VERSION }} ${{ matrix.WINDOWS.ARCH }}"
     steps:
       - uses: actions/checkout@v3.5.2
