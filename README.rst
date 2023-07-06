@@ -55,6 +55,7 @@ Changelog
 ------------------
 
 * Dropped support for Python 3.6.
+* Bumped MSRV to 1.60.
 
 4.0.1
 -----

@@ -88,11 +88,11 @@ jobs:
           - {VERSION: "3.9", TOXENV: "py39"}
           - {VERSION: "3.10", TOXENV: "py310"}
           - {VERSION: "3.11", TOXENV: "py311"}
-          - {VERSION: "pypy-3.8", TOXENV: "pypy3"}
           - {VERSION: "pypy-3.9", TOXENV: "pypy3"}
+          - {VERSION: "pypy-3.10", TOXENV: "pypy3"}
 
           # MSRV
-          - {VERSION: "3.11", TOXENV: "py311", RUST_VERSION: "1.56.0"}
+          - {VERSION: "3.11", TOXENV: "py311", RUST_VERSION: "1.60.0"}
           - {VERSION: "3.11", TOXENV: "py311", RUST_VERSION: "beta"}
           - {VERSION: "3.11", TOXENV: "py311", RUST_VERSION: "nightly"}
     name: "${{ matrix.PYTHON.TOXENV }} on linux, Rust ${{ matrix.PYTHON.RUST_VERSION || 'stable' }}"
