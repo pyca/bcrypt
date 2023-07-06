@@ -22,17 +22,17 @@ jobs:
       matrix:
         PYTHON:
           - { VERSION: "cp37-cp37m", ABI_VERSION: 'cp37' }
-          - { VERSION: "pp38-pypy38_pp73" }
           - { VERSION: "pp39-pypy39_pp73" }
+          - { VERSION: "pp310-pypy310_pp73" }
         MANYLINUX:
           - { CONTAINER: "cryptography-manylinux2014:x86_64", NAME: "manylinux2014" }
           - { CONTAINER: "cryptography-manylinux_2_28:x86_64", NAME: "manylinux_2_28" }
           - { CONTAINER: "cryptography-musllinux_1_1:x86_64", NAME: "musllinux_1_1" }
         exclude:
           # There are no readily available musllinux PyPy distributions
-          - PYTHON: { VERSION: "pp38-pypy38_pp73" }
-            MANYLINUX: { NAME: "musllinux_1_1", CONTAINER: "cryptography-musllinux_1_1:x86_64"}
           - PYTHON: { VERSION: "pp39-pypy39_pp73" }
+            MANYLINUX: { NAME: "musllinux_1_1", CONTAINER: "cryptography-musllinux_1_1:x86_64"}
+          - PYTHON: { VERSION: "pp310-pypy310_pp73" }
             MANYLINUX: { NAME: "musllinux_1_1", CONTAINER: "cryptography-musllinux_1_1:x86_64"}
     name: "${{ matrix.PYTHON.VERSION }} for ${{ matrix.MANYLINUX.NAME }}"
     container: ghcr.io/pyca/${{ matrix.MANYLINUX.CONTAINER }}
