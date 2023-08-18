@@ -4,6 +4,7 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+    open-pull-requests-limit: 1024
   - package-ecosystem: cargo
     directory: "/src/_bcrypt/"
     schedule:
@@ -11,3 +12,4 @@ updates:
     allow:
       # Also update indirect dependencies
       - dependency-type: all
+    open-pull-requests-limit: 1024
