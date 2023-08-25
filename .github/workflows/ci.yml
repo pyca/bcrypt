@@ -17,7 +17,7 @@ jobs:
           - {VERSION: "3.11", TOXENV: "py311"}
     name: "Python ${{ matrix.PYTHON.VERSION }} on macOS"
     steps:
-      - uses: actions/checkout@v3.5.3
+      - uses: actions/checkout@v3.6.0
       - name: Setup python
         id: setup-python
         uses: actions/setup-python@v4.7.0
@@ -52,7 +52,7 @@ jobs:
           - {VERSION: "3.11", TOXENV: "py311"}
     name: "Python ${{ matrix.PYTHON.VERSION }} on ${{ matrix.WINDOWS.WINDOWS }}"
     steps:
-      - uses: actions/checkout@v3.5.3
+      - uses: actions/checkout@v3.6.0
       - name: Setup python
         id: setup-python
         uses: actions/setup-python@v4.7.0
@@ -97,7 +97,7 @@ jobs:
           - {VERSION: "3.11", TOXENV: "py311", RUST_VERSION: "nightly"}
     name: "${{ matrix.PYTHON.TOXENV }} on linux, Rust ${{ matrix.PYTHON.RUST_VERSION || 'stable' }}"
     steps:
-      - uses: actions/checkout@v3.5.3
+      - uses: actions/checkout@v3.6.0
       - name: Setup python
         id: setup-python
         uses: actions/setup-python@v4.7.0
@@ -133,7 +133,7 @@ jobs:
           - {IMAGE: "alpine", TOXENV: "py311"}
     name: "${{ matrix.IMAGE.TOXENV }} on ${{ matrix.IMAGE.IMAGE }}"
     steps:
-      - uses: actions/checkout@v3.5.3
+      - uses: actions/checkout@v3.6.0
         with:
           persist-credentials: false
       - uses: actions/cache@v3.3.1
