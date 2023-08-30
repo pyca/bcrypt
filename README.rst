@@ -218,27 +218,31 @@ Maximum Password Length
 ~~~~~~~~~~~~~~~~~~~~~~~
 
 The bcrypt algorithm only handles passwords up to 72 characters; any characters
-beyond that are ignored. To work around this, a common approach is to hash a
-password with a keyed cryptographic hash (such as ``bcrypt_pbkdf``) and then
-base64 encode it to prevent NULL byte problems before hashing the result with
-``bcrypt``:
+beyond that are ignored. The best solution to this problem is to stop using
+bcrypt and use a modern algorithm such as argon2id or scrypt. Seriously.
+
+If you must use bcrypt, you can work around bcrypt's character limit by first
+hashing the password with a hexadecimal salted cryptographic hash. Note that
+omitting the salt or using raw output is `recommended against`_ because it may
+expose the system to `hash shucking`_ attacks. Therefore, make sure you give the
+inner hash function a `pepper`_, and encode the output as base64 to prevent
+`NULL`-byte problems:
 
 .. code:: pycon
 
     >>> import base64
     >>> import bcrypt
+    >>> import hmac
     >>> password = b"an incredibly long password" * 10
+    >>> pepper = bcrypt.gensalt()  # Do not store the pepper in your database
     >>> hashed = bcrypt.hashpw(
-    ...     base64.b64encode(bcrypt.kdf(password=password,
-    ...                                 salt=pepper,
-    ...                                 desired_key_bytes=32,
-    ...                                 rounds=100)),
+    ...     base64.b64encode(hmac.digest(pepper, password, "sha256")),
     ...     bcrypt.gensalt()
     ... )
-
-Using a hash function without a hash is `recommended against`_ as it may expose
-the system to `hash shucking`_ attacks. Instead, the hash function should use a
-global `pepper`_ or a per-hash salt.
+    >>> matches = bcrypt.checkpw(
+    ...     base64.b64encode(hmac.digest(pepper, password, "sha256")),
+    ...     hashed
+    ... )
 
 Compatibility
 -------------
