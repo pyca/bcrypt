@@ -62,7 +62,7 @@ jobs:
 
       - run: mkdir bcrypt-wheelhouse
       - run: mv wheelhouse/bcrypt*.whl bcrypt-wheelhouse/
-      - uses: actions/upload-artifact@v3.1.2
+      - uses: actions/upload-artifact@v3.1.3
         with:
           name: "bcrypt-${{ github.event.inputs.version }}-${{ matrix.MANYLINUX.NAME }} -${{ matrix.PYTHON.ABI_VERSION }}"
           path: bcrypt-wheelhouse/
@@ -111,7 +111,7 @@ jobs:
 
       - run: mkdir bcrypt-wheelhouse
       - run: mv wheelhouse/bcrypt*.whl bcrypt-wheelhouse/
-      - uses: actions/upload-artifact@v3.1.2
+      - uses: actions/upload-artifact@v3.1.3
         with:
           name: "bcrypt-${{ github.event.inputs.version }}-macOS-${{ matrix.PYTHON.ABI_VERSION }}"
           path: bcrypt-wheelhouse/
@@ -155,7 +155,7 @@ jobs:
       # TODO: can we setup another python and test in the same job? this would catch bad linking problems (e.g. build and test on py36, but then install py38 and see if it works
       - run: mkdir bcrypt-wheelhouse
       - run: move wheelhouse\bcrypt*.whl bcrypt-wheelhouse\
-      - uses: actions/upload-artifact@v3.1.2
+      - uses: actions/upload-artifact@v3.1.3
         with:
           name: "bcrypt-${{ github.event.inputs.version }}-${{ matrix.WINDOWS.ARCH }}-${{ matrix.PYTHON.ABI_VERSION }}"
           path: bcrypt-wheelhouse\
