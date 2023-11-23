@@ -126,14 +126,24 @@ jobs:
           CARGO_TARGET_DIR: ${{ format('{0}/src/_bcrypt/target/', github.workspace) }}
 
   linux-distros:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.IMAGE.RUNNER }}
     container: ghcr.io/pyca/cryptography-runner-${{ matrix.IMAGE.IMAGE }}
     strategy:
       matrix:
         IMAGE:
-          - {IMAGE: "alpine", TOXENV: "py311"}
+          - {IMAGE: "alpine", TOXENV: "py311", RUNNER: "ubuntu-latest"}
+          - {IMAGE: "alpine:aarch64", TOXENV: "py311", RUNNER: [self-hosted, Linux, ARM64]}
+          - {IMAGE: "ubuntu-jammy:aarch64", TOXENV: "py310", RUNNER: [self-hosted, Linux, ARM64]}
     name: "${{ matrix.IMAGE.TOXENV }} on ${{ matrix.IMAGE.IMAGE }}"
     steps:
+      - name: Ridiculous alpine workaround for actions support on arm64
+        run: |
+          # This modifies /etc/os-release so the JS actions
+          # from GH can't detect that it's on alpine:aarch64. It will
+          # then use a glibc nodejs, which works fine when gcompat
+          # is installed in the container (which it is)
+          sed -i "s:ID=alpine:ID=NotpineForGHA:" /etc/os-release
+        if: matrix.IMAGE.IMAGE == 'alpine:aarch64'
       - uses: actions/checkout@v3.6.0
         with:
           persist-credentials: false
