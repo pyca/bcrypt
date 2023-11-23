@@ -5,7 +5,10 @@
 #![deny(rust_2018_idioms)]
 
 use base64::Engine;
+use pyo3::PyTypeInfo;
 use std::convert::TryInto;
+use std::io::Write;
+use subtle::ConstantTimeEq;
 
 pub const BASE64_ENGINE: base64::engine::GeneralPurpose = base64::engine::GeneralPurpose::new(
     &base64::alphabet::BCRYPT,
@@ -13,9 +16,43 @@ pub const BASE64_ENGINE: base64::engine::GeneralPurpose = base64::engine::Genera
 );
 
 #[pyo3::prelude::pyfunction]
-fn encode_base64<'p>(py: pyo3::Python<'p>, data: &[u8]) -> &'p pyo3::types::PyBytes {
-    let output = BASE64_ENGINE.encode(data);
-    pyo3::types::PyBytes::new(py, output.as_bytes())
+fn gensalt<'p>(
+    py: pyo3::Python<'p>,
+    rounds: Option<u16>,
+    prefix: Option<&[u8]>,
+) -> pyo3::PyResult<&'p pyo3::types::PyBytes> {
+    let rounds = rounds.unwrap_or(12);
+    let prefix = prefix.unwrap_or(b"2b");
+
+    if prefix != b"2a" && prefix != b"2b" {
+        return Err(pyo3::exceptions::PyValueError::new_err(
+            "Supported prefixes are b'2a' or b'2b'",
+        ));
+    }
+
+    if !(4..=31).contains(&rounds) {
+        return Err(pyo3::exceptions::PyValueError::new_err("Invalid rounds"));
+    }
+
+    let mut salt = [0; 16];
+    getrandom::getrandom(&mut salt).unwrap();
+
+    let encoded_salt = BASE64_ENGINE.encode(salt);
+
+    pyo3::types::PyBytes::new_with(
+        py,
+        1 + prefix.len() + 1 + 2 + 1 + encoded_salt.len(),
+        |mut b| {
+            write!(b, "$").unwrap();
+            b.write_all(prefix).unwrap();
+            write!(b, "$").unwrap();
+            write!(b, "{:02.2}", rounds).unwrap();
+            write!(b, "$").unwrap();
+            b.write_all(encoded_salt.as_bytes()).unwrap();
+
+            Ok(())
+        },
+    )
 }
 
 #[pyo3::prelude::pyfunction]
@@ -24,6 +61,14 @@ fn hashpass<'p>(
     password: &[u8],
     salt: &[u8],
 ) -> pyo3::PyResult<&'p pyo3::types::PyBytes> {
+    // bcrypt originally suffered from a wraparound bug:
+    // http://www.openwall.com/lists/oss-security/2012/01/02/4
+    // This bug was corrected in the OpenBSD source by truncating inputs to 72
+    // bytes on the updated prefix $2b$, but leaving $2a$ unchanged for
+    // compatibility. However, pyca/bcrypt 2.0.0 *did* correctly truncate inputs
+    // on $2a$, so we do it here to preserve compatibility with 2.0.0
+    let password = &password[..password.len().min(72)];
+
     // salt here is not just the salt bytes, but rather an encoded value
     // containing a version number, number of rounds, and the salt.
     // Should be [prefix, cost, hash]. This logic is copied from `bcrypt`
@@ -66,13 +111,58 @@ fn hashpass<'p>(
 }
 
 #[pyo3::prelude::pyfunction]
+fn checkpass(
+    py: pyo3::Python<'_>,
+    password: &[u8],
+    hashed_password: &[u8],
+) -> pyo3::PyResult<bool> {
+    Ok(hashpass(py, password, hashed_password)?
+        .as_bytes()
+        .ct_eq(hashed_password)
+        .into())
+}
+
+#[pyo3::prelude::pyfunction]
 fn pbkdf<'p>(
     py: pyo3::Python<'p>,
     password: &[u8],
     salt: &[u8],
-    rounds: u32,
     desired_key_bytes: usize,
+    rounds: u32,
+    ignore_few_rounds: Option<bool>,
 ) -> pyo3::PyResult<&'p pyo3::types::PyBytes> {
+    let ignore_few_rounds = ignore_few_rounds.unwrap_or(false);
+
+    if password.is_empty() || salt.is_empty() {
+        return Err(pyo3::exceptions::PyValueError::new_err(
+            "password and salt must not be empty",
+        ));
+    }
+
+    if desired_key_bytes == 0 || desired_key_bytes > 512 {
+        return Err(pyo3::exceptions::PyValueError::new_err(
+            "desired_key_bytes must be 1-512",
+        ));
+    }
+
+    if rounds < 1 {
+        return Err(pyo3::exceptions::PyValueError::new_err(
+            "rounds must be 1 or more",
+        ));
+    }
+
+    if rounds < 50 && !ignore_few_rounds {
+        // They probably think bcrypt.kdf()'s rounds parameter is logarithmic,
+        // expecting this value to be slow enough (it probably would be if this
+        // were bcrypt). Emit a warning.
+        pyo3::PyErr::warn(
+            py,
+            pyo3::exceptions::PyUserWarning::type_object(py),
+            &format!("Warning: bcrypt.kdf() called with only {rounds} round(s). This few is not secure: the parameter is linear, like PBKDF2."),
+            3
+        )?;
+    }
+
     pyo3::types::PyBytes::new_with(py, desired_key_bytes, |output| {
         py.allow_threads(|| {
             bcrypt_pbkdf::bcrypt_pbkdf(password, salt, rounds, output).unwrap();
@@ -83,8 +173,9 @@ fn pbkdf<'p>(
 
 #[pyo3::prelude::pymodule]
 fn _bcrypt(_py: pyo3::Python<'_>, m: &pyo3::types::PyModule) -> pyo3::PyResult<()> {
-    m.add_function(pyo3::wrap_pyfunction!(encode_base64, m)?)?;
+    m.add_function(pyo3::wrap_pyfunction!(gensalt, m)?)?;
     m.add_function(pyo3::wrap_pyfunction!(hashpass, m)?)?;
+    m.add_function(pyo3::wrap_pyfunction!(checkpass, m)?)?;
     m.add_function(pyo3::wrap_pyfunction!(pbkdf, m)?)?;
 
     Ok(())

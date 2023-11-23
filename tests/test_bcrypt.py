@@ -1,5 +1,3 @@
-import os
-
 import pytest
 
 import bcrypt
@@ -175,39 +173,40 @@ _2y_test_vectors = [
 
 
 def test_gensalt_basic(monkeypatch):
-    monkeypatch.setattr(os, "urandom", lambda n: b"0000000000000000")
-    assert bcrypt.gensalt() == b"$2b$12$KB.uKB.uKB.uKB.uKB.uK."
+    salt = bcrypt.gensalt()
+    assert salt.startswith(b"$2b$12$")
 
 
 @pytest.mark.parametrize(
-    ("rounds", "expected"),
+    ("rounds", "expected_prefix"),
     [
-        (4, b"$2b$04$KB.uKB.uKB.uKB.uKB.uK."),
-        (5, b"$2b$05$KB.uKB.uKB.uKB.uKB.uK."),
-        (6, b"$2b$06$KB.uKB.uKB.uKB.uKB.uK."),
-        (7, b"$2b$07$KB.uKB.uKB.uKB.uKB.uK."),
-        (8, b"$2b$08$KB.uKB.uKB.uKB.uKB.uK."),
-        (9, b"$2b$09$KB.uKB.uKB.uKB.uKB.uK."),
-        (10, b"$2b$10$KB.uKB.uKB.uKB.uKB.uK."),
-        (11, b"$2b$11$KB.uKB.uKB.uKB.uKB.uK."),
-        (12, b"$2b$12$KB.uKB.uKB.uKB.uKB.uK."),
-        (13, b"$2b$13$KB.uKB.uKB.uKB.uKB.uK."),
-        (14, b"$2b$14$KB.uKB.uKB.uKB.uKB.uK."),
-        (15, b"$2b$15$KB.uKB.uKB.uKB.uKB.uK."),
-        (16, b"$2b$16$KB.uKB.uKB.uKB.uKB.uK."),
-        (17, b"$2b$17$KB.uKB.uKB.uKB.uKB.uK."),
-        (18, b"$2b$18$KB.uKB.uKB.uKB.uKB.uK."),
-        (19, b"$2b$19$KB.uKB.uKB.uKB.uKB.uK."),
-        (20, b"$2b$20$KB.uKB.uKB.uKB.uKB.uK."),
-        (21, b"$2b$21$KB.uKB.uKB.uKB.uKB.uK."),
-        (22, b"$2b$22$KB.uKB.uKB.uKB.uKB.uK."),
-        (23, b"$2b$23$KB.uKB.uKB.uKB.uKB.uK."),
-        (24, b"$2b$24$KB.uKB.uKB.uKB.uKB.uK."),
+        (4, b"$2b$04$"),
+        (5, b"$2b$05$"),
+        (6, b"$2b$06$"),
+        (7, b"$2b$07$"),
+        (8, b"$2b$08$"),
+        (9, b"$2b$09$"),
+        (10, b"$2b$10$"),
+        (11, b"$2b$11$"),
+        (12, b"$2b$12$"),
+        (13, b"$2b$13$"),
+        (14, b"$2b$14$"),
+        (15, b"$2b$15$"),
+        (16, b"$2b$16$"),
+        (17, b"$2b$17$"),
+        (18, b"$2b$18$"),
+        (19, b"$2b$19$"),
+        (20, b"$2b$20$"),
+        (21, b"$2b$21$"),
+        (22, b"$2b$22$"),
+        (23, b"$2b$23$"),
+        (24, b"$2b$24$"),
     ],
 )
-def test_gensalt_rounds_valid(rounds, expected, monkeypatch):
-    monkeypatch.setattr(os, "urandom", lambda n: b"0000000000000000")
-    assert bcrypt.gensalt(rounds) == expected
+def test_gensalt_rounds_valid(rounds, expected_prefix):
+    salt = bcrypt.gensalt(rounds)
+
+    assert salt.startswith(expected_prefix)
 
 
 @pytest.mark.parametrize("rounds", list(range(1, 4)))
@@ -218,12 +217,12 @@ def test_gensalt_rounds_invalid(rounds):
 
 def test_gensalt_bad_prefix():
     with pytest.raises(ValueError):
-        bcrypt.gensalt(prefix="bad")
+        bcrypt.gensalt(prefix=b"bad")
 
 
 def test_gensalt_2a_prefix(monkeypatch):
-    monkeypatch.setattr(os, "urandom", lambda n: b"0000000000000000")
-    assert bcrypt.gensalt(prefix=b"2a") == b"$2a$12$KB.uKB.uKB.uKB.uKB.uK."
+    salt = bcrypt.gensalt(prefix=b"2a")
+    assert salt.startswith(b"$2a$12$")
 
 
 @pytest.mark.parametrize(("password", "salt", "hashed"), _test_vectors)
@@ -478,7 +477,7 @@ def test_kdf_warn_rounds():
         (b"", b"$2b$04$cVWp4XaNU8a4v1uMRum2SO", 10, 10, ValueError),
         (b"password", b"", 10, 10, ValueError),
         (b"password", b"$2b$04$cVWp4XaNU8a4v1uMRum2SO", 0, 10, ValueError),
-        (b"password", b"$2b$04$cVWp4XaNU8a4v1uMRum2SO", -3, 10, ValueError),
+        (b"password", b"$2b$04$cVWp4XaNU8a4v1uMRum2SO", -3, 10, OverflowError),
         (b"password", b"$2b$04$cVWp4XaNU8a4v1uMRum2SO", 513, 10, ValueError),
         (b"password", b"$2b$04$cVWp4XaNU8a4v1uMRum2SO", 20, 0, ValueError),
     ],
