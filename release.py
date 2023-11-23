@@ -5,7 +5,6 @@
 from __future__ import absolute_import, division, print_function
 
 import getpass
-import glob
 import io
 import json
 import os
@@ -81,7 +80,7 @@ def download_artifacts_github_actions(session, token, run_url):
     return paths
 
 
-def build_github_actions_wheels(token, version):
+def build_github_actions_sdist_wheels(token, version):
     session = requests.Session()
 
     response = session.post(
@@ -125,15 +124,11 @@ def release(version):
     run("git", "tag", "-s", version, "-m", "{0} release".format(version))
     run("git", "push", "--tags")
 
-    run("python", "setup.py", "sdist")
-
-    packages = glob.glob("dist/bcrypt-{0}*".format(version))
-    github_actions_wheel_paths = build_github_actions_wheels(
+    github_actions_paths = build_github_actions_sdist_wheels(
         github_token, version
     )
 
-    run("twine", "upload", *github_actions_wheel_paths)
-    run("twine", "upload", "-s", *packages)
+    run("twine", "upload", *github_actions_paths)
 
 
 if __name__ == "__main__":
