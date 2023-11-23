@@ -14,7 +14,7 @@ jobs:
       matrix:
          PYTHON:
           - {VERSION: "3.7", TOXENV: "py37"}
-          - {VERSION: "3.11", TOXENV: "py311"}
+          - {VERSION: "3.12", TOXENV: "py312"}
     name: "Python ${{ matrix.PYTHON.VERSION }} on macOS"
     steps:
       - uses: actions/checkout@v3.6.0
@@ -49,7 +49,7 @@ jobs:
           - {ARCH: 'x64', WINDOWS: 'win64', RUST_TRIPLE: 'x86_64-pc-windows-msvc'}
         PYTHON:
           - {VERSION: "3.7", TOXENV: "py37"}
-          - {VERSION: "3.11", TOXENV: "py311"}
+          - {VERSION: "3.12", TOXENV: "py312"}
     name: "Python ${{ matrix.PYTHON.VERSION }} on ${{ matrix.WINDOWS.WINDOWS }}"
     steps:
       - uses: actions/checkout@v3.6.0
@@ -81,8 +81,8 @@ jobs:
     strategy:
       matrix:
         PYTHON:
-          - {VERSION: "3.11", TOXENV: "pep8,packaging"}
-          - {VERSION: "3.11", TOXENV: "mypy"}
+          - {VERSION: "3.12", TOXENV: "pep8,packaging"}
+          - {VERSION: "3.12", TOXENV: "mypy"}
           - {VERSION: "3.7", TOXENV: "py37"}
           - {VERSION: "3.8", TOXENV: "py38"}
           - {VERSION: "3.9", TOXENV: "py39"}
@@ -93,9 +93,9 @@ jobs:
           - {VERSION: "pypy-3.10", TOXENV: "pypy3"}
 
           # MSRV
-          - {VERSION: "3.11", TOXENV: "py311", RUST_VERSION: "1.60.0"}
-          - {VERSION: "3.11", TOXENV: "py311", RUST_VERSION: "beta"}
-          - {VERSION: "3.11", TOXENV: "py311", RUST_VERSION: "nightly"}
+          - {VERSION: "3.12", TOXENV: "py312", RUST_VERSION: "1.60.0"}
+          - {VERSION: "3.12", TOXENV: "py312", RUST_VERSION: "beta"}
+          - {VERSION: "3.12", TOXENV: "py312", RUST_VERSION: "nightly"}
     name: "${{ matrix.PYTHON.TOXENV }} on linux, Rust ${{ matrix.PYTHON.RUST_VERSION || 'stable' }}"
     steps:
       - uses: actions/checkout@v3.6.0
