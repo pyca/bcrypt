@@ -1,3 +1,4 @@
+import os
 import platform
 import re
 import shutil
@@ -43,7 +44,11 @@ try:
                     if platform.python_implementation() == "PyPy"
                     else ["pyo3/abi3-py37"]
                 ),
-                rust_version=">=1.56.0",
+                rust_version=(
+                    ">=1.64.0"
+                    if os.environ.get("BCRYPT_ALLOW_RUST_163", "0") != "0"
+                    else ">=1.63.0"
+                ),
             ),
         ],
     )
@@ -66,7 +71,8 @@ except:
     1) Upgrade to the latest pip and try again. This will fix errors for most
        users. See: https://pip.pypa.io/en/stable/installing/#upgrading-pip
     2) Ensure you have a recent Rust toolchain installed. bcrypt requires
-       rustc >= 1.56.0.
+       rustc >= 1.64.0. (1.63 may be used by setting the BCRYPT_ALLOW_RUST_163
+       environment variable)
     """
     )
     print(f"    Python: {'.'.join(str(v) for v in sys.version_info[:3])}")
