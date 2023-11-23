@@ -124,8 +124,6 @@ def release(version):
     run("git", "tag", "-s", version, "-m", "{0} release".format(version))
     run("git", "push", "--tags")
 
-    run("python", "setup.py", "sdist")
-
     github_actions_paths = build_github_actions_sdist_wheels(
         github_token, version
     )
