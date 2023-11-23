@@ -13,9 +13,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from __future__ import absolute_import
-from __future__ import division
 
+from . import _bcrypt
 from .__about__ import (
     __author__,
     __copyright__,
@@ -26,8 +25,6 @@ from .__about__ import (
     __uri__,
     __version__,
 )
-from . import _bcrypt  # noqa: I100
-
 
 __all__ = [
     "__title__",

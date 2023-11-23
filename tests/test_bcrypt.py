@@ -2,7 +2,6 @@ import pytest
 
 import bcrypt
 
-
 _test_vectors = [
     (
         b"Kk4DQuMMfZL9o",
@@ -393,13 +392,13 @@ def test_checkpw_extra_data():
         [
             # longer password
             8,
-            b"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do "
-            b"eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut "
+            b"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do"
+            b" eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut "
             b"enim ad minim veniam, quis nostrud exercitation ullamco laboris "
             b"nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor "
-            b"in reprehenderit in voluptate velit esse cillum dolore eu fugiat "
-            b"nulla pariatur. Excepteur sint occaecat cupidatat non proident, "
-            b"sunt in culpa qui officia deserunt mollit anim id est laborum.",
+            b"in reprehenderit in voluptate velit esse cillum dolore eu fugiat"
+            b" nulla pariatur. Excepteur sint occaecat cupidatat non proident,"
+            b" sunt in culpa qui officia deserunt mollit anim id est laborum.",
             b"salis\x00",
             b"\x10\x97\x8b\x07\x25\x3d\xf5\x7f\x71\xa1\x62\xeb\x0e\x8a\xd3\x0a",
         ],

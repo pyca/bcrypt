@@ -13,9 +13,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import unicode_literals
 
 __all__ = [
     "__title__",
@@ -38,4 +35,4 @@ __author__ = "The Python Cryptographic Authority developers"
 __email__ = "cryptography-dev@python.org"
 
 __license__ = "Apache License, Version 2.0"
-__copyright__ = "Copyright 2013-2022 {0}".format(__author__)
+__copyright__ = f"Copyright 2013-2023 {__author__}"
