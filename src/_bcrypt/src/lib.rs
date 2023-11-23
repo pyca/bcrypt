@@ -182,7 +182,7 @@ fn _bcrypt(_py: pyo3::Python<'_>, m: &pyo3::types::PyModule) -> pyo3::PyResult<(
     m.add("__summary__", "Modern(-ish) password hashing for your software and your servers")?;
     m.add("__uri__", "https://github.com/pyca/bcrypt/")?;
 
-    // When updating this, also update setup.cfg
+    // When updating this, also update pyproject.toml
     m.add("__version__", "4.0.1")?;
 
     let author = "The Python Cryptographic Authority developers";
