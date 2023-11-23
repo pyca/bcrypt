@@ -45,7 +45,9 @@ dependencies = [
  "base64",
  "bcrypt",
  "bcrypt-pbkdf",
+ "getrandom",
  "pyo3",
+ "subtle",
 ]
 
 [[package]]
