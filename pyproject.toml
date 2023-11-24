@@ -9,6 +9,10 @@ requires = [
 # disable Pip's fallback guessing
 build-backend = "setuptools.build_meta"
 
-[tool.black]
+[tool.ruff]
+ignore = ['N818']
+select = ['E', 'F', 'I', 'N', 'W', 'UP', 'RUF']
 line-length = 79
-target-version = ["py37"]
+
+[tool.ruff.isort]
+known-first-party = ["bcrypt", "tests"]
