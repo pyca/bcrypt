@@ -56,7 +56,7 @@ fn gensalt<'p>(
 }
 
 #[pyo3::prelude::pyfunction]
-fn hashpass<'p>(
+fn hashpw<'p>(
     py: pyo3::Python<'p>,
     password: &[u8],
     salt: &[u8],
@@ -111,19 +111,19 @@ fn hashpass<'p>(
 }
 
 #[pyo3::prelude::pyfunction]
-fn checkpass(
+fn checkpw(
     py: pyo3::Python<'_>,
     password: &[u8],
     hashed_password: &[u8],
 ) -> pyo3::PyResult<bool> {
-    Ok(hashpass(py, password, hashed_password)?
+    Ok(hashpw(py, password, hashed_password)?
         .as_bytes()
         .ct_eq(hashed_password)
         .into())
 }
 
 #[pyo3::prelude::pyfunction]
-fn pbkdf<'p>(
+fn kdf<'p>(
     py: pyo3::Python<'p>,
     password: &[u8],
     salt: &[u8],
@@ -174,9 +174,23 @@ fn pbkdf<'p>(
 #[pyo3::prelude::pymodule]
 fn _bcrypt(_py: pyo3::Python<'_>, m: &pyo3::types::PyModule) -> pyo3::PyResult<()> {
     m.add_function(pyo3::wrap_pyfunction!(gensalt, m)?)?;
-    m.add_function(pyo3::wrap_pyfunction!(hashpass, m)?)?;
-    m.add_function(pyo3::wrap_pyfunction!(checkpass, m)?)?;
-    m.add_function(pyo3::wrap_pyfunction!(pbkdf, m)?)?;
+    m.add_function(pyo3::wrap_pyfunction!(hashpw, m)?)?;
+    m.add_function(pyo3::wrap_pyfunction!(checkpw, m)?)?;
+    m.add_function(pyo3::wrap_pyfunction!(kdf, m)?)?;
+
+    m.add("__title__", "bcrypt")?;
+    m.add("__summary__", "Modern(-ish) password hashing for your software and your servers")?;
+    m.add("__uri__", "https://github.com/pyca/bcrypt/")?;
+
+    // When updating this, also update setup.cfg
+    m.add("__version__", "4.0.1")?;
+
+    let author = "The Python Cryptographic Authority developers";
+    m.add("__author__", author)?;
+    m.add("__email__", "cryptography-dev@python.org")?;
+
+    m.add("__license__", "Apache License, Version 2.0")?;
+    m.add("__copyright__", format!("Copyright 2013-2023 {author}"))?;
 
     Ok(())
 }

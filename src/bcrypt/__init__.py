@@ -1,7 +1,3 @@
-# Author:: Donald Stufft (<donald@stufft.io>)
-# Copyright:: Copyright (c) 2013 Donald Stufft
-# License:: Apache License, Version 2.0
-#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -14,8 +10,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from . import _bcrypt
-from .__about__ import (
+from ._bcrypt import (
     __author__,
     __copyright__,
     __email__,
@@ -24,9 +19,17 @@ from .__about__ import (
     __title__,
     __uri__,
     __version__,
+    checkpw,
+    gensalt,
+    hashpw,
+    kdf,
 )
 
 __all__ = [
+    "gensalt",
+    "hashpw",
+    "checkpw",
+    "kdf",
     "__title__",
     "__summary__",
     "__uri__",
@@ -35,14 +38,4 @@ __all__ = [
     "__email__",
     "__license__",
     "__copyright__",
-    "gensalt",
-    "hashpw",
-    "kdf",
-    "checkpw",
 ]
-
-
-gensalt = _bcrypt.gensalt
-hashpw = _bcrypt.hashpass
-checkpw = _bcrypt.checkpass
-kdf = _bcrypt.pbkdf

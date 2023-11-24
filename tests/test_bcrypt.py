@@ -279,22 +279,22 @@ def test_checkpw_bad_salt():
 
 def test_checkpw_str_password():
     with pytest.raises(TypeError):
-        bcrypt.checkpw("password", b"$2b$04$cVWp4XaNU8a4v1uMRum2SO")
+        bcrypt.checkpw("password", b"$2b$04$cVWp4XaNU8a4v1uMRum2SO")  # type: ignore[arg-type]
 
 
 def test_checkpw_str_salt():
     with pytest.raises(TypeError):
-        bcrypt.checkpw(b"password", "$2b$04$cVWp4XaNU8a4v1uMRum2SO")
+        bcrypt.checkpw(b"password", "$2b$04$cVWp4XaNU8a4v1uMRum2SO")  # type: ignore[arg-type]
 
 
 def test_hashpw_str_password():
     with pytest.raises(TypeError):
-        bcrypt.hashpw("password", b"$2b$04$cVWp4XaNU8a4v1uMRum2SO")
+        bcrypt.hashpw("password", b"$2b$04$cVWp4XaNU8a4v1uMRum2SO")  # type: ignore[arg-type]
 
 
 def test_hashpw_str_salt():
     with pytest.raises(TypeError):
-        bcrypt.hashpw(b"password", "$2b$04$cVWp4XaNU8a4v1uMRum2SO")
+        bcrypt.hashpw(b"password", "$2b$04$cVWp4XaNU8a4v1uMRum2SO")  # type: ignore[arg-type]
 
 
 def test_checkpw_nul_byte():
@@ -434,8 +434,7 @@ def test_checkpw_extra_data():
         [
             # UTF-8 Greek characters "odysseus" / "telemachos"
             8,
-            b"\xe1\xbd\x88\xce\xb4\xcf\x85\xcf\x83\xcf\x83\xce\xb5\xcf\x8d\xcf"
-            b"\x82",
+            b"\xe1\xbd\x88\xce\xb4\xcf\x85\xcf\x83\xcf\x83\xce\xb5\xcf\x8d\xcf\x82",
             b"\xce\xa4\xce\xb7\xce\xbb\xce\xad\xce\xbc\xce\xb1\xcf\x87\xce\xbf"
             b"\xcf\x82",
             b"\x43\x66\x6c\x9b\x09\xef\x33\xed\x8c\x27\xe8\xe8\xf3\xe2\xd8\xe6",
@@ -451,12 +450,12 @@ def test_kdf(rounds, password, salt, expected):
 
 def test_kdf_str_password():
     with pytest.raises(TypeError):
-        bcrypt.kdf("password", b"$2b$04$cVWp4XaNU8a4v1uMRum2SO", 10, 10)
+        bcrypt.kdf("password", b"$2b$04$cVWp4XaNU8a4v1uMRum2SO", 10, 10)  # type: ignore[arg-type]
 
 
 def test_kdf_str_salt():
     with pytest.raises(TypeError):
-        bcrypt.kdf(b"password", "salt", 10, 10)
+        bcrypt.kdf(b"password", "salt", 10, 10)  # type: ignore[arg-type]
 
 
 def test_kdf_no_warn_rounds():

@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 import platform
 import re
 import shutil
@@ -35,7 +34,7 @@ try:
     setup(
         rust_extensions=[
             RustExtension(
-                "_bcrypt",
+                "bcrypt._bcrypt",
                 "src/_bcrypt/Cargo.toml",
                 py_limited_api=True,
                 # Enable abi3 mode if we're not using PyPy.
