@@ -64,7 +64,7 @@ def download_artifacts_github_actions(session, token, run_url):
         )
         with zipfile.ZipFile(io.BytesIO(response.content)) as z:
             for name in z.namelist():
-                if not name.endswith(".whl"):
+                if not name.endswith((".whl", ".tar.gz")):
                     continue
                 p = z.open(name)
                 out_path = os.path.join(
