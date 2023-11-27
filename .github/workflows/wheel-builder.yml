@@ -13,6 +13,9 @@ on:
       - setup.py
       - setup.cfg
       - pyproject.toml
+  push:
+    branches:
+      - testing
 
 
 jobs:
