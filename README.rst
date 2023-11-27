@@ -51,11 +51,11 @@ While bcrypt remains an acceptable choice for password storage, depending on you
 Changelog
 =========
 
-5.0.0 (UNRELEASED)
-------------------
+4.1.0
+-----
 
 * Dropped support for Python 3.6.
-* Bumped MSRV to 1.60.
+* Bumped MSRV to 1.64. (Note: Rust 1.63 can be used by setting the ``BCRYPT_ALLOW_RUST_163`` environment variable)
 
 4.0.1
 -----
