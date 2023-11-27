@@ -51,6 +51,11 @@ While bcrypt remains an acceptable choice for password storage, depending on you
 Changelog
 =========
 
+4.1.1
+-----
+
+* Fixed the type signature on the ``kdf`` method.
+
 4.1.0
 -----
 

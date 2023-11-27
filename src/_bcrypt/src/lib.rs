@@ -183,7 +183,7 @@ fn _bcrypt(_py: pyo3::Python<'_>, m: &pyo3::types::PyModule) -> pyo3::PyResult<(
     m.add("__uri__", "https://github.com/pyca/bcrypt/")?;
 
     // When updating this, also update pyproject.toml
-    m.add("__version__", "4.1.0")?;
+    m.add("__version__", "4.1.1")?;
 
     let author = "The Python Cryptographic Authority developers";
     m.add("__author__", author)?;

@@ -4,7 +4,7 @@ def checkpw(password: bytes, hashed_password: bytes) -> bool: ...
 def kdf(
     password: bytes,
     salt: bytes,
-    rounds: int,
     desired_key_bytes: int,
+    rounds: int,
     ignore_few_rounds: bool = False,
 ) -> bytes: ...

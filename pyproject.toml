@@ -12,7 +12,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "bcrypt"
 # When updating this, also update lib.rs
-version = "4.1.0"
+version = "4.1.1"
 authors = [
     {name = "The Python Cryptographic Authority developers", email = "cryptography-dev@python.org"}
 ]
