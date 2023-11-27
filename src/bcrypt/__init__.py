@@ -18,11 +18,13 @@ from ._bcrypt import (
     __summary__,
     __title__,
     __uri__,
-    __version__,
     checkpw,
     gensalt,
     hashpw,
     kdf,
+)
+from ._bcrypt import (
+    __version_ex__ as __version__,
 )
 
 __all__ = [
