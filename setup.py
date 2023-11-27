@@ -38,12 +38,6 @@ try:
                 "bcrypt._bcrypt",
                 "src/_bcrypt/Cargo.toml",
                 py_limited_api=True,
-                # Enable abi3 mode if we're not using PyPy.
-                features=(
-                    []
-                    if platform.python_implementation() == "PyPy"
-                    else ["pyo3/abi3-py37"]
-                ),
                 rust_version=(
                     ">=1.64.0"
                     if os.environ.get("BCRYPT_ALLOW_RUST_163", "0") != "0"
