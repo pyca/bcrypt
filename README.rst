@@ -55,6 +55,8 @@ Changelog
 -----
 
 * Fixed the type signature on the ``kdf`` method.
+* Fixed packaging bug on Windows.
+* Fixed incompatibility with passlib package detection assumptions.
 
 4.1.0
 -----
