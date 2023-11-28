@@ -93,10 +93,6 @@ jobs:
           # is installed in the container (which it is)
           sed -i "s:ID=alpine:ID=NotpineForGHA:" /etc/os-release
         if: startsWith(matrix.MANYLINUX.NAME, 'musllinux') && endsWith(matrix.MANYLINUX.NAME, 'aarch64')
-      - uses: actions/checkout@v3.6.0
-        with:
-          # The tag to build or the tag received by the tag event
-          ref: ${{ github.event.inputs.version || github.ref }}
       - run: /opt/python/${{ matrix.PYTHON.VERSION }}/bin/python -m venv .venv
       - name: Install python dependencies
         run: .venv/bin/pip install -U pip wheel setuptools-rust
@@ -136,11 +132,6 @@ jobs:
             BIN_PATH: '/Library/Frameworks/Python.framework/Versions/3.11/bin/python3'
     name: "Python ${{ matrix.PYTHON.VERSION }} for ABI ${{ matrix.PYTHON.ABI_VERSION }} on macOS"
     steps:
-      - uses: actions/checkout@v3.6.0
-        with:
-          # The tag to build or the tag received by the tag event
-          ref: ${{ github.event.inputs.version || github.ref }}
-          persist-credentials: false
       - run: |
           curl "${{ matrix.PYTHON.DOWNLOAD_URL }}" -o python.pkg
           sudo installer -pkg python.pkg -target /
@@ -187,14 +178,9 @@ jobs:
           - {ARCH: 'x86', RUST_TRIPLE: 'i686-pc-windows-msvc'}
           - {ARCH: 'x64', RUST_TRIPLE: 'x86_64-pc-windows-msvc'}
         PYTHON:
-          - {VERSION: "3.7", ABI_VERSION: "cp37"}
+          - {VERSION: "3.11", ABI_VERSION: "cp37"}
     name: "${{ matrix.PYTHON.VERSION }} ${{ matrix.PYTHON.ABI_VERSION }} ${{ matrix.WINDOWS.ARCH }}"
     steps:
-      - uses: actions/checkout@v3.6.0
-        with:
-          # The tag to build or the tag received by the tag event
-          ref: ${{ github.event.inputs.version || github.ref }}
-          persist-credentials: false
       - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
         with:
           name: bcrypt-sdist
@@ -211,8 +197,6 @@ jobs:
       - run: python -m pip install -U pip wheel setuptools-rust
       - run: mkdir wheelhouse
         shell: bash
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
       - name: Build the wheel
         run: |
           if [ -n "${{ matrix.PYTHON.ABI_VERSION }}" ]; then
