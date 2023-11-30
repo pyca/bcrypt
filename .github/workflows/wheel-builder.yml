@@ -155,7 +155,7 @@ jobs:
           venv/bin/python -m pip wheel -v $PY_LIMITED_API bcrypt*.tar.gz -w dist/ && mv dist/bcrypt*.whl wheelhouse
         env:
           PYTHON_VERSION: ${{ matrix.PYTHON.ABI_VERSION }}
-          DEPLOYMENT_TARGET: '10.12'
+          MACOSX_DEPLOYMENT_TARGET: '10.12'
           ARCHFLAGS: '-arch arm64 -arch x86_64'
           _PYTHON_HOST_PLATFORM: 'macosx-10.9-universal2'
       - run: venv/bin/pip install -f wheelhouse --no-index bcrypt
