@@ -185,7 +185,7 @@ fn _bcrypt(_py: pyo3::Python<'_>, m: &pyo3::types::PyModule) -> pyo3::PyResult<(
     // When updating this, also update pyproject.toml
     // This isn't named __version__ because passlib treats the existence of
     // that attribute as proof that we're a different module
-    m.add("__version_ex__", "4.1.1")?;
+    m.add("__version_ex__", "4.1.2")?;
 
     let author = "The Python Cryptographic Authority developers";
     m.add("__author__", author)?;

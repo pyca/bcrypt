@@ -37,7 +37,7 @@ try:
             RustExtension(
                 "bcrypt._bcrypt",
                 "src/_bcrypt/Cargo.toml",
-                py_limited_api=True,
+                py_limited_api="auto",
                 rust_version=(
                     ">=1.64.0"
                     if os.environ.get("BCRYPT_ALLOW_RUST_163", "0") != "0"
