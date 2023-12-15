@@ -51,6 +51,12 @@ While bcrypt remains an acceptable choice for password storage, depending on you
 Changelog
 =========
 
+4.1.2
+-----
+
+* Publish both ``py37`` and ``py39`` wheels. This should resolve some errors
+  relating to initializing a module multiple times per process.
+
 4.1.1
 -----
 
