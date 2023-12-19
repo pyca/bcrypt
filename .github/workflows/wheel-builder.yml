@@ -38,6 +38,7 @@ jobs:
     needs: [sdist]
     runs-on: ${{ matrix.MANYLINUX.RUNNER }}
     strategy:
+      fail-fast: false
       matrix:
         PYTHON:
           - { VERSION: "cp37-cp37m", ABI_VERSION: 'cp37' }
@@ -125,6 +126,7 @@ jobs:
     needs: [sdist]
     runs-on: macos-13
     strategy:
+      fail-fast: false
       matrix:
         PYTHON:
           - VERSION: '3.11'
@@ -178,6 +180,7 @@ jobs:
     needs: [sdist]
     runs-on: windows-latest
     strategy:
+      fail-fast: false
       matrix:
         WINDOWS:
           - {ARCH: 'x86', RUST_TRIPLE: 'i686-pc-windows-msvc'}
