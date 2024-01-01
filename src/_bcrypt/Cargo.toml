@@ -6,7 +6,7 @@ edition = "2018"
 publish = false
 
 [dependencies]
-pyo3 = { version = "0.20.0", features = ["abi3"] }
+pyo3 = { version = "0.20.1", features = ["abi3"] }
 bcrypt = "0.15"
 bcrypt-pbkdf = "0.10.0"
 base64 = "0.21.5"
