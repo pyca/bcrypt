@@ -151,18 +151,6 @@ fn kdf<'p>(
         ));
     }
 
-    if rounds < 50 && !ignore_few_rounds {
-        // They probably think bcrypt.kdf()'s rounds parameter is logarithmic,
-        // expecting this value to be slow enough (it probably would be if this
-        // were bcrypt). Emit a warning.
-        pyo3::PyErr::warn(
-            py,
-            pyo3::exceptions::PyUserWarning::type_object(py),
-            &format!("Warning: bcrypt.kdf() called with only {rounds} round(s). This few is not secure: the parameter is linear, like PBKDF2."),
-            3
-        )?;
-    }
-
     pyo3::types::PyBytes::new_with(py, desired_key_bytes, |output| {
         py.allow_threads(|| {
             bcrypt_pbkdf::bcrypt_pbkdf(password, salt, rounds, output).unwrap();
