@@ -264,11 +264,6 @@ Compatibility
 This library should be compatible with py-bcrypt and it will run on Python
 3.6+, and PyPy 3.
 
-C Code
-------
-
-This library uses code from OpenBSD.
-
 Security
 --------
 
