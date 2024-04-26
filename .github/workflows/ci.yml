@@ -9,13 +9,21 @@ on:
 
 jobs:
   macos:
-    runs-on: macos-latest
+    runs-on: ${{ matrix.MACOS }}
     strategy:
       matrix:
-         PYTHON:
+        PYTHON:
           - {VERSION: "3.7", TOXENV: "py37"}
           - {VERSION: "3.12", TOXENV: "py312"}
-    name: "Python ${{ matrix.PYTHON.VERSION }} on macOS"
+        MACOS:
+          - macos-13
+          - macos-latest
+        exclude:
+          # We only test latest Python on arm64. py37 won't work since there's
+          # no universal2 binary
+          - PYTHON: {VERSION: "3.7", TOXENV: "py37"}
+            MACOS: macos-latest
+    name: "Python ${{ matrix.PYTHON.VERSION }} on ${{ matrix.MACOS }}"
     steps:
       - uses: actions/checkout@v3.6.0
       - name: Setup python
