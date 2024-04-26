@@ -42,8 +42,6 @@ jobs:
             ~/.cargo/git/db/
             src/_bcrypt/target/
           key: ${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-      - run: brew install rust
-        if: matrix.MACOS == 'macos-13'
       - run: pip install tox
       - run: tox
         env:
