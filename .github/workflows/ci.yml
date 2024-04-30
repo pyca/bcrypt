@@ -11,6 +11,7 @@ jobs:
   macos:
     runs-on: ${{ matrix.MACOS }}
     strategy:
+      fail-fast: false
       matrix:
         PYTHON:
           - {VERSION: "3.7", TOXENV: "py37"}
