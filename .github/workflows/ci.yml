@@ -44,6 +44,8 @@ jobs:
             src/_bcrypt/target/
           key: ${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-cargo-${{ hashFiles('**/Cargo.lock') }}
       - run: pip install tox
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
       - run: tox
         env:
           TOXENV: ${{ matrix.PYTHON.TOXENV }}
