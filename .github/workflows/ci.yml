@@ -11,6 +11,7 @@ jobs:
   macos:
     runs-on: ${{ matrix.MACOS }}
     strategy:
+      fail-fast: false
       matrix:
         PYTHON:
           - {VERSION: "3.7", TOXENV: "py37"}
@@ -36,7 +37,6 @@ jobs:
         with:
           path: |
             ~/Library/Caches/pip/
-            ~/.cargo/bin/
             ~/.cargo/registry/cache/
             ~/.cargo/registry/src/
             ~/.cargo/git/db/
