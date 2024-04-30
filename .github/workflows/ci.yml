@@ -144,7 +144,7 @@ jobs:
         IMAGE:
           - {IMAGE: "alpine", TOXENV: "py311", RUNNER: "ubuntu-latest"}
           - {IMAGE: "alpine:aarch64", TOXENV: "py311", RUNNER: [self-hosted, Linux, ARM64]}
-          - {IMAGE: "ubuntu-rolling:aarch64", TOXENV: "py310", RUNNER: [self-hosted, Linux, ARM64]}
+          - {IMAGE: "ubuntu-rolling:aarch64", TOXENV: "py312", RUNNER: [self-hosted, Linux, ARM64]}
     name: "${{ matrix.IMAGE.TOXENV }} on ${{ matrix.IMAGE.IMAGE }}"
     steps:
       - name: Ridiculous alpine workaround for actions support on arm64
