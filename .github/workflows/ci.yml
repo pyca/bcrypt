@@ -37,15 +37,12 @@ jobs:
         with:
           path: |
             ~/Library/Caches/pip/
-            ~/.cargo/bin/
             ~/.cargo/registry/cache/
             ~/.cargo/registry/src/
             ~/.cargo/git/db/
             src/_bcrypt/target/
           key: ${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-cargo-${{ hashFiles('**/Cargo.lock') }}
       - run: pip install tox
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
       - run: tox
         env:
           TOXENV: ${{ matrix.PYTHON.TOXENV }}
