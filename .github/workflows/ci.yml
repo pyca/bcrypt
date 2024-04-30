@@ -175,8 +175,10 @@ jobs:
           TOXENV: ${{ matrix.IMAGE.TOXENV }}
           RUSTUP_HOME: /root/.rustup
           CARGO_TARGET_DIR: ${{ format('{0}/src/_bcrypt/target/', github.workspace) }}
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
+      - run: |
+          set -ex
+          ls -la /tmp
+          ls -la .pytest_cache/
 
   all-green:  # This job does nothing and is only used for the branch protection
     if: always()
