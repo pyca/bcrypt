@@ -47,7 +47,7 @@ packages = ["bcrypt"]
 readme = {file = "README.rst", content-type = "text/x-rst"}
 
 [project.optional-dependencies]
-tests = ["pytest>=3.2.1,!=3.3.0"]
+tests = ["pytest>=3.2.1,!=3.3.0,!=8.2.0"]
 typecheck = ["mypy"]
 
 
