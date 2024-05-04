@@ -13,7 +13,6 @@
 #![deny(rust_2018_idioms)]
 
 use base64::Engine;
-use pyo3::prelude::PyBytesMethods;
 use pyo3::PyTypeInfo;
 use std::convert::TryInto;
 use std::io::Write;
@@ -29,7 +28,7 @@ fn gensalt<'p>(
     py: pyo3::Python<'p>,
     rounds: Option<u16>,
     prefix: Option<&[u8]>,
-) -> pyo3::PyResult<pyo3::Bound<'p, pyo3::types::PyBytes>> {
+) -> pyo3::PyResult<&'p pyo3::types::PyBytes> {
     let rounds = rounds.unwrap_or(12);
     let prefix = prefix.unwrap_or(b"2b");
 
@@ -48,7 +47,7 @@ fn gensalt<'p>(
 
     let encoded_salt = BASE64_ENGINE.encode(salt);
 
-    pyo3::types::PyBytes::new_bound_with(
+    pyo3::types::PyBytes::new_with(
         py,
         1 + prefix.len() + 1 + 2 + 1 + encoded_salt.len(),
         |mut b| {
@@ -69,7 +68,7 @@ fn hashpw<'p>(
     py: pyo3::Python<'p>,
     password: &[u8],
     salt: &[u8],
-) -> pyo3::PyResult<pyo3::Bound<'p, pyo3::types::PyBytes>> {
+) -> pyo3::PyResult<&'p pyo3::types::PyBytes> {
     // bcrypt originally suffered from a wraparound bug:
     // http://www.openwall.com/lists/oss-security/2012/01/02/4
     // This bug was corrected in the OpenBSD source by truncating inputs to 72
@@ -113,7 +112,7 @@ fn hashpw<'p>(
     let hashed = py
         .allow_threads(|| bcrypt::hash_with_salt(password, cost, raw_salt))
         .map_err(|_| pyo3::exceptions::PyValueError::new_err("Invalid salt"))?;
-    Ok(pyo3::types::PyBytes::new_bound(
+    Ok(pyo3::types::PyBytes::new(
         py,
         hashed.format_for_version(version).as_bytes(),
     ))
@@ -135,7 +134,7 @@ fn kdf<'p>(
     desired_key_bytes: usize,
     rounds: u32,
     ignore_few_rounds: Option<bool>,
-) -> pyo3::PyResult<pyo3::Bound<'p, pyo3::types::PyBytes>> {
+) -> pyo3::PyResult<&'p pyo3::types::PyBytes> {
     let ignore_few_rounds = ignore_few_rounds.unwrap_or(false);
 
     if password.is_empty() || salt.is_empty() {
@@ -156,19 +155,7 @@ fn kdf<'p>(
         ));
     }
 
-    if rounds < 50 && !ignore_few_rounds {
-        // They probably think bcrypt.kdf()'s rounds parameter is logarithmic,
-        // expecting this value to be slow enough (it probably would be if this
-        // were bcrypt). Emit a warning.
-        pyo3::PyErr::warn_bound(
-            py,
-            &pyo3::exceptions::PyUserWarning::type_object_bound(py),
-            &format!("Warning: bcrypt.kdf() called with only {rounds} round(s). This few is not secure: the parameter is linear, like PBKDF2."),
-            3
-        )?;
-    }
-
-    pyo3::types::PyBytes::new_bound_with(py, desired_key_bytes, |output| {
+    pyo3::types::PyBytes::new_with(py, desired_key_bytes, |output| {
         py.allow_threads(|| {
             bcrypt_pbkdf::bcrypt_pbkdf(password, salt, rounds, output).unwrap();
         });
@@ -177,10 +164,7 @@ fn kdf<'p>(
 }
 
 #[pyo3::prelude::pymodule]
-fn _bcrypt(
-    _py: pyo3::Python<'_>,
-    m: &pyo3::Bound<'_, pyo3::types::PyModule>,
-) -> pyo3::PyResult<()> {
+fn _bcrypt(_py: pyo3::Python<'_>, m: &pyo3::types::PyModule) -> pyo3::PyResult<()> {
     m.add_function(pyo3::wrap_pyfunction!(gensalt, m)?)?;
     m.add_function(pyo3::wrap_pyfunction!(hashpw, m)?)?;
     m.add_function(pyo3::wrap_pyfunction!(checkpw, m)?)?;
