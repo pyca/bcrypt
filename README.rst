@@ -51,6 +51,11 @@ While bcrypt remains an acceptable choice for password storage, depending on you
 Changelog
 =========
 
+4.1.3
+-----
+
+* Bump Rust dependency versions
+
 4.1.2
 -----
 
