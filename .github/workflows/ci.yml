@@ -158,17 +158,6 @@ jobs:
       - uses: actions/checkout@v3.6.0
         with:
           persist-credentials: false
-      - uses: actions/cache@v4.0.2
-        timeout-minutes: 5
-        with:
-          path: |
-            ~/.cache/pip/
-            ~/.cargo/bin/
-            ~/.cargo/registry/cache/
-            ~/.cargo/registry/src/
-            ~/.cargo/git/db/
-            src/_bcrypt/target/
-          key: ${{ runner.os }}-${{ matrix.IMAGE.IMAGE }}-cargo-${{ hashFiles('**/Cargo.lock') }}
       - run: /venv/bin/pip install tox
       - run: '/venv/bin/tox'
         env:
