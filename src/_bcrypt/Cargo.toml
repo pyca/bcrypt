@@ -10,7 +10,7 @@ pyo3 = { version = "0.21", features = ["abi3"] }
 bcrypt = "0.15"
 bcrypt-pbkdf = "0.10.0"
 base64 = "0.22.1"
-subtle = "2.5"
+subtle = "2.6"
 getrandom = "0.2"
 
 [features]
