@@ -13,7 +13,7 @@
 #![deny(rust_2018_idioms)]
 
 use base64::Engine;
-use pyo3::prelude::PyBytesMethods;
+use pyo3::prelude::{PyBytesMethods, PyModuleMethods};
 use pyo3::PyTypeInfo;
 use std::convert::TryInto;
 use std::io::Write;
@@ -25,6 +25,7 @@ pub const BASE64_ENGINE: base64::engine::GeneralPurpose = base64::engine::Genera
 );
 
 #[pyo3::prelude::pyfunction]
+#[pyo3(signature = (rounds=None, prefix=None))]
 fn gensalt<'p>(
     py: pyo3::Python<'p>,
     rounds: Option<u16>,
@@ -128,16 +129,15 @@ fn checkpw(py: pyo3::Python<'_>, password: &[u8], hashed_password: &[u8]) -> pyo
 }
 
 #[pyo3::prelude::pyfunction]
+#[pyo3(signature = (password, salt, desired_key_bytes, rounds, ignore_few_rounds=false))]
 fn kdf<'p>(
     py: pyo3::Python<'p>,
     password: &[u8],
     salt: &[u8],
     desired_key_bytes: usize,
     rounds: u32,
-    ignore_few_rounds: Option<bool>,
+    ignore_few_rounds: bool,
 ) -> pyo3::PyResult<pyo3::Bound<'p, pyo3::types::PyBytes>> {
-    let ignore_few_rounds = ignore_few_rounds.unwrap_or(false);
-
     if password.is_empty() || salt.is_empty() {
         return Err(pyo3::exceptions::PyValueError::new_err(
             "password and salt must not be empty",
