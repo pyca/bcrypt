@@ -13,7 +13,7 @@
 #![deny(rust_2018_idioms)]
 
 use base64::Engine;
-use pyo3::prelude::{PyBytesMethods, PyModuleMethods};
+use pyo3::prelude::PyBytesMethods;
 use pyo3::PyTypeInfo;
 use std::convert::TryInto;
 use std::io::Write;
@@ -177,33 +177,40 @@ fn kdf<'p>(
 }
 
 #[pyo3::prelude::pymodule]
-fn _bcrypt(
-    _py: pyo3::Python<'_>,
-    m: &pyo3::Bound<'_, pyo3::types::PyModule>,
-) -> pyo3::PyResult<()> {
-    m.add_function(pyo3::wrap_pyfunction!(gensalt, m)?)?;
-    m.add_function(pyo3::wrap_pyfunction!(hashpw, m)?)?;
-    m.add_function(pyo3::wrap_pyfunction!(checkpw, m)?)?;
-    m.add_function(pyo3::wrap_pyfunction!(kdf, m)?)?;
+mod _bcrypt {
+    use pyo3::prelude::PyModuleMethods;
 
-    m.add("__title__", "bcrypt")?;
-    m.add(
-        "__summary__",
-        "Modern(-ish) password hashing for your software and your servers",
-    )?;
-    m.add("__uri__", "https://github.com/pyca/bcrypt/")?;
+    #[pymodule_export]
+    use super::checkpw;
+    #[pymodule_export]
+    use super::gensalt;
+    #[pymodule_export]
+    use super::hashpw;
+    #[pymodule_export]
+    use super::kdf;
 
-    // When updating this, also update pyproject.toml
-    // This isn't named __version__ because passlib treats the existence of
-    // that attribute as proof that we're a different module
-    m.add("__version_ex__", "4.1.3")?;
+    // Not yet possible to add constants declaratively.
+    #[pymodule_init]
+    fn init(m: &pyo3::Bound<'_, pyo3::types::PyModule>) -> pyo3::PyResult<()> {
+        m.add("__title__", "bcrypt")?;
+        m.add(
+            "__summary__",
+            "Modern(-ish) password hashing for your software and your servers",
+        )?;
+        m.add("__uri__", "https://github.com/pyca/bcrypt/")?;
 
-    let author = "The Python Cryptographic Authority developers";
-    m.add("__author__", author)?;
-    m.add("__email__", "cryptography-dev@python.org")?;
+        // When updating this, also update pyproject.toml
+        // This isn't named __version__ because passlib treats the existence of
+        // that attribute as proof that we're a different module
+        m.add("__version_ex__", "4.1.3")?;
 
-    m.add("__license__", "Apache License, Version 2.0")?;
-    m.add("__copyright__", format!("Copyright 2013-2024 {author}"))?;
+        let author = "The Python Cryptographic Authority developers";
+        m.add("__author__", author)?;
+        m.add("__email__", "cryptography-dev@python.org")?;
 
-    Ok(())
+        m.add("__license__", "Apache License, Version 2.0")?;
+        m.add("__copyright__", format!("Copyright 2013-2024 {author}"))?;
+
+        Ok(())
+    }
 }
