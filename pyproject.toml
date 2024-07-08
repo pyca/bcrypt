@@ -52,11 +52,12 @@ typecheck = ["mypy"]
 
 
 [tool.ruff]
-ignore = ['N818']
-select = ['E', 'F', 'I', 'N', 'W', 'UP', 'RUF']
 line-length = 79
 
-[tool.ruff.isort]
+lint.ignore = ['N818']
+lint.select = ['E', 'F', 'I', 'N', 'W', 'UP', 'RUF']
+
+[tool.ruff.lint.isort]
 known-first-party = ["bcrypt", "tests"]
 
 [tool.mypy]
