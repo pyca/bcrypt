@@ -13,7 +13,7 @@
 #![deny(rust_2018_idioms)]
 
 use base64::Engine;
-use pyo3::prelude::PyBytesMethods;
+use pyo3::types::PyBytesMethods;
 use pyo3::PyTypeInfo;
 use std::convert::TryInto;
 use std::io::Write;
@@ -24,7 +24,7 @@ pub const BASE64_ENGINE: base64::engine::GeneralPurpose = base64::engine::Genera
     base64::engine::general_purpose::NO_PAD,
 );
 
-#[pyo3::prelude::pyfunction]
+#[pyo3::pyfunction]
 #[pyo3(signature = (rounds=None, prefix=None))]
 fn gensalt<'p>(
     py: pyo3::Python<'p>,
@@ -65,7 +65,7 @@ fn gensalt<'p>(
     )
 }
 
-#[pyo3::prelude::pyfunction]
+#[pyo3::pyfunction]
 fn hashpw<'p>(
     py: pyo3::Python<'p>,
     password: &[u8],
@@ -120,7 +120,7 @@ fn hashpw<'p>(
     ))
 }
 
-#[pyo3::prelude::pyfunction]
+#[pyo3::pyfunction]
 fn checkpw(py: pyo3::Python<'_>, password: &[u8], hashed_password: &[u8]) -> pyo3::PyResult<bool> {
     Ok(hashpw(py, password, hashed_password)?
         .as_bytes()
@@ -128,7 +128,7 @@ fn checkpw(py: pyo3::Python<'_>, password: &[u8], hashed_password: &[u8]) -> pyo
         .into())
 }
 
-#[pyo3::prelude::pyfunction]
+#[pyo3::pyfunction]
 #[pyo3(signature = (password, salt, desired_key_bytes, rounds, ignore_few_rounds=false))]
 fn kdf<'p>(
     py: pyo3::Python<'p>,
@@ -176,9 +176,9 @@ fn kdf<'p>(
     })
 }
 
-#[pyo3::prelude::pymodule]
+#[pyo3::pymodule]
 mod _bcrypt {
-    use pyo3::prelude::PyModuleMethods;
+    use pyo3::types::PyModuleMethods;
 
     #[pymodule_export]
     use super::checkpw;
