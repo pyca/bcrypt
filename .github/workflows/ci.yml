@@ -102,7 +102,6 @@ jobs:
           - {VERSION: "pypy-3.10", TOXENV: "pypy3"}
 
           # MSRV
-          - {VERSION: "3.12", TOXENV: "py312", RUST_VERSION: "1.63.0"}
           - {VERSION: "3.12", TOXENV: "py312", RUST_VERSION: "1.64.0"}
           - {VERSION: "3.12", TOXENV: "py312", RUST_VERSION: "beta"}
           - {VERSION: "3.12", TOXENV: "py312", RUST_VERSION: "nightly"}
@@ -130,8 +129,6 @@ jobs:
           toolchain: ${{ matrix.PYTHON.RUST_VERSION || 'stable' }}
 
       - run: pip install tox
-      - if: matrix.PYTHON.RUST_VERSION == '1.63.0'
-        run: echo 'BCRYPT_ALLOW_RUST_163=1' >> $GITHUB_ENV
       - run: tox
         env:
           TOXENV: ${{ matrix.PYTHON.TOXENV }}
