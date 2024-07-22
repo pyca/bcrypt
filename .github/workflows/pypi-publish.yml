@@ -1,0 +1,87 @@
+name: Publish to PyPI
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: The run of wheel-builder to use for finding artifacts.
+        required: true
+      environment:
+        description: Which PyPI environment to upload to
+        required: true
+        type: choice
+        options: ["testpypi", "pypi"]
+  workflow_run:
+    workflows: ["Wheel Builder"]
+    types: [completed]
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    # We're not actually verifying that the triggering push event was for a
+    # tag, because github doesn't expose enough information to do so.
+    # wheel-builder.yml currently only has push events for tags.
+    if: github.event_name == 'workflow_dispatch' || (github.event.workflow_run.event == 'push' && github.event.workflow_run.conclusion == 'success')
+    permissions:
+      id-token: "write"
+      attestations: "write"
+    steps:
+      - run: echo "$EVENT_CONTEXT"
+        env:
+          EVENT_CONTEXT: ${{ toJson(github.event) }}
+      - uses: actions/setup-python@39cd14951b08e74b54015e9e001cdefcf80e669f # v5.1.1
+        with:
+          python-version: "3.11"
+      - uses: dawidd6/action-download-artifact@bf251b5aa9c2f7eeb574a96ee720e24f801b7c11 # v6
+        with:
+          path: dist/
+          run_id: ${{ github.event.inputs.run_id || github.event.workflow_run.id }}
+      - run: pip install twine requests
+
+      - run: |
+          echo "OIDC_AUDIENCE=pypi" >> $GITHUB_ENV
+          echo "PYPI_DOMAIN=pypi.org" >> $GITHUB_ENV
+          echo "TWINE_REPOSITORY=pypi" >> $GITHUB_ENV
+          echo "TWINE_USERNAME=__token__" >> $GITHUB_ENV
+        if: github.event_name == 'workflow_run' || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'pypi')
+      - run: |
+          echo "OIDC_AUDIENCE=testpypi" >> $GITHUB_ENV
+          echo "PYPI_DOMAIN=test.pypi.org" >> $GITHUB_ENV
+          echo "TWINE_REPOSITORY=testpypi" >> $GITHUB_ENV
+          echo "TWINE_USERNAME=__token__" >> $GITHUB_ENV
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'testpypi'
+
+      - run: |
+          import os
+
+          import requests
+
+          response = requests.get(
+              os.environ["ACTIONS_ID_TOKEN_REQUEST_URL"],
+              params={"audience": os.environ["OIDC_AUDIENCE"]},
+              headers={"Authorization": f"bearer {os.environ['ACTIONS_ID_TOKEN_REQUEST_TOKEN']}"}
+          )
+          response.raise_for_status()
+          token = response.json()["value"]
+
+          response = requests.post(f"https://{os.environ['PYPI_DOMAIN']}/_/oidc/mint-token", json={"token": token})
+          response.raise_for_status()
+          pypi_token = response.json()["token"]
+
+          with open(os.environ["GITHUB_ENV"], "a") as f:
+              print(f"::add-mask::{pypi_token}")
+              f.write(f"TWINE_PASSWORD={pypi_token}\n")
+        shell: python
+
+      - run: twine upload --skip-existing $(find dist/ -type f -name 'bcrypt*')
+
+      # Do not perform attestation for things for TestPyPI. This is because
+      # there's nothing that would prevent a malicious PyPI from serving a
+      # signed TestPyPI asset in place of a release intended for PyPI.
+      - uses: actions/attest-build-provenance@5e9cb68e95676991667494a6a4e59b8a2f13e1d0  # v1.3.3
+        with:
+          subject-path: 'dist/**/bcrypt*'
+        if: env.TWINE_REPOSITORY == 'pypi'
