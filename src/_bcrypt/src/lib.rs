@@ -181,13 +181,7 @@ mod _bcrypt {
     use pyo3::types::PyModuleMethods;
 
     #[pymodule_export]
-    use super::checkpw;
-    #[pymodule_export]
-    use super::gensalt;
-    #[pymodule_export]
-    use super::hashpw;
-    #[pymodule_export]
-    use super::kdf;
+    use super::{checkpw, gensalt, hashpw, kdf};
 
     // Not yet possible to add constants declaratively.
     #[pymodule_init]
