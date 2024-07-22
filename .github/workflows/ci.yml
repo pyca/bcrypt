@@ -97,6 +97,7 @@ jobs:
           - {VERSION: "3.10", TOXENV: "py310"}
           - {VERSION: "3.11", TOXENV: "py311"}
           - {VERSION: "3.12", TOXENV: "py312"}
+          - {VERSION: "3.13-dev", TOXENV: "py313"}
           - {VERSION: "pypy-3.9", TOXENV: "pypy3"}
           - {VERSION: "pypy-3.10", TOXENV: "pypy3"}
 
