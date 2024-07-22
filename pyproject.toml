@@ -1,9 +1,8 @@
 [build-system]
-# Must be kept in sync with `setup_requirements` in `setup.py`
 requires = [
     "setuptools>=42.0.0",
     "wheel",
-    "setuptools-rust",
+    "setuptools-rust>=1.7.0",
 ]
 # Point to the setuptools' PEP517 build backend explicitly to
 # disable Pip's fallback guessing
@@ -50,6 +49,11 @@ readme = {file = "README.rst", content-type = "text/x-rst"}
 tests = ["pytest>=3.2.1,!=3.3.0"]
 typecheck = ["mypy"]
 
+[[tool.setuptools-rust.ext-modules]]
+target = "bcrypt._bcrypt"
+path = "src/_bcrypt/Cargo.toml"
+py-limited-api = "auto"
+rust-version = ">=1.64.0"
 
 [tool.ruff]
 line-length = 79
