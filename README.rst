@@ -51,6 +51,12 @@ While bcrypt remains an acceptable choice for password storage, depending on you
 Changelog
 =========
 
+4.2.0
+-----
+
+* Bump Rust dependency versions
+* Removed the ``BCRYPT_ALLOW_RUST_163`` environment variable.
+
 4.1.3
 -----
 
