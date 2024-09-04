@@ -17,7 +17,7 @@ Installation
 
 To install bcrypt, simply:
 
-.. code:: bash
+.. code:: console
 
     $ pip install bcrypt
 
@@ -26,19 +26,19 @@ compiler and a Rust compiler (the minimum supported Rust version is 1.56.0).
 
 For Debian and Ubuntu, the following command will ensure that the required dependencies are installed:
 
-.. code:: bash
+.. code:: console
 
     $ sudo apt-get install build-essential cargo
 
 For Fedora and RHEL-derivatives, the following command will ensure that the required dependencies are installed:
 
-.. code:: bash
+.. code:: console
 
     $ sudo yum install gcc cargo
 
 For Alpine, the following command will ensure that the required dependencies are installed:
 
-.. code:: bash
+.. code:: console
 
     $ apk add --update musl-dev gcc cargo
 
