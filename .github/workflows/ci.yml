@@ -26,7 +26,7 @@ jobs:
             MACOS: macos-latest
     name: "Python ${{ matrix.PYTHON.VERSION }} on ${{ matrix.MACOS }}"
     steps:
-      - uses: actions/checkout@v4.1.7
+      - uses: actions/checkout@v4.2.0
       - name: Setup python
         id: setup-python
         uses: actions/setup-python@v5.2.0
@@ -60,7 +60,7 @@ jobs:
           - {VERSION: "3.12", TOXENV: "py312"}
     name: "Python ${{ matrix.PYTHON.VERSION }} on ${{ matrix.WINDOWS.WINDOWS }}"
     steps:
-      - uses: actions/checkout@v4.1.7
+      - uses: actions/checkout@v4.2.0
       - name: Setup python
         id: setup-python
         uses: actions/setup-python@v5.2.0
@@ -107,7 +107,7 @@ jobs:
           - {VERSION: "3.12", TOXENV: "py312", RUST_VERSION: "nightly"}
     name: "${{ matrix.PYTHON.TOXENV }} on linux, Rust ${{ matrix.PYTHON.RUST_VERSION || 'stable' }}"
     steps:
-      - uses: actions/checkout@v4.1.7
+      - uses: actions/checkout@v4.2.0
       - name: Setup python
         id: setup-python
         uses: actions/setup-python@v5.2.0
@@ -153,7 +153,7 @@ jobs:
           # is installed in the container (which it is)
           sed -i "s:ID=alpine:ID=NotpineForGHA:" /etc/os-release
         if: matrix.IMAGE.IMAGE == 'alpine:aarch64'
-      - uses: actions/checkout@v4.1.7
+      - uses: actions/checkout@v4.2.0
         with:
           persist-credentials: false
       - run: /venv/bin/pip install tox
