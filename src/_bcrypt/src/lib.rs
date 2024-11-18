@@ -16,6 +16,7 @@ use base64::Engine;
 use pyo3::types::PyBytesMethods;
 use pyo3::PyTypeInfo;
 use std::convert::TryInto;
+use std::ffi::CString;
 use std::io::Write;
 use subtle::ConstantTimeEq;
 
@@ -49,7 +50,7 @@ fn gensalt<'p>(
 
     let encoded_salt = BASE64_ENGINE.encode(salt);
 
-    pyo3::types::PyBytes::new_bound_with(
+    pyo3::types::PyBytes::new_with(
         py,
         1 + prefix.len() + 1 + 2 + 1 + encoded_salt.len(),
         |mut b| {
@@ -114,7 +115,7 @@ fn hashpw<'p>(
     let hashed = py
         .allow_threads(|| bcrypt::hash_with_salt(password, cost, raw_salt))
         .map_err(|_| pyo3::exceptions::PyValueError::new_err("Invalid salt"))?;
-    Ok(pyo3::types::PyBytes::new_bound(
+    Ok(pyo3::types::PyBytes::new(
         py,
         hashed.format_for_version(version).as_bytes(),
     ))
@@ -160,15 +161,15 @@ fn kdf<'p>(
         // They probably think bcrypt.kdf()'s rounds parameter is logarithmic,
         // expecting this value to be slow enough (it probably would be if this
         // were bcrypt). Emit a warning.
-        pyo3::PyErr::warn_bound(
+        pyo3::PyErr::warn(
             py,
-            &pyo3::exceptions::PyUserWarning::type_object_bound(py),
-            &format!("Warning: bcrypt.kdf() called with only {rounds} round(s). This few is not secure: the parameter is linear, like PBKDF2."),
+            &pyo3::exceptions::PyUserWarning::type_object(py),
+            &CString::new(format!("Warning: bcrypt.kdf() called with only {rounds} round(s). This few is not secure: the parameter is linear, like PBKDF2.")).unwrap(),
             3
         )?;
     }
 
-    pyo3::types::PyBytes::new_bound_with(py, desired_key_bytes, |output| {
+    pyo3::types::PyBytes::new_with(py, desired_key_bytes, |output| {
         py.allow_threads(|| {
             bcrypt_pbkdf::bcrypt_pbkdf(password, salt, rounds, output).unwrap();
         });
