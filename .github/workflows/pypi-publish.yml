@@ -32,6 +32,14 @@ jobs:
       - run: echo "$EVENT_CONTEXT"
         env:
           EVENT_CONTEXT: ${{ toJson(github.event) }}
+
+      - run: |
+          echo "PYPI_URL=https://upload.pypi.org/legacy/" >> $GITHUB_ENV
+        if: github.event_name == 'workflow_run' || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'pypi')
+      - run: |
+          echo "PYPI_URL=https://test.pypi.org/legacy/" >> $GITHUB_ENV
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'testpypi'
+
       - uses: dawidd6/action-download-artifact@bf251b5aa9c2f7eeb574a96ee720e24f801b7c11 # v6
         with:
           path: tmpdist/
@@ -40,15 +48,8 @@ jobs:
       - run: |
           find tmpdist/ -type f -name 'bcrypt*' -exec mv {} dist/ \;
 
-      - run: |
-          echo "PYPI_URL=https://pypi.org/legacy/" >> $GITHUB_ENV
-        if: github.event_name == 'workflow_run' || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'pypi')
-      - run: |
-          echo "PYPI_URL=https://test.pypi.org/legacy/" >> $GITHUB_ENV
-        if: github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'testpypi'
-
       - name: Publish package distributions to PyPI
-        uses: pypa/gh-action-pypi-publish@v1.12.2
+        uses: pypa/gh-action-pypi-publish@15c56dba361d8335944d31a2ecd17d700fc7bcbc  # v1.12.2
         with:
           repository-url: ${{ env.PYPI_URL }}
           skip-existing: true
@@ -56,4 +57,4 @@ jobs:
           # because there's nothing that would prevent a malicious PyPI from
           # serving a signed TestPyPI asset in place of a release intended for
           # PyPI.
-          attestations: ${{ env.PYPI_URL == 'https://pypi.org/legacy/' }}
+          attestations: ${{ env.PYPI_URL == 'https://upload.pypi.org/legacy/' }}
