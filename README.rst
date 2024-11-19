@@ -51,6 +51,13 @@ While bcrypt remains an acceptable choice for password storage, depending on you
 Changelog
 =========
 
+4.2.1
+-----
+
+* Bump Rust dependency versions - this should resolve crashes on Python 3.13
+  free-threaded builds.
+* We no longer build ``manylinux`` wheels for PyPy 3.9.
+
 4.2.0
 -----
 

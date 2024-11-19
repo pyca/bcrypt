@@ -197,7 +197,7 @@ mod _bcrypt {
         // When updating this, also update pyproject.toml
         // This isn't named __version__ because passlib treats the existence of
         // that attribute as proof that we're a different module
-        m.add("__version_ex__", "4.2.0")?;
+        m.add("__version_ex__", "4.2.1")?;
 
         let author = "The Python Cryptographic Authority developers";
         m.add("__author__", author)?;
