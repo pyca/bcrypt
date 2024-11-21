@@ -275,6 +275,8 @@ def test_checkpw_bad_salt():
             b"password",
             b"$2b$3$mdEQPMOtfPX.WGZNXgF66OhmBlOGKEd66SQ7DyJPGucYYmvTJYviy",
         )
+    with pytest.raises(ValueError):
+        bcrypt.checkpw(b"password", b"$2b$12$incorrect")
 
 
 def test_checkpw_str_password():
