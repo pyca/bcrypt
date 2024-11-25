@@ -47,7 +47,7 @@ jobs:
       fail-fast: false
       matrix:
         PYTHON:
-          - { VERSION: "cp37-cp37m", ABI_VERSION: 'cp37' }
+          - { VERSION: "cp38-cp38", ABI_VERSION: 'cp38' }
           - { VERSION: "cp39-cp39", ABI_VERSION: 'cp39' }
           - { VERSION: "pp310-pypy310_pp73" }
         MANYLINUX:
@@ -132,7 +132,7 @@ jobs:
       matrix:
         PYTHON:
           - VERSION: '3.11'
-            ABI_VERSION: 'cp37'
+            ABI_VERSION: 'cp38'
             DOWNLOAD_URL: 'https://www.python.org/ftp/python/3.11.3/python-3.11.3-macos11.pkg'
             BIN_PATH: '/Library/Frameworks/Python.framework/Versions/3.11/bin/python3'
           - VERSION: '3.11'
@@ -188,7 +188,7 @@ jobs:
           - {ARCH: 'x86', RUST_TRIPLE: 'i686-pc-windows-msvc'}
           - {ARCH: 'x64', RUST_TRIPLE: 'x86_64-pc-windows-msvc'}
         PYTHON:
-          - {VERSION: "3.11", ABI_VERSION: "cp37"}
+          - {VERSION: "3.11", ABI_VERSION: "cp38"}
           - {VERSION: "3.11", ABI_VERSION: "cp39"}
     name: "${{ matrix.PYTHON.VERSION }} ${{ matrix.PYTHON.ABI_VERSION }} ${{ matrix.WINDOWS.ARCH }}"
     steps:
