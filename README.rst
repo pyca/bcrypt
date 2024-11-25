@@ -51,6 +51,11 @@ While bcrypt remains an acceptable choice for password storage, depending on you
 Changelog
 =========
 
+Unreleased
+----------
+
+* Dropped support for Python 3.7.
+
 4.2.1
 -----
 

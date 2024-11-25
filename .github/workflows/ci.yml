@@ -14,16 +14,11 @@ jobs:
       fail-fast: false
       matrix:
         PYTHON:
-          - {VERSION: "3.7", TOXENV: "py37"}
+          - {VERSION: "3.8", TOXENV: "py38"}
           - {VERSION: "3.13", TOXENV: "py313"}
         MACOS:
           - macos-13
           - macos-latest
-        exclude:
-          # We only test latest Python on arm64. py37 won't work since there's
-          # no universal2 binary
-          - PYTHON: {VERSION: "3.7", TOXENV: "py37"}
-            MACOS: macos-latest
     name: "Python ${{ matrix.PYTHON.VERSION }} on ${{ matrix.MACOS }}"
     steps:
       - uses: actions/checkout@v4.2.2
@@ -56,7 +51,7 @@ jobs:
           - {ARCH: 'x86', WINDOWS: 'win32', RUST_TRIPLE: 'i686-pc-windows-msvc'}
           - {ARCH: 'x64', WINDOWS: 'win64', RUST_TRIPLE: 'x86_64-pc-windows-msvc'}
         PYTHON:
-          - {VERSION: "3.7", TOXENV: "py37"}
+          - {VERSION: "3.8", TOXENV: "py38"}
           - {VERSION: "3.13", TOXENV: "py313"}
     name: "Python ${{ matrix.PYTHON.VERSION }} on ${{ matrix.WINDOWS.WINDOWS }}"
     steps:
@@ -91,7 +86,6 @@ jobs:
         PYTHON:
           - {VERSION: "3.13", TOXENV: "pep8,packaging"}
           - {VERSION: "3.13", TOXENV: "mypy"}
-          - {VERSION: "3.7", TOXENV: "py37"}
           - {VERSION: "3.8", TOXENV: "py38"}
           - {VERSION: "3.9", TOXENV: "py39"}
           - {VERSION: "3.10", TOXENV: "py310"}
