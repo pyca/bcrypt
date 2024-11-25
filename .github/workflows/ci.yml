@@ -16,7 +16,7 @@ jobs:
         PYTHON:
           - {VERSION: "3.8", TOXENV: "py38"}
           - {VERSION: "3.13", TOXENV: "py313"}
-          - {VERSION: "3.13t", TOXENV: "py313t"}
+          - {VERSION: "3.13t", TOXENV: "py313"}
         MACOS:
           - macos-13
           - macos-latest
@@ -54,7 +54,7 @@ jobs:
         PYTHON:
           - {VERSION: "3.8", TOXENV: "py38"}
           - {VERSION: "3.13", TOXENV: "py313"}
-          - {VERSION: "3.13t", TOXENV: "py313t"}
+          - {VERSION: "3.13t", TOXENV: "py313"}
     name: "Python ${{ matrix.PYTHON.VERSION }} on ${{ matrix.WINDOWS.WINDOWS }}"
     steps:
       - uses: actions/checkout@v4.2.2
@@ -94,7 +94,7 @@ jobs:
           - {VERSION: "3.11", TOXENV: "py311"}
           - {VERSION: "3.12", TOXENV: "py312"}
           - {VERSION: "3.13", TOXENV: "py313"}
-          - {VERSION: "3.13", TOXENV: "py313t"}
+          - {VERSION: "3.13t", TOXENV: "py313"}
           - {VERSION: "pypy-3.9", TOXENV: "pypy3"}
           - {VERSION: "pypy-3.10", TOXENV: "pypy3"}
 
