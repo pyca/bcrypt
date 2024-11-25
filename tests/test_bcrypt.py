@@ -464,6 +464,7 @@ def test_kdf_no_warn_rounds():
     bcrypt.kdf(b"password", b"salt", 10, 10, True)
 
 
+@pytest.mark.thread_unsafe()
 def test_kdf_warn_rounds():
     with pytest.warns(UserWarning):
         bcrypt.kdf(b"password", b"salt", 10, 10)
