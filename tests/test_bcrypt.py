@@ -1,11 +1,9 @@
-import random
 import uuid
-
 from concurrent.futures import ThreadPoolExecutor
-from dataclasses import dataclass
+
+import pytest
 
 import bcrypt
-import pytest
 
 _test_vectors = [
     (
@@ -519,9 +517,9 @@ def test_multithreading():
             return bcrypt.checkpw(pw, self.hash_)
 
     # use UUIDs as both ID and passwords
-    NUM_USERS = 50
-    ids = [get_id() for _ in range(NUM_USERS)]
-    pws = {id_: get_id() for id_, _ in zip(ids, range(NUM_USERS))}
+    num_users = 50
+    ids = [get_id() for _ in range(num_users)]
+    pws = {id_: get_id() for id_, _ in zip(ids, range(num_users))}
 
     user_creator = ThreadPoolExecutor(max_workers=4)
 
