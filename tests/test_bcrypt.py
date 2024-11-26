@@ -1,6 +1,11 @@
-import pytest
+import random
+import uuid
+
+from concurrent.futures import ThreadPoolExecutor
+from dataclasses import dataclass
 
 import bcrypt
+import pytest
 
 _test_vectors = [
     (
@@ -171,7 +176,7 @@ _2y_test_vectors = [
 ]
 
 
-def test_gensalt_basic(monkeypatch):
+def test_gensalt_basic():
     salt = bcrypt.gensalt()
     assert salt.startswith(b"$2b$12$")
 
@@ -219,7 +224,7 @@ def test_gensalt_bad_prefix():
         bcrypt.gensalt(prefix=b"bad")
 
 
-def test_gensalt_2a_prefix(monkeypatch):
+def test_gensalt_2a_prefix():
     salt = bcrypt.gensalt(prefix=b"2a")
     assert salt.startswith(b"$2a$12$")
 
@@ -495,3 +500,40 @@ def test_2a_wraparound_bug():
         )
         == b"$2a$04$R1lJ2gkNaoPGdafE.H.16.1MKHPvmKwryeulRe225LKProWYwt9Oi"
     )
+
+
+@pytest.mark.thread_unsafe()
+def test_multithreading():
+    def get_id():
+        return uuid.uuid4().bytes
+
+    class User:
+        def __init__(self, id_, pw):
+            self.id_ = id_
+            self.salt = bcrypt.gensalt(4)
+            self.hash_ = bcrypt.hashpw(pw, self.salt)
+            self.key = bcrypt.kdf(pw, self.salt, 32, 50)
+            assert self.check(pw)
+
+        def check(self, pw):
+            return bcrypt.checkpw(pw, self.hash_)
+
+    # use UUIDs as both ID and passwords
+    NUM_USERS = 50
+    ids = [get_id() for _ in range(NUM_USERS)]
+    pws = {id_: get_id() for id_, _ in zip(ids, range(NUM_USERS))}
+
+    user_creator = ThreadPoolExecutor(max_workers=4)
+
+    def create_user(id_, pw):
+        return id_, User(id_, pw)
+
+    creator_futures = [
+        user_creator.submit(create_user, id_, pw) for id_, pw in pws.items()]
+
+    users = [future.result() for future in creator_futures]
+
+    for id_, user in users:
+        assert bcrypt.hashpw(pws[id_], user.salt) == user.hash_
+        assert user.check(pws[id_])
+        assert bcrypt.kdf(pws[id_], user.salt, 32, 50) == user.key
