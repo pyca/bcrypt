@@ -527,7 +527,8 @@ def test_multithreading():
         return id_, User(id_, pw)
 
     creator_futures = [
-        user_creator.submit(create_user, id_, pw) for id_, pw in pws.items()]
+        user_creator.submit(create_user, id_, pw) for id_, pw in pws.items()
+    ]
 
     users = [future.result() for future in creator_futures]
 
