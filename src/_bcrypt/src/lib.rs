@@ -182,7 +182,7 @@ fn kdf<'p>(
     })
 }
 
-#[pyo3::pymodule]
+#[pyo3::pymodule(gil_used = false)]
 mod _bcrypt {
     use pyo3::types::PyModuleMethods;
 
