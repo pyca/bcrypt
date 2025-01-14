@@ -504,12 +504,8 @@ def test_2a_wraparound_bug():
 # this test spawns threads and is slow, so don't run it in many threads
 @pytest.mark.parallel_threads(1)
 def test_multithreading():
-    def get_id():
-        return uuid.uuid4().bytes
-
     class User:
-        def __init__(self, id_, pw):
-            self.id_ = id_
+        def __init__(self, pw):
             self.salt = bcrypt.gensalt(4)
             self.hash_ = bcrypt.hashpw(pw, self.salt)
             self.key = bcrypt.kdf(pw, self.salt, 32, 50)
@@ -520,21 +516,14 @@ def test_multithreading():
 
     # use UUIDs as both ID and passwords
     num_users = 50
-    ids = [get_id() for _ in range(num_users)]
-    pws = {id_: get_id() for id_, _ in zip(ids, range(num_users))}
-
     user_creator = ThreadPoolExecutor(max_workers=4)
+    pws = [uuid.uuid4().bytes for _ in range(num_users)]
 
-    def create_user(id_, pw):
-        return id_, User(id_, pw)
+    futures = [user_creator.submit(User, pw) for pw in pws]
 
-    creator_futures = [
-        user_creator.submit(create_user, id_, pw) for id_, pw in pws.items()
-    ]
+    users = [future.result() for future in futures]
 
-    users = [future.result() for future in creator_futures]
-
-    for id_, user in users:
-        assert bcrypt.hashpw(pws[id_], user.salt) == user.hash_
-        assert user.check(pws[id_])
-        assert bcrypt.kdf(pws[id_], user.salt, 32, 50) == user.key
+    for pw, user in zip(pws, users):
+        assert bcrypt.hashpw(pw, user.salt) == user.hash_
+        assert user.check(pw)
+        assert bcrypt.kdf(pw, user.salt, 32, 50) == user.key
