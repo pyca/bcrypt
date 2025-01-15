@@ -467,8 +467,6 @@ def test_kdf_no_warn_rounds():
     bcrypt.kdf(b"password", b"salt", 10, 10, True)
 
 
-# Python warning state is global
-@pytest.mark.thread_unsafe()
 def test_kdf_warn_rounds():
     with pytest.warns(UserWarning):
         bcrypt.kdf(b"password", b"salt", 10, 10)
@@ -501,8 +499,6 @@ def test_2a_wraparound_bug():
     )
 
 
-# this test spawns threads and is slow, so don't run it in many threads
-@pytest.mark.parallel_threads(1)
 def test_multithreading():
     def create_user(pw):
         salt = bcrypt.gensalt(4)
