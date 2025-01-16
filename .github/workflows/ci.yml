@@ -100,7 +100,7 @@ jobs:
           - {VERSION: "3.13", RUST_VERSION: "1.64.0"}
           - {VERSION: "3.13", RUST_VERSION: "beta"}
           - {VERSION: "3.13", RUST_VERSION: "nightly"}
-    name: "${{ matrix.PYTHON.VERSION }} on linux, Rust ${{ matrix.PYTHON.RUST_VERSION || 'stable' }}"
+    name: "${{ matrix.PYTHON.TOXENV || matrix.PYTHON.VERSION }} on linux, Rust ${{ matrix.PYTHON.RUST_VERSION || 'stable' }}"
     steps:
       - uses: actions/checkout@v4.2.2
       - name: Setup python
