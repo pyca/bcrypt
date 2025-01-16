@@ -16,7 +16,7 @@ jobs:
         PYTHON:
           - {VERSION: "3.8", TOXENV: "py38"}
           - {VERSION: "3.13", TOXENV: "py313"}
-          - {VERSION: "3.13t", TOXENV: "py313"}
+          - {VERSION: "3.13t", TOXENV: "py313t"}
         MACOS:
           - macos-13
           - macos-latest
@@ -39,9 +39,8 @@ jobs:
             src/_bcrypt/target/
           key: ${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-cargo-${{ hashFiles('**/Cargo.lock') }}
       - run: pip install tox
-      - run: tox
+      - run: tox --discover $(which python)
         env:
-          TOXENV: ${{ matrix.PYTHON.TOXENV }}
           CARGO_TARGET_DIR: ${{ format('{0}/src/_bcrypt/target/', github.workspace) }}
 
   windows:
@@ -52,9 +51,9 @@ jobs:
           - {ARCH: 'x86', WINDOWS: 'win32', RUST_TRIPLE: 'i686-pc-windows-msvc'}
           - {ARCH: 'x64', WINDOWS: 'win64', RUST_TRIPLE: 'x86_64-pc-windows-msvc'}
         PYTHON:
-          - {VERSION: "3.8", TOXENV: "py38"}
-          - {VERSION: "3.13", TOXENV: "py313"}
-          - {VERSION: "3.13t", TOXENV: "py313"}
+          - {VERSION: "3.8"}
+          - {VERSION: "3.13"}
+          - {VERSION: "3.13t"}
     name: "Python ${{ matrix.PYTHON.VERSION }} on ${{ matrix.WINDOWS.WINDOWS }}"
     steps:
       - uses: actions/checkout@v4.2.2
@@ -77,31 +76,30 @@ jobs:
           key: ${{ runner.os }}-${{ matrix.WINDOWS.ARCH }}-${{ steps.setup-python.outputs.python-version }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
       - run: pip install tox
-      - run: tox
+      - run: tox --discover $(which python)
         env:
-          TOXENV: ${{ matrix.PYTHON.TOXENV }}
           CARGO_TARGET_DIR: ${{ format('{0}/src/_bcrypt/target/', github.workspace) }}
   linux:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
         PYTHON:
-          - {VERSION: "3.13", TOXENV: "pep8,packaging"}
-          - {VERSION: "3.13", TOXENV: "mypy"}
-          - {VERSION: "3.8", TOXENV: "py38"}
-          - {VERSION: "3.9", TOXENV: "py39"}
-          - {VERSION: "3.10", TOXENV: "py310"}
-          - {VERSION: "3.11", TOXENV: "py311"}
-          - {VERSION: "3.12", TOXENV: "py312"}
-          - {VERSION: "3.13", TOXENV: "py313"}
-          - {VERSION: "3.13t", TOXENV: "py313"}
-          - {VERSION: "pypy-3.9", TOXENV: "pypy3"}
-          - {VERSION: "pypy-3.10", TOXENV: "pypy3"}
+          - {VERSION: "3.13"}
+          - {VERSION: "3.13"}
+          - {VERSION: "3.8"}
+          - {VERSION: "3.9"}
+          - {VERSION: "3.10"}
+          - {VERSION: "3.11"}
+          - {VERSION: "3.12"}
+          - {VERSION: "3.13"}
+          - {VERSION: "3.13t"}
+          - {VERSION: "pypy-3.9"}
+          - {VERSION: "pypy-3.10"}
 
           # MSRV
-          - {VERSION: "3.13", TOXENV: "py313", RUST_VERSION: "1.64.0"}
-          - {VERSION: "3.13", TOXENV: "py313", RUST_VERSION: "beta"}
-          - {VERSION: "3.13", TOXENV: "py313", RUST_VERSION: "nightly"}
+          - {VERSION: "3.13", RUST_VERSION: "1.64.0"}
+          - {VERSION: "3.13", RUST_VERSION: "beta"}
+          - {VERSION: "3.13", RUST_VERSION: "nightly"}
     name: "${{ matrix.PYTHON.VERSION }} on linux, Rust ${{ matrix.PYTHON.RUST_VERSION || 'stable' }}"
     steps:
       - uses: actions/checkout@v4.2.2
@@ -126,9 +124,8 @@ jobs:
           toolchain: ${{ matrix.PYTHON.RUST_VERSION || 'stable' }}
 
       - run: pip install tox
-      - run: tox
+      - run: tox --discover $(which python)
         env:
-          TOXENV: ${{ matrix.PYTHON.TOXENV }}
           CARGO_TARGET_DIR: ${{ format('{0}/src/_bcrypt/target/', github.workspace) }}
 
   linux-distros:
