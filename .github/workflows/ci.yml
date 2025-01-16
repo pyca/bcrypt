@@ -138,8 +138,8 @@ jobs:
       matrix:
         IMAGE:
           - {IMAGE: "alpine", NOXSESSION: "tests", RUNNER: "ubuntu-latest"}
-          - {IMAGE: "alpine:aarch64", NOXSESSION: "tests", RUNNER: [self-hosted, Linux, ARM64]}
-          - {IMAGE: "ubuntu-rolling:aarch64", NOXSESSION: "tests", RUNNER: [self-hosted, Linux, ARM64]}
+          - {IMAGE: "alpine:aarch64", NOXSESSION: "tests", RUNNER: "ubuntu-24.04-arm"}
+          - {IMAGE: "ubuntu-rolling:aarch64", NOXSESSION: "tests", RUNNER: "ubuntu-24.04-arm"}
     name: "${{ matrix.IMAGE.NOXSESSION }} on ${{ matrix.IMAGE.IMAGE }}"
     steps:
       - name: Ridiculous alpine workaround for actions support on arm64
