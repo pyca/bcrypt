@@ -84,8 +84,8 @@ jobs:
     strategy:
       matrix:
         PYTHON:
-          - {VERSION: "3.13"}
-          - {VERSION: "3.13"}
+          - {VERSION: "3.13", TOXENV: "pep8,packaging"}
+          - {VERSION: "3.13", TOXENV: "mypy"}
           - {VERSION: "3.8"}
           - {VERSION: "3.9"}
           - {VERSION: "3.10"}
