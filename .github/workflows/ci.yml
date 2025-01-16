@@ -14,9 +14,9 @@ jobs:
       fail-fast: false
       matrix:
         PYTHON:
-          - {VERSION: "3.8", TOXENV: "py38"}
-          - {VERSION: "3.13", TOXENV: "py313"}
-          - {VERSION: "3.13t", TOXENV: "py313t"}
+          - {VERSION: "3.8"}
+          - {VERSION: "3.13"}
+          - {VERSION: "3.13t"}
         MACOS:
           - macos-13
           - macos-latest
