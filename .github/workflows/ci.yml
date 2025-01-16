@@ -126,6 +126,7 @@ jobs:
       - run: pip install tox
       - run: tox --discover $(which python)
         env:
+          TOXENV: ${{ matrix.PYTHON.TOXENV }}
           CARGO_TARGET_DIR: ${{ format('{0}/src/_bcrypt/target/', github.workspace) }}
 
   linux-distros:
