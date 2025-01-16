@@ -72,3 +72,6 @@ warn_redundant_casts = true
 warn_unused_ignores = true
 warn_unused_configs = true
 strict_equality = true
+
+[tool.check-manifest]
+ignore = ["tests/reference/*"]
