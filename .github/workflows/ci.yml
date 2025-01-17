@@ -14,9 +14,9 @@ jobs:
       fail-fast: false
       matrix:
         PYTHON:
-          - {VERSION: "3.8", TOXENV: "py38"}
-          - {VERSION: "3.13", TOXENV: "py313"}
-          - {VERSION: "3.13t", TOXENV: "py313"}
+          - {VERSION: "3.8", NOXSESSION: "tests"}
+          - {VERSION: "3.13", NOXSESSION: "tests"}
+          - {VERSION: "3.13t", NOXSESSION: "tests"}
         MACOS:
           - macos-13
           - macos-latest
@@ -38,10 +38,10 @@ jobs:
             ~/.cargo/git/db/
             src/_bcrypt/target/
           key: ${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-      - run: pip install tox
-      - run: tox
+      - run: pip install nox
+      - run: nox -v
         env:
-          TOXENV: ${{ matrix.PYTHON.TOXENV }}
+          NOXSESSION: ${{ matrix.PYTHON.NOXSESSION }}
           CARGO_TARGET_DIR: ${{ format('{0}/src/_bcrypt/target/', github.workspace) }}
 
   windows:
@@ -52,9 +52,9 @@ jobs:
           - {ARCH: 'x86', WINDOWS: 'win32', RUST_TRIPLE: 'i686-pc-windows-msvc'}
           - {ARCH: 'x64', WINDOWS: 'win64', RUST_TRIPLE: 'x86_64-pc-windows-msvc'}
         PYTHON:
-          - {VERSION: "3.8", TOXENV: "py38"}
-          - {VERSION: "3.13", TOXENV: "py313"}
-          - {VERSION: "3.13t", TOXENV: "py313"}
+          - {VERSION: "3.8", NOXSESSION: "tests"}
+          - {VERSION: "3.13", NOXSESSION: "tests"}
+          - {VERSION: "3.13t", NOXSESSION: "tests"}
     name: "Python ${{ matrix.PYTHON.VERSION }} on ${{ matrix.WINDOWS.WINDOWS }}"
     steps:
       - uses: actions/checkout@v4.2.2
@@ -76,32 +76,32 @@ jobs:
             src/_bcrypt/target/
           key: ${{ runner.os }}-${{ matrix.WINDOWS.ARCH }}-${{ steps.setup-python.outputs.python-version }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
-      - run: pip install tox
-      - run: tox
+      - run: pip install nox
+      - run: nox -v
         env:
-          TOXENV: ${{ matrix.PYTHON.TOXENV }}
+          NOXSESSION: ${{ matrix.PYTHON.NOXSESSION }}
           CARGO_TARGET_DIR: ${{ format('{0}/src/_bcrypt/target/', github.workspace) }}
   linux:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
         PYTHON:
-          - {VERSION: "3.13", TOXENV: "pep8,packaging"}
-          - {VERSION: "3.13", TOXENV: "mypy"}
-          - {VERSION: "3.8", TOXENV: "py38"}
-          - {VERSION: "3.9", TOXENV: "py39"}
-          - {VERSION: "3.10", TOXENV: "py310"}
-          - {VERSION: "3.11", TOXENV: "py311"}
-          - {VERSION: "3.12", TOXENV: "py312"}
-          - {VERSION: "3.13", TOXENV: "py313"}
-          - {VERSION: "3.13t", TOXENV: "py313"}
-          - {VERSION: "pypy-3.9", TOXENV: "pypy3"}
-          - {VERSION: "pypy-3.10", TOXENV: "pypy3"}
+          - {VERSION: "3.13", NOXSESSION: "pep8,packaging"}
+          - {VERSION: "3.13", NOXSESSION: "mypy"}
+          - {VERSION: "3.8", NOXSESSION: "tests"}
+          - {VERSION: "3.9", NOXSESSION: "tests"}
+          - {VERSION: "3.10", NOXSESSION: "tests"}
+          - {VERSION: "3.11", NOXSESSION: "tests"}
+          - {VERSION: "3.12", NOXSESSION: "tests"}
+          - {VERSION: "3.13", NOXSESSION: "tests"}
+          - {VERSION: "3.13t", NOXSESSION: "tests"}
+          - {VERSION: "pypy-3.9", NOXSESSION: "tests"}
+          - {VERSION: "pypy-3.10", NOXSESSION: "tests"}
 
           # MSRV
-          - {VERSION: "3.13", TOXENV: "py313", RUST_VERSION: "1.64.0"}
-          - {VERSION: "3.13", TOXENV: "py313", RUST_VERSION: "beta"}
-          - {VERSION: "3.13", TOXENV: "py313", RUST_VERSION: "nightly"}
+          - {VERSION: "3.13", NOXSESSION: "tests", RUST_VERSION: "1.64.0"}
+          - {VERSION: "3.13", NOXSESSION: "tests", RUST_VERSION: "beta"}
+          - {VERSION: "3.13", NOXSESSION: "tests", RUST_VERSION: "nightly"}
     name: "${{ matrix.PYTHON.VERSION }} on linux, Rust ${{ matrix.PYTHON.RUST_VERSION || 'stable' }}"
     steps:
       - uses: actions/checkout@v4.2.2
@@ -125,10 +125,10 @@ jobs:
         with:
           toolchain: ${{ matrix.PYTHON.RUST_VERSION || 'stable' }}
 
-      - run: pip install tox
-      - run: tox
+      - run: pip install nox
+      - run: nox -v
         env:
-          TOXENV: ${{ matrix.PYTHON.TOXENV }}
+          NOXSESSION: ${{ matrix.PYTHON.NOXSESSION }}
           CARGO_TARGET_DIR: ${{ format('{0}/src/_bcrypt/target/', github.workspace) }}
 
   linux-distros:
@@ -137,10 +137,10 @@ jobs:
     strategy:
       matrix:
         IMAGE:
-          - {IMAGE: "alpine", TOXENV: "py312", RUNNER: "ubuntu-latest"}
-          - {IMAGE: "alpine:aarch64", TOXENV: "py312", RUNNER: [self-hosted, Linux, ARM64]}
-          - {IMAGE: "ubuntu-rolling:aarch64", TOXENV: "py312", RUNNER: [self-hosted, Linux, ARM64]}
-    name: "${{ matrix.IMAGE.TOXENV }} on ${{ matrix.IMAGE.IMAGE }}"
+          - {IMAGE: "alpine", NOXSESSION: "tests", RUNNER: "ubuntu-latest"}
+          - {IMAGE: "alpine:aarch64", NOXSESSION: "tests", RUNNER: [self-hosted, Linux, ARM64]}
+          - {IMAGE: "ubuntu-rolling:aarch64", NOXSESSION: "tests", RUNNER: [self-hosted, Linux, ARM64]}
+    name: "${{ matrix.IMAGE.NOXSESSION }} on ${{ matrix.IMAGE.IMAGE }}"
     steps:
       - name: Ridiculous alpine workaround for actions support on arm64
         run: |
@@ -153,10 +153,10 @@ jobs:
       - uses: actions/checkout@v4.2.2
         with:
           persist-credentials: false
-      - run: /venv/bin/pip install tox
-      - run: '/venv/bin/tox'
+      - run: /venv/bin/pip install nox
+      - run: /venv/bin/nox -v
         env:
-          TOXENV: ${{ matrix.IMAGE.TOXENV }}
+          NOXSESSION: ${{ matrix.IMAGE.NOXSESSION }}
           RUSTUP_HOME: /root/.rustup
           CARGO_TARGET_DIR: ${{ format('{0}/src/_bcrypt/target/', github.workspace) }}
 
