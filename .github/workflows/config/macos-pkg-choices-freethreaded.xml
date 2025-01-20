@@ -8,7 +8,7 @@
         <key>choiceAttribute</key>
         <string>selected</string>
         <key>choiceIdentifier</key>
-        <string>org.python.Python.PythonTFramework-{{__VERSION_MAJOR_MINOR__}}</string>
+        <string>org.python.Python.PythonTFramework-3.13</string>
     </dict>
 </array>
 </plist>
