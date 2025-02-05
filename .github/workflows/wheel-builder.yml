@@ -150,7 +150,7 @@ jobs:
           # The tag to build or the tag received by the tag event
           ref: ${{ github.event.inputs.version || github.ref }}
           sparse_checkout: |
-            .github/workflows/config/macos-pkg-choices-freethreaded.xml
+            .github/config/macos-pkg-choices-freethreaded.xml
           persist-credentials: false
       - name: Install Python
         if: matrix.PYTHON.VERSION != '3.13t'
@@ -161,7 +161,7 @@ jobs:
         if: matrix.PYTHON.VERSION == '3.13t'
         run: |
           curl "${{ matrix.PYTHON.DOWNLOAD_URL }}" -o python.pkg
-          sudo installer -pkg python.pkg -applyChoiceChangesXML .github/workflows/config/macos-pkg-choices-freethreaded.xml -target /
+          sudo installer -pkg python.pkg -applyChoiceChangesXML .github/config/macos-pkg-choices-freethreaded.xml -target /
       - uses: dtolnay/rust-toolchain@a54c7afa936fefeb4456b2dd8068152669aa8203
         with:
           toolchain: stable
