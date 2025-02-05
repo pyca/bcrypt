@@ -213,7 +213,7 @@ jobs:
         with:
           name: bcrypt-sdist
       - name: Setup python
-        uses: quansight-labs/setup-python@v5.3.1
+        uses: quansight-labs/setup-python@v5.4.0
         with:
           python-version: ${{ matrix.PYTHON.VERSION }}
           architecture: ${{ matrix.WINDOWS.ARCH }}

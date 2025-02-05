@@ -46,7 +46,7 @@ fn gensalt<'p>(
     }
 
     let mut salt = [0; 16];
-    getrandom::getrandom(&mut salt).unwrap();
+    getrandom::fill(&mut salt).unwrap();
 
     let encoded_salt = BASE64_ENGINE.encode(salt);
 
