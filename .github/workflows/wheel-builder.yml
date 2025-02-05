@@ -50,6 +50,7 @@ jobs:
           - { VERSION: "cp38-cp38", ABI_VERSION: 'cp38' }
           - { VERSION: "cp39-cp39", ABI_VERSION: 'cp39' }
           - { VERSION: "pp310-pypy310_pp73" }
+          - { VERSION: "cp313-cp313t" }
         MANYLINUX:
           - { NAME: "manylinux2014_x86_64", CONTAINER: "cryptography-manylinux2014:x86_64", RUNNER: "ubuntu-latest" }
           - { NAME: "manylinux_2_28_x86_64", CONTAINER: "cryptography-manylinux_2_28:x86_64", RUNNER: "ubuntu-latest"}
@@ -139,11 +140,28 @@ jobs:
             ABI_VERSION: 'cp39'
             DOWNLOAD_URL: 'https://www.python.org/ftp/python/3.11.3/python-3.11.3-macos11.pkg'
             BIN_PATH: '/Library/Frameworks/Python.framework/Versions/3.11/bin/python3'
-    name: "Python ${{ matrix.PYTHON.VERSION }} for ABI ${{ matrix.PYTHON.ABI_VERSION }} on macOS"
+          - VERSION: '3.13t'
+            DOWNLOAD_URL: 'https://www.python.org/ftp/python/3.13.1/python-3.13.1-macos11.pkg'
+            BIN_PATH: '/Library/Frameworks/PythonT.framework/Versions/3.13/bin/python3.13t'
+    name: "Python ${{ matrix.PYTHON.VERSION }} ${{ matrix.PYTHON.ABI_VERSION }} on macOS"
     steps:
-      - run: |
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          # The tag to build or the tag received by the tag event
+          ref: ${{ github.event.inputs.version || github.ref }}
+          sparse_checkout: |
+            .github/config/macos-pkg-choices-freethreaded.xml
+          persist-credentials: false
+      - name: Install Python
+        if: matrix.PYTHON.VERSION != '3.13t'
+        run: |
           curl "${{ matrix.PYTHON.DOWNLOAD_URL }}" -o python.pkg
           sudo installer -pkg python.pkg -target /
+      - name: Install Python
+        if: matrix.PYTHON.VERSION == '3.13t'
+        run: |
+          curl "${{ matrix.PYTHON.DOWNLOAD_URL }}" -o python.pkg
+          sudo installer -pkg python.pkg -applyChoiceChangesXML .github/config/macos-pkg-choices-freethreaded.xml -target /
       - uses: dtolnay/rust-toolchain@a54c7afa936fefeb4456b2dd8068152669aa8203
         with:
           toolchain: stable
@@ -190,13 +208,14 @@ jobs:
         PYTHON:
           - {VERSION: "3.11", ABI_VERSION: "cp38"}
           - {VERSION: "3.11", ABI_VERSION: "cp39"}
+          - {VERSION: "3.13t"}
     name: "${{ matrix.PYTHON.VERSION }} ${{ matrix.PYTHON.ABI_VERSION }} ${{ matrix.WINDOWS.ARCH }}"
     steps:
       - uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
         with:
           name: bcrypt-sdist
       - name: Setup python
-        uses: actions/setup-python@v5.4.0
+        uses: quansight-labs/setup-python@v5.4.0
         with:
           python-version: ${{ matrix.PYTHON.VERSION }}
           architecture: ${{ matrix.WINDOWS.ARCH }}
