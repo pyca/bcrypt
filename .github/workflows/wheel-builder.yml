@@ -36,7 +36,7 @@ jobs:
         run: .venv/bin/pip install -U pip build
       - name: Make sdist
         run: .venv/bin/python -m build --sdist
-      - uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # v4.6.0
+      - uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4.6.1
         with:
           name: "bcrypt-sdist"
           path: dist/bcrypt*
@@ -120,7 +120,7 @@ jobs:
 
       - run: mkdir bcrypt-wheelhouse
       - run: mv wheelhouse/bcrypt*.whl bcrypt-wheelhouse/
-      - uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # v4.6.0
+      - uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4.6.1
         with:
           name: "bcrypt-${{ github.event.inputs.version }}-${{ matrix.MANYLINUX.NAME }} -${{ matrix.PYTHON.VERSION }}"
           path: bcrypt-wheelhouse/
@@ -191,7 +191,7 @@ jobs:
 
       - run: mkdir bcrypt-wheelhouse
       - run: mv wheelhouse/bcrypt*.whl bcrypt-wheelhouse/
-      - uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # v4.6.0
+      - uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4.6.1
         with:
           name: "bcrypt-${{ github.event.inputs.version }}-macOS-${{ matrix.PYTHON.ABI_VERSION }}"
           path: bcrypt-wheelhouse/
@@ -241,7 +241,7 @@ jobs:
       # TODO: can we setup another python and test in the same job? this would catch bad linking problems (e.g. build and test on py36, but then install py38 and see if it works
       - run: mkdir bcrypt-wheelhouse
       - run: move wheelhouse\bcrypt*.whl bcrypt-wheelhouse\
-      - uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # v4.6.0
+      - uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4.6.1
         with:
           name: "bcrypt-${{ github.event.inputs.version }}-${{ matrix.WINDOWS.ARCH }}-${{ matrix.PYTHON.ABI_VERSION }}"
           path: bcrypt-wheelhouse\
