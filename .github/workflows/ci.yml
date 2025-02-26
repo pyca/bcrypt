@@ -17,7 +17,6 @@ jobs:
           - {VERSION: "3.8", NOXSESSION: "tests"}
           - {VERSION: "3.13", NOXSESSION: "tests"}
           - {VERSION: "3.13t", NOXSESSION: "tests"}
-          - {VERSION: "pypy-3.11", NOXSESSION: "tests-nocoverage"}
         MACOS:
           - macos-13
           - macos-latest
@@ -98,6 +97,7 @@ jobs:
           - {VERSION: "3.13t", NOXSESSION: "tests"}
           - {VERSION: "pypy-3.9", NOXSESSION: "tests"}
           - {VERSION: "pypy-3.10", NOXSESSION: "tests"}
+          - {VERSION: "pypy-3.11", NOXSESSION: "tests"}
 
           # MSRV
           - {VERSION: "3.13", NOXSESSION: "tests", RUST_VERSION: "1.64.0"}
