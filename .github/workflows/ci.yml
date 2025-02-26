@@ -97,6 +97,7 @@ jobs:
           - {VERSION: "3.13t", NOXSESSION: "tests"}
           - {VERSION: "pypy-3.9", NOXSESSION: "tests"}
           - {VERSION: "pypy-3.10", NOXSESSION: "tests"}
+          - {VERSION: "pypy-3.11", NOXSESSION: "tests"}
 
           # MSRV
           - {VERSION: "3.13", NOXSESSION: "tests", RUST_VERSION: "1.64.0"}
@@ -140,6 +141,7 @@ jobs:
           - {IMAGE: "alpine", NOXSESSION: "tests", RUNNER: "ubuntu-latest"}
           - {IMAGE: "alpine:aarch64", NOXSESSION: "tests", RUNNER: "ubuntu-24.04-arm"}
           - {IMAGE: "ubuntu-rolling:aarch64", NOXSESSION: "tests", RUNNER: "ubuntu-24.04-arm"}
+          - {IMAGE: "ubuntu-rolling:armv7l", NOXSESSION: "tests", RUNNER: "ubuntu-24.04-arm"}
     name: "${{ matrix.IMAGE.NOXSESSION }} on ${{ matrix.IMAGE.IMAGE }}"
     steps:
       - name: Ridiculous alpine workaround for actions support on arm64
