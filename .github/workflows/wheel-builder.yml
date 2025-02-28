@@ -173,7 +173,7 @@ jobs:
         with:
           # The tag to build or the tag received by the tag event
           ref: ${{ github.event.inputs.version || github.ref }}
-          sparse_checkout: |
+          sparse-checkout: |
             .github/config/macos-pkg-choices-freethreaded.xml
           persist-credentials: false
       - name: Install Python
