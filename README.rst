@@ -51,8 +51,8 @@ While bcrypt remains an acceptable choice for password storage, depending on you
 Changelog
 =========
 
-Unreleased
-----------
+4.3.0
+-----
 
 * Dropped support for Python 3.7.
 * We now support free-threaded Python 3.13.
