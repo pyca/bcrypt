@@ -55,6 +55,10 @@ Unreleased
 ----------
 
 * Dropped support for Python 3.7.
+* We now support free-threaded Python 3.13.
+* We now support PyPy 3.11.
+* We now publish wheels for free-threaded Python 3.13, for PyPy 3.11 on
+  ``manylinux``, and for ARMv7l on ``manylinux``.
 
 4.2.1
 -----
