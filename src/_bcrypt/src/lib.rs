@@ -202,14 +202,14 @@ mod _bcrypt {
         // When updating this, also update pyproject.toml
         // This isn't named __version__ because passlib treats the existence of
         // that attribute as proof that we're a different module
-        m.add("__version_ex__", "4.2.1")?;
+        m.add("__version_ex__", "4.3.0")?;
 
         let author = "The Python Cryptographic Authority developers";
         m.add("__author__", author)?;
         m.add("__email__", "cryptography-dev@python.org")?;
 
         m.add("__license__", "Apache License, Version 2.0")?;
-        m.add("__copyright__", format!("Copyright 2013-2024 {author}"))?;
+        m.add("__copyright__", format!("Copyright 2013-2025 {author}"))?;
 
         Ok(())
     }
