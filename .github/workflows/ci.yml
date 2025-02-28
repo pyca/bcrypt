@@ -28,7 +28,7 @@ jobs:
         uses: quansight-labs/setup-python@v5.4.0
         with:
           python-version: ${{ matrix.PYTHON.VERSION }}
-      - uses: actions/cache@v4.2.1
+      - uses: actions/cache@v4.2.2
         timeout-minutes: 5
         with:
           path: |
@@ -64,7 +64,7 @@ jobs:
         with:
           python-version: ${{ matrix.PYTHON.VERSION }}
           architecture: ${{ matrix.WINDOWS.ARCH }}
-      - uses: actions/cache@v4.2.1
+      - uses: actions/cache@v4.2.2
         timeout-minutes: 5
         with:
           path: |
@@ -111,7 +111,7 @@ jobs:
         uses: quansight-labs/setup-python@v5.4.0
         with:
           python-version: ${{ matrix.PYTHON.VERSION }}
-      - uses: actions/cache@v4.2.1
+      - uses: actions/cache@v4.2.2
         timeout-minutes: 5
         with:
           path: |
