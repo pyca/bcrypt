@@ -122,24 +122,6 @@ _test_vectors = [
         b"$2a$05$XXXXXXXXXXXXXXXXXXXXXOAcXxm9kjPGEMsLznoKqmqw7tc8WCx4a",
     ),
     (
-        b"0123456789abcdefghijklmnopqrstuvwxyz"
-        b"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-        b"chars after 72 are ignored",
-        b"$2a$05$abcdefghijklmnopqrstuu",
-        b"$2a$05$abcdefghijklmnopqrstuu5s2v8.iXieOjg/.AySBTTZIIVFJeBui",
-    ),
-    (
-        b"\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa"
-        b"\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa"
-        b"\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa"
-        b"\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa"
-        b"\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa"
-        b"\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa"
-        b"chars after 72 are ignored as usual",
-        b"$2a$05$/OK.fbVrR/bpIqNJ5ianF.",
-        b"$2a$05$/OK.fbVrR/bpIqNJ5ianF.swQOIzjOiJ9GHEPuhEkvqrUyvWhEMx6",
-    ),
-    (
         b"\xa3",
         b"$2a$05$/OK.fbVrR/bpIqNJ5ianF.",
         b"$2a$05$/OK.fbVrR/bpIqNJ5ianF.Sa7shbm4.OzKpvFnX1pQLmQW96oUlCq",
@@ -170,6 +152,25 @@ _2y_test_vectors = [
         b"\xff\xff\xa3",
         b"$2y$05$/OK.fbVrR/bpIqNJ5ianF.CE5elHaaO4EbggVDjb8P19RukzXSM3e",
         b"$2y$05$/OK.fbVrR/bpIqNJ5ianF.CE5elHaaO4EbggVDjb8P19RukzXSM3e",
+    ),
+]
+
+_long_pw_vectors = [
+    (
+        b"0123456789abcdefghijklmnopqrstuvwxyz"
+        b"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+        b"chars after 72 are ignored",
+        b"$2a$05$abcdefghijklmnopqrstuu",
+    ),
+    (
+        b"\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa"
+        b"\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa"
+        b"\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa"
+        b"\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa"
+        b"\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa"
+        b"\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa"
+        b"chars after 72 are ignored as usual",
+        b"$2a$05$/OK.fbVrR/bpIqNJ5ianF.",
     ),
 ]
 
@@ -250,6 +251,12 @@ def test_hashpw_2y_prefix(password, hashed, expected):
 @pytest.mark.parametrize(("password", "hashed", "expected"), _2y_test_vectors)
 def test_checkpw_2y_prefix(password, hashed, expected):
     assert bcrypt.checkpw(password, hashed) is True
+
+
+@pytest.mark.parametrize(("password", "salt"), _long_pw_vectors)
+def test_hashpw_raises_on_passwords_longer_than_72_chars(password, salt):
+    with pytest.raises(ValueError):
+        bcrypt.hashpw(password, salt)
 
 
 def test_hashpw_invalid():
