@@ -259,6 +259,25 @@ def test_hashpw_raises_on_passwords_longer_than_72_chars(password, salt):
         bcrypt.hashpw(password, salt)
 
 
+@pytest.mark.parametrize(
+    ("pw_length", "should_raise"),
+    [
+        (71, False),
+        (72, False),
+        (73, True),
+    ],
+)
+def test_hashpw_raises_correctly_for_long_passwords(pw_length, should_raise):
+    password = b"\xaa" * pw_length
+    salt = b"$2b$04$xnFVhJsTzsFBTeP3PpgbMe"
+
+    if should_raise:
+        with pytest.raises(ValueError):
+            bcrypt.hashpw(password, salt)
+    else:
+        bcrypt.hashpw(password, salt)
+
+
 def test_hashpw_invalid():
     with pytest.raises(ValueError):
         bcrypt.hashpw(b"password", b"$2z$04$cVWp4XaNU8a4v1uMRum2SO")
