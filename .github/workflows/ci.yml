@@ -132,18 +132,23 @@ jobs:
           NOXSESSION: ${{ matrix.PYTHON.NOXSESSION }}
           CARGO_TARGET_DIR: ${{ format('{0}/src/_bcrypt/target/', github.workspace) }}
 
-  linux-distros:
+  alpine:
     runs-on: ${{ matrix.IMAGE.RUNNER }}
-    container: ghcr.io/pyca/cryptography-runner-${{ matrix.IMAGE.IMAGE }}
+    container:
+      image: ghcr.io/pyca/cryptography-runner-${{ matrix.IMAGE.IMAGE }}
+      volumes:
+        - /staticnodehost:/staticnodecontainer:rw,rshared
+        - /staticnodehost:/__e/node20:ro,rshared
     strategy:
       matrix:
         IMAGE:
           - {IMAGE: "alpine", NOXSESSION: "tests", RUNNER: "ubuntu-latest"}
           - {IMAGE: "alpine:aarch64", NOXSESSION: "tests", RUNNER: "ubuntu-24.04-arm"}
-          - {IMAGE: "ubuntu-rolling:aarch64", NOXSESSION: "tests", RUNNER: "ubuntu-24.04-arm"}
-          - {IMAGE: "ubuntu-rolling:armv7l", NOXSESSION: "tests", RUNNER: "ubuntu-24.04-arm"}
     name: "${{ matrix.IMAGE.NOXSESSION }} on ${{ matrix.IMAGE.IMAGE }}"
     steps:
+      - name: Ridiculous-er workaround for static node20
+        run: |
+          cp -R /staticnode/* /staticnodecontainer/
       - name: Ridiculous alpine workaround for actions support on arm64
         run: |
           # This modifies /etc/os-release so the JS actions
@@ -162,6 +167,26 @@ jobs:
           RUSTUP_HOME: /root/.rustup
           CARGO_TARGET_DIR: ${{ format('{0}/src/_bcrypt/target/', github.workspace) }}
 
+  linux-distros:
+    runs-on: ${{ matrix.IMAGE.RUNNER }}
+    container: ghcr.io/pyca/cryptography-runner-${{ matrix.IMAGE.IMAGE }}
+    strategy:
+      matrix:
+        IMAGE:
+          - {IMAGE: "ubuntu-rolling:aarch64", NOXSESSION: "tests", RUNNER: "ubuntu-24.04-arm"}
+          - {IMAGE: "ubuntu-rolling:armv7l", NOXSESSION: "tests", RUNNER: "ubuntu-24.04-arm"}
+    name: "${{ matrix.IMAGE.NOXSESSION }} on ${{ matrix.IMAGE.IMAGE }}"
+    steps:
+      - uses: actions/checkout@v4.2.2
+        with:
+          persist-credentials: false
+      - run: /venv/bin/pip install nox
+      - run: /venv/bin/nox -v
+        env:
+          NOXSESSION: ${{ matrix.IMAGE.NOXSESSION }}
+          RUSTUP_HOME: /root/.rustup
+          CARGO_TARGET_DIR: ${{ format('{0}/src/_bcrypt/target/', github.workspace) }}
+
   all-green:  # This job does nothing and is only used for the branch protection
     if: always()
 
@@ -169,6 +194,7 @@ jobs:
     - macos
     - windows
     - linux
+    - alpine
     - linux-distros
 
     runs-on: ubuntu-latest
