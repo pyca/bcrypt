@@ -26,13 +26,12 @@ pub const BASE64_ENGINE: base64::engine::GeneralPurpose = base64::engine::Genera
 );
 
 #[pyo3::pyfunction]
-#[pyo3(signature = (rounds=None, prefix=None))]
+#[pyo3(signature = (rounds=12, prefix=None), text_signature = "(rounds=12, prefix=b'2b')")]
 fn gensalt<'p>(
     py: pyo3::Python<'p>,
-    rounds: Option<u16>,
+    rounds: u16,
     prefix: Option<&[u8]>,
 ) -> pyo3::PyResult<pyo3::Bound<'p, pyo3::types::PyBytes>> {
-    let rounds = rounds.unwrap_or(12);
     let prefix = prefix.unwrap_or(b"2b");
 
     if prefix != b"2a" && prefix != b"2b" {
