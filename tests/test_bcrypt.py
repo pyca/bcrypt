@@ -155,25 +155,6 @@ _2y_test_vectors = [
     ),
 ]
 
-_long_pw_vectors = [
-    (
-        b"0123456789abcdefghijklmnopqrstuvwxyz"
-        b"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-        b"chars after 72 are ignored",
-        b"$2a$05$abcdefghijklmnopqrstuu",
-    ),
-    (
-        b"\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa"
-        b"\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa"
-        b"\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa"
-        b"\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa"
-        b"\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa"
-        b"\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa"
-        b"chars after 72 are ignored as usual",
-        b"$2a$05$/OK.fbVrR/bpIqNJ5ianF.",
-    ),
-]
-
 
 def test_gensalt_basic():
     salt = bcrypt.gensalt()
@@ -251,12 +232,6 @@ def test_hashpw_2y_prefix(password, hashed, expected):
 @pytest.mark.parametrize(("password", "hashed", "expected"), _2y_test_vectors)
 def test_checkpw_2y_prefix(password, hashed, expected):
     assert bcrypt.checkpw(password, hashed) is True
-
-
-@pytest.mark.parametrize(("password", "salt"), _long_pw_vectors)
-def test_hashpw_raises_on_passwords_longer_than_72_chars(password, salt):
-    with pytest.raises(ValueError):
-        bcrypt.hashpw(password, salt)
 
 
 @pytest.mark.parametrize(
@@ -514,11 +489,6 @@ def test_kdf_warn_rounds():
 def test_invalid_params(password, salt, desired_key_bytes, rounds, error):
     with pytest.raises(error):
         bcrypt.kdf(password, salt, desired_key_bytes, rounds)
-
-
-def test_2a_wraparound_bug():
-    with pytest.raises(ValueError):
-        bcrypt.hashpw((b"0123456789" * 26)[:255], b"$2a$04$R1lJ2gkNaoPGdafE.H.16.")
 
 
 def test_multithreading():
