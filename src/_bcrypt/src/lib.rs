@@ -89,8 +89,6 @@ fn hashpw<'p>(
         ));
     }
 
-    let password = &password[..password.len()];
-
     // salt here is not just the salt bytes, but rather an encoded value
     // containing a version number, number of rounds, and the salt.
     // Should be [prefix, cost, hash]. This logic is copied from `bcrypt`
