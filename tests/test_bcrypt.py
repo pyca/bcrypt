@@ -122,24 +122,6 @@ _test_vectors = [
         b"$2a$05$XXXXXXXXXXXXXXXXXXXXXOAcXxm9kjPGEMsLznoKqmqw7tc8WCx4a",
     ),
     (
-        b"0123456789abcdefghijklmnopqrstuvwxyz"
-        b"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-        b"chars after 72 are ignored",
-        b"$2a$05$abcdefghijklmnopqrstuu",
-        b"$2a$05$abcdefghijklmnopqrstuu5s2v8.iXieOjg/.AySBTTZIIVFJeBui",
-    ),
-    (
-        b"\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa"
-        b"\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa"
-        b"\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa"
-        b"\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa"
-        b"\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa"
-        b"\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa"
-        b"chars after 72 are ignored as usual",
-        b"$2a$05$/OK.fbVrR/bpIqNJ5ianF.",
-        b"$2a$05$/OK.fbVrR/bpIqNJ5ianF.swQOIzjOiJ9GHEPuhEkvqrUyvWhEMx6",
-    ),
-    (
         b"\xa3",
         b"$2a$05$/OK.fbVrR/bpIqNJ5ianF.",
         b"$2a$05$/OK.fbVrR/bpIqNJ5ianF.Sa7shbm4.OzKpvFnX1pQLmQW96oUlCq",
@@ -250,6 +232,25 @@ def test_hashpw_2y_prefix(password, hashed, expected):
 @pytest.mark.parametrize(("password", "hashed", "expected"), _2y_test_vectors)
 def test_checkpw_2y_prefix(password, hashed, expected):
     assert bcrypt.checkpw(password, hashed) is True
+
+
+@pytest.mark.parametrize(
+    ("pw_length", "should_raise"),
+    [
+        (71, False),
+        (72, False),
+        (73, True),
+    ],
+)
+def test_hashpw_raises_correctly_for_long_passwords(pw_length, should_raise):
+    password = b"\xaa" * pw_length
+    salt = b"$2b$04$xnFVhJsTzsFBTeP3PpgbMe"
+
+    if should_raise:
+        with pytest.raises(ValueError):
+            bcrypt.hashpw(password, salt)
+    else:
+        bcrypt.hashpw(password, salt)
 
 
 def test_hashpw_invalid():
@@ -488,15 +489,6 @@ def test_kdf_warn_rounds():
 def test_invalid_params(password, salt, desired_key_bytes, rounds, error):
     with pytest.raises(error):
         bcrypt.kdf(password, salt, desired_key_bytes, rounds)
-
-
-def test_2a_wraparound_bug():
-    assert (
-        bcrypt.hashpw(
-            (b"0123456789" * 26)[:255], b"$2a$04$R1lJ2gkNaoPGdafE.H.16."
-        )
-        == b"$2a$04$R1lJ2gkNaoPGdafE.H.16.1MKHPvmKwryeulRe225LKProWYwt9Oi"
-    )
 
 
 def test_multithreading():

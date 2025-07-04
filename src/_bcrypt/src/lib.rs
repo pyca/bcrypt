@@ -77,7 +77,16 @@ fn hashpw<'p>(
     // bytes on the updated prefix $2b$, but leaving $2a$ unchanged for
     // compatibility. However, pyca/bcrypt 2.0.0 *did* correctly truncate inputs
     // on $2a$, so we do it here to preserve compatibility with 2.0.0
-    let password = &password[..password.len().min(72)];
+    // Silent truncation is _probably_ not the best idea, even if the "original"
+    // OpenBSD implementation did/does this.
+    // We prefer to raise a ValueError in this case - if the user _wants_ to truncate,
+    // they can always do so manually by passing s[:72] instead of s into hashpw().
+
+    if password.len() > 72 {
+        return Err(pyo3::exceptions::PyValueError::new_err(
+            "password cannot be longer than 72 bytes, truncate manually if necessary (e.g. my_password[:72])",
+        ));
+    }
 
     // salt here is not just the salt bytes, but rather an encoded value
     // containing a version number, number of rounds, and the salt.
