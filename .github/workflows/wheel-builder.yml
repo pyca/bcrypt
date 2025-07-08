@@ -222,14 +222,14 @@ jobs:
 
   windows:
     needs: [sdist]
-    runs-on: ${{ matrix.WINDOWS.ARCH == 'arm64' && 'windows-11-arm' || 'windows-latest' }}
+    runs-on: ${{ matrix.WINDOWS.RUNNER }}
     strategy:
       fail-fast: false
       matrix:
         WINDOWS:
-          - {ARCH: 'x86', RUST_TRIPLE: 'i686-pc-windows-msvc'}
-          - {ARCH: 'x64', RUST_TRIPLE: 'x86_64-pc-windows-msvc'}
-          - {ARCH: 'arm64', RUST_TRIPLE: 'aarch64-pc-windows-msvc'}
+          - {ARCH: 'x86', RUST_TRIPLE: 'i686-pc-windows-msvc', RUNNER: 'windows-latest'}
+          - {ARCH: 'x64', RUST_TRIPLE: 'x86_64-pc-windows-msvc', RUNNER: 'windows-latest'}
+          - {ARCH: 'arm64', RUST_TRIPLE: 'aarch64-pc-windows-msvc', RUNNER: 'windows-11-arm'}
         PYTHON:
           - {VERSION: "3.11", ABI_VERSION: "cp38"}
           - {VERSION: "3.11", ABI_VERSION: "cp39"}
