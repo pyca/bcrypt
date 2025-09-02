@@ -47,6 +47,7 @@ jobs:
   windows:
     runs-on: windows-latest
     strategy:
+      fail-fast: false
       matrix:
         WINDOWS:
           - {ARCH: 'x86', WINDOWS: 'win32', RUST_TRIPLE: 'i686-pc-windows-msvc'}
@@ -84,6 +85,7 @@ jobs:
   linux:
     runs-on: ubuntu-22.04
     strategy:
+      fail-fast: false
       matrix:
         PYTHON:
           - {VERSION: "3.13", NOXSESSION: "pep8,packaging"}
@@ -100,7 +102,7 @@ jobs:
           - {VERSION: "pypy-3.11", NOXSESSION: "tests"}
 
           # MSRV
-          - {VERSION: "3.13", NOXSESSION: "tests", RUST_VERSION: "1.64.0"}
+          - {VERSION: "3.13", NOXSESSION: "tests", RUST_VERSION: "1.74.0"}
           - {VERSION: "3.13", NOXSESSION: "tests", RUST_VERSION: "beta"}
           - {VERSION: "3.13", NOXSESSION: "tests", RUST_VERSION: "nightly"}
     name: "${{ matrix.PYTHON.VERSION }} on linux, Rust ${{ matrix.PYTHON.RUST_VERSION || 'stable' }}"
@@ -141,6 +143,7 @@ jobs:
         - /staticnodehost/20:/__e/node20:ro,rshared
         - /staticnodehost/24:/__e/node24:ro,rshared
     strategy:
+      fail-fast: false
       matrix:
         IMAGE:
           - {IMAGE: "alpine", NOXSESSION: "tests", RUNNER: "ubuntu-latest"}
@@ -172,6 +175,7 @@ jobs:
     runs-on: ${{ matrix.IMAGE.RUNNER }}
     container: ghcr.io/pyca/cryptography-runner-${{ matrix.IMAGE.IMAGE }}
     strategy:
+      fail-fast: false
       matrix:
         IMAGE:
           - {IMAGE: "ubuntu-rolling:aarch64", NOXSESSION: "tests", RUNNER: "ubuntu-24.04-arm"}
