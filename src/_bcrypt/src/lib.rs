@@ -126,7 +126,7 @@ fn hashpw<'p>(
         .map_err(|_| pyo3::exceptions::PyValueError::new_err("Invalid salt"))?;
 
     let hashed = py
-        .allow_threads(|| bcrypt::hash_with_salt(password, cost, raw_salt))
+        .detach(|| bcrypt::hash_with_salt(password, cost, raw_salt))
         .map_err(|_| pyo3::exceptions::PyValueError::new_err("Invalid salt"))?;
     Ok(pyo3::types::PyBytes::new(
         py,
@@ -183,7 +183,7 @@ fn kdf<'p>(
     }
 
     pyo3::types::PyBytes::new_with(py, desired_key_bytes, |output| {
-        py.allow_threads(|| {
+        py.detach(|| {
             bcrypt_pbkdf::bcrypt_pbkdf(password, salt, rounds, output).unwrap();
         });
         Ok(())
