@@ -240,7 +240,7 @@ jobs:
         with:
           name: bcrypt-sdist
       - name: Setup python
-        uses: actions/setup-python@v5.6.0
+        uses: actions/setup-python@v6.0.0
         with:
           python-version: ${{ matrix.PYTHON.VERSION }}
           architecture: ${{ matrix.WINDOWS.ARCH }}
