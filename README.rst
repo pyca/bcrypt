@@ -51,6 +51,11 @@ While bcrypt remains an acceptable choice for password storage, depending on you
 Changelog
 =========
 
+Unreleased
+----------
+
+* Bumped MSRV to 1.74.
+
 4.3.0
 -----
 

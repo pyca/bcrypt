@@ -22,13 +22,13 @@ jobs:
           - macos-latest
     name: "Python ${{ matrix.PYTHON.VERSION }} on ${{ matrix.MACOS }}"
     steps:
-      - uses: actions/checkout@v4.2.2
+      - uses: actions/checkout@v5.0.0
       - name: Setup python
         id: setup-python
-        uses: actions/setup-python@v5.6.0
+        uses: actions/setup-python@v6.0.0
         with:
           python-version: ${{ matrix.PYTHON.VERSION }}
-      - uses: actions/cache@v4.2.3
+      - uses: actions/cache@v4.2.4
         timeout-minutes: 5
         with:
           path: |
@@ -47,6 +47,7 @@ jobs:
   windows:
     runs-on: ${{ matrix.WINDOWS.RUNNER }}
     strategy:
+      fail-fast: false
       matrix:
         WINDOWS:
           - {ARCH: 'x86', WINDOWS: 'win32', RUST_TRIPLE: 'i686-pc-windows-msvc', RUNNER: 'windows-latest'}
@@ -61,18 +62,18 @@ jobs:
             PYTHON: {VERSION: "3.8", NOXSESSION: "tests"}
     name: "Python ${{ matrix.PYTHON.VERSION }} on ${{ matrix.WINDOWS.WINDOWS }}"
     steps:
-      - uses: actions/checkout@v4.2.2
+      - uses: actions/checkout@v5.0.0
       - name: Setup python
         id: setup-python
-        uses: actions/setup-python@v5.6.0
+        uses: actions/setup-python@v6.0.0
         with:
           python-version: ${{ matrix.PYTHON.VERSION }}
           architecture: ${{ matrix.WINDOWS.ARCH }}
-      - uses: dtolnay/rust-toolchain@b3b07ba8b418998c39fb20f53e8b695cdcc8de1b
+      - uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9
         with:
           toolchain: stable
           target: ${{ matrix.WINDOWS.RUST_TRIPLE }}
-      - uses: actions/cache@v4.2.3
+      - uses: actions/cache@v4.2.4
         timeout-minutes: 5
         with:
           path: |
@@ -92,6 +93,7 @@ jobs:
   linux:
     runs-on: ubuntu-22.04
     strategy:
+      fail-fast: false
       matrix:
         PYTHON:
           - {VERSION: "3.13", NOXSESSION: "pep8,packaging"}
@@ -108,18 +110,18 @@ jobs:
           - {VERSION: "pypy-3.11", NOXSESSION: "tests"}
 
           # MSRV
-          - {VERSION: "3.13", NOXSESSION: "tests", RUST_VERSION: "1.64.0"}
+          - {VERSION: "3.13", NOXSESSION: "tests", RUST_VERSION: "1.74.0"}
           - {VERSION: "3.13", NOXSESSION: "tests", RUST_VERSION: "beta"}
           - {VERSION: "3.13", NOXSESSION: "tests", RUST_VERSION: "nightly"}
     name: "${{ matrix.PYTHON.VERSION }} on linux, Rust ${{ matrix.PYTHON.RUST_VERSION || 'stable' }}"
     steps:
-      - uses: actions/checkout@v4.2.2
+      - uses: actions/checkout@v5.0.0
       - name: Setup python
         id: setup-python
-        uses: actions/setup-python@v5.6.0
+        uses: actions/setup-python@v6.0.0
         with:
           python-version: ${{ matrix.PYTHON.VERSION }}
-      - uses: actions/cache@v4.2.3
+      - uses: actions/cache@v4.2.4
         timeout-minutes: 5
         with:
           path: |
@@ -130,7 +132,7 @@ jobs:
             ~/.cargo/git/db/
             src/_bcrypt/target/
           key: ${{ runner.os }}-${{ matrix.PYTHON.VERSION }}-${{ steps.setup-python.outputs.python-version }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-      - uses: dtolnay/rust-toolchain@b3b07ba8b418998c39fb20f53e8b695cdcc8de1b
+      - uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9
         with:
           toolchain: ${{ matrix.PYTHON.RUST_VERSION || 'stable' }}
 
@@ -146,8 +148,10 @@ jobs:
       image: ghcr.io/pyca/cryptography-runner-${{ matrix.IMAGE.IMAGE }}
       volumes:
         - /staticnodehost:/staticnodecontainer:rw,rshared
-        - /staticnodehost:/__e/node20:ro,rshared
+        - /staticnodehost/20:/__e/node20:ro,rshared
+        - /staticnodehost/24:/__e/node24:ro,rshared
     strategy:
+      fail-fast: false
       matrix:
         IMAGE:
           - {IMAGE: "alpine", NOXSESSION: "tests", RUNNER: "ubuntu-latest"}
@@ -165,7 +169,7 @@ jobs:
           # is installed in the container (which it is)
           sed -i "s:ID=alpine:ID=NotpineForGHA:" /etc/os-release
         if: matrix.IMAGE.IMAGE == 'alpine:aarch64'
-      - uses: actions/checkout@v4.2.2
+      - uses: actions/checkout@v5.0.0
         with:
           persist-credentials: false
       - run: /venv/bin/pip install nox
@@ -179,13 +183,14 @@ jobs:
     runs-on: ${{ matrix.IMAGE.RUNNER }}
     container: ghcr.io/pyca/cryptography-runner-${{ matrix.IMAGE.IMAGE }}
     strategy:
+      fail-fast: false
       matrix:
         IMAGE:
           - {IMAGE: "ubuntu-rolling:aarch64", NOXSESSION: "tests", RUNNER: "ubuntu-24.04-arm"}
           - {IMAGE: "ubuntu-rolling:armv7l", NOXSESSION: "tests", RUNNER: "ubuntu-24.04-arm"}
     name: "${{ matrix.IMAGE.NOXSESSION }} on ${{ matrix.IMAGE.IMAGE }}"
     steps:
-      - uses: actions/checkout@v4.2.2
+      - uses: actions/checkout@v5.0.0
         with:
           persist-credentials: false
       - run: /venv/bin/pip install nox
