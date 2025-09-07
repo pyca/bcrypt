@@ -45,17 +45,21 @@ jobs:
           CARGO_TARGET_DIR: ${{ format('{0}/src/_bcrypt/target/', github.workspace) }}
 
   windows:
-    runs-on: windows-latest
+    runs-on: ${{ matrix.WINDOWS.RUNNER }}
     strategy:
       fail-fast: false
       matrix:
         WINDOWS:
-          - {ARCH: 'x86', WINDOWS: 'win32', RUST_TRIPLE: 'i686-pc-windows-msvc'}
-          - {ARCH: 'x64', WINDOWS: 'win64', RUST_TRIPLE: 'x86_64-pc-windows-msvc'}
+          - {ARCH: 'x86', WINDOWS: 'win32', RUST_TRIPLE: 'i686-pc-windows-msvc', RUNNER: 'windows-latest'}
+          - {ARCH: 'x64', WINDOWS: 'win64', RUST_TRIPLE: 'x86_64-pc-windows-msvc', RUNNER: 'windows-latest'}
+          - {ARCH: 'arm64', WINDOWS: 'win-arm64', RUST_TRIPLE: 'aarch64-pc-windows-msvc', RUNNER: 'windows-11-arm'}
         PYTHON:
           - {VERSION: "3.8", NOXSESSION: "tests"}
           - {VERSION: "3.13", NOXSESSION: "tests"}
           - {VERSION: "3.13t", NOXSESSION: "tests"}
+        exclude:
+          - WINDOWS: {ARCH: 'arm64', WINDOWS: 'win-arm64', RUST_TRIPLE: 'aarch64-pc-windows-msvc'}
+            PYTHON: {VERSION: "3.8", NOXSESSION: "tests"}
     name: "Python ${{ matrix.PYTHON.VERSION }} on ${{ matrix.WINDOWS.WINDOWS }}"
     steps:
       - uses: actions/checkout@v5.0.0
