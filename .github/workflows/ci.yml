@@ -67,7 +67,7 @@ jobs:
         with:
           python-version: ${{ matrix.PYTHON.VERSION }}
           architecture: ${{ matrix.WINDOWS.ARCH }}
-          allow-preleases: true
+          allow-prereleases: true
       - uses: actions/cache@v4.2.4
         timeout-minutes: 5
         with:
