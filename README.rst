@@ -55,6 +55,7 @@ Unreleased
 ----------
 
 * Bumped MSRV to 1.74.
+* Added support for Python 3.14 and free-threaded Python 3.14.
 
 4.3.0
 -----
