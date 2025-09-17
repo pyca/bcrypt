@@ -142,7 +142,7 @@ jobs:
       - run: mv wheelhouse/bcrypt*.whl bcrypt-wheelhouse/
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: "bcrypt-${{ github.event.inputs.version }}-${{ matrix.MANYLINUX.NAME }} -${{ matrix.PYTHON.VERSION }}"
+          name: "bcrypt-${{ github.event.inputs.version }}-${{ matrix.MANYLINUX.NAME }}-${{ matrix.PYTHON.VERSION  }}${{ matrix.PYTHON.ABI_VERSION }}"
           path: bcrypt-wheelhouse/
 
   macos:
@@ -216,7 +216,7 @@ jobs:
       - run: mv wheelhouse/bcrypt*.whl bcrypt-wheelhouse/
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: "bcrypt-${{ github.event.inputs.version }}-macOS-${{ matrix.PYTHON.ABI_VERSION }}"
+          name: "bcrypt-${{ github.event.inputs.version }}-macOS-${{ matrix.PYTHON.VERSION  }}${{ matrix.PYTHON.ABI_VERSION }}"
           path: bcrypt-wheelhouse/
 
   windows:
@@ -269,5 +269,5 @@ jobs:
       - run: move wheelhouse\bcrypt*.whl bcrypt-wheelhouse\
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: "bcrypt-${{ github.event.inputs.version }}-${{ matrix.WINDOWS.ARCH }}-${{ matrix.PYTHON.ABI_VERSION }}"
+          name: "bcrypt-${{ github.event.inputs.version }}-${{ matrix.WINDOWS.ARCH }}-${{ matrix.PYTHON.VERSION  }}${{ matrix.PYTHON.ABI_VERSION }}"
           path: bcrypt-wheelhouse\
