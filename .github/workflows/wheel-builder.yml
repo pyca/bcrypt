@@ -176,12 +176,12 @@ jobs:
             .github/config/macos-pkg-choices-freethreaded.xml
           persist-credentials: false
       - name: Install Python
-        if: endsWith(matrix.PYTHON.VERSION, 't') == 'false'
+        if: ${{ !endsWith(matrix.PYTHON.VERSION, 't') }}
         run: |
           curl "${{ matrix.PYTHON.DOWNLOAD_URL }}" -o python.pkg
           sudo installer -pkg python.pkg -target /
-      - name: Install Python
-        if: endsWith(matrix.PYTHON.VERSION, 't') == 'true'
+      - name: Install Python (free-threaded)
+        if: ${{ endsWith(matrix.PYTHON.VERSION, 't') }}
         run: |
           curl "${{ matrix.PYTHON.DOWNLOAD_URL }}" -o python.pkg
           sudo installer -pkg python.pkg -applyChoiceChangesXML .github/config/macos-pkg-choices-freethreaded.xml -target /
