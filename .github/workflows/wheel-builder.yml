@@ -87,6 +87,18 @@ jobs:
           # No PyPy on armv7l either
           - PYTHON: { VERSION: "pp311-pypy311_pp73" }
             MANYLINUX: { NAME: "manylinux_2_31_armv7l", CONTAINER: "cryptography-manylinux_2_31:armv7l", RUNNER: "ubuntu-24.04-arm" }
+
+          # No Python 3.14 on musllinux_1_1
+          - Python: { VERSION: "cp314-cp314"}
+            MANYLINUX: { NAME: "musllinux_1_1_x86_64", CONTAINER: "cryptography-musllinux_1_1:x86_64", RUNNER: "ubuntu-latest"}
+          - Python: { VERSION: "cp314-cp314"}
+            MANYLINUX: { NAME: "musllinux_1_1_aarch64", CONTAINER: "cryptography-musllinux_1_1:aarch64", RUNNER: "ubuntu-24.04-arm" }
+
+          - Python: { VERSION: "cp314-cp314t"}
+            MANYLINUX: { NAME: "musllinux_1_1_x86_64", CONTAINER: "cryptography-musllinux_1_1:x86_64", RUNNER: "ubuntu-latest"}
+          - Python: { VERSION: "cp314-cp314t"}
+            MANYLINUX: { NAME: "musllinux_1_1_aarch64", CONTAINER: "cryptography-musllinux_1_1:aarch64", RUNNER: "ubuntu-24.04-arm" }
+
     name: "${{ matrix.PYTHON.VERSION }} for ${{ matrix.MANYLINUX.NAME }}"
     container:
       image: ghcr.io/pyca/${{ matrix.MANYLINUX.CONTAINER }}
