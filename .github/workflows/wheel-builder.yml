@@ -154,11 +154,11 @@ jobs:
         PYTHON:
           - VERSION: '3.11'
             ABI_VERSION: 'cp38'
-            DOWNLOAD_URL: 'https://www.python.org/ftp/python/3.11.13/python-3.11.13-macos11.pkg'
+            DOWNLOAD_URL: 'https://www.python.org/ftp/python/3.11.9/python-3.11.9-macos11.pkg'
             BIN_PATH: '/Library/Frameworks/Python.framework/Versions/3.11/bin/python3'
           - VERSION: '3.11'
             ABI_VERSION: 'cp39'
-            DOWNLOAD_URL: 'https://www.python.org/ftp/python/3.11.13/python-3.11.13-macos11.pkg'
+            DOWNLOAD_URL: 'https://www.python.org/ftp/python/3.11.9/python-3.11.9-macos11.pkg'
             BIN_PATH: '/Library/Frameworks/Python.framework/Versions/3.11/bin/python3'
           - VERSION: '3.13t'
             DOWNLOAD_URL: 'https://www.python.org/ftp/python/3.13.7/python-3.13.7-macos11.pkg'
