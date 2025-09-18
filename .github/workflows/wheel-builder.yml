@@ -51,6 +51,7 @@ jobs:
           - { VERSION: "cp39-cp39", ABI_VERSION: 'cp39' }
           - { VERSION: "pp311-pypy311_pp73" }
           - { VERSION: "cp313-cp313t" }
+          - { VERSION: "cp314-cp314t" }
         MANYLINUX:
           - { NAME: "manylinux2014_x86_64", CONTAINER: "cryptography-manylinux2014:x86_64", RUNNER: "ubuntu-latest" }
           - { NAME: "manylinux_2_28_x86_64", CONTAINER: "cryptography-manylinux_2_28:x86_64", RUNNER: "ubuntu-latest"}
@@ -86,6 +87,18 @@ jobs:
           # No PyPy on armv7l either
           - PYTHON: { VERSION: "pp311-pypy311_pp73" }
             MANYLINUX: { NAME: "manylinux_2_31_armv7l", CONTAINER: "cryptography-manylinux_2_31:armv7l", RUNNER: "ubuntu-24.04-arm" }
+
+          # No Python 3.14 on musllinux_1_1
+          - Python: { VERSION: "cp314-cp314"}
+            MANYLINUX: { NAME: "musllinux_1_1_x86_64", CONTAINER: "cryptography-musllinux_1_1:x86_64", RUNNER: "ubuntu-latest"}
+          - Python: { VERSION: "cp314-cp314"}
+            MANYLINUX: { NAME: "musllinux_1_1_aarch64", CONTAINER: "cryptography-musllinux_1_1:aarch64", RUNNER: "ubuntu-24.04-arm" }
+
+          - Python: { VERSION: "cp314-cp314t"}
+            MANYLINUX: { NAME: "musllinux_1_1_x86_64", CONTAINER: "cryptography-musllinux_1_1:x86_64", RUNNER: "ubuntu-latest"}
+          - Python: { VERSION: "cp314-cp314t"}
+            MANYLINUX: { NAME: "musllinux_1_1_aarch64", CONTAINER: "cryptography-musllinux_1_1:aarch64", RUNNER: "ubuntu-24.04-arm" }
+
     name: "${{ matrix.PYTHON.VERSION }} for ${{ matrix.MANYLINUX.NAME }}"
     container:
       image: ghcr.io/pyca/${{ matrix.MANYLINUX.CONTAINER }}
@@ -129,7 +142,7 @@ jobs:
       - run: mv wheelhouse/bcrypt*.whl bcrypt-wheelhouse/
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: "bcrypt-${{ github.event.inputs.version }}-${{ matrix.MANYLINUX.NAME }} -${{ matrix.PYTHON.VERSION }}"
+          name: "bcrypt-${{ github.event.inputs.version }}-${{ matrix.MANYLINUX.NAME }}-${{ matrix.PYTHON.VERSION  }}${{ matrix.PYTHON.ABI_VERSION }}"
           path: bcrypt-wheelhouse/
 
   macos:
@@ -141,15 +154,18 @@ jobs:
         PYTHON:
           - VERSION: '3.11'
             ABI_VERSION: 'cp38'
-            DOWNLOAD_URL: 'https://www.python.org/ftp/python/3.11.3/python-3.11.3-macos11.pkg'
+            DOWNLOAD_URL: 'https://www.python.org/ftp/python/3.11.9/python-3.11.9-macos11.pkg'
             BIN_PATH: '/Library/Frameworks/Python.framework/Versions/3.11/bin/python3'
           - VERSION: '3.11'
             ABI_VERSION: 'cp39'
-            DOWNLOAD_URL: 'https://www.python.org/ftp/python/3.11.3/python-3.11.3-macos11.pkg'
+            DOWNLOAD_URL: 'https://www.python.org/ftp/python/3.11.9/python-3.11.9-macos11.pkg'
             BIN_PATH: '/Library/Frameworks/Python.framework/Versions/3.11/bin/python3'
           - VERSION: '3.13t'
-            DOWNLOAD_URL: 'https://www.python.org/ftp/python/3.13.1/python-3.13.1-macos11.pkg'
+            DOWNLOAD_URL: 'https://www.python.org/ftp/python/3.13.7/python-3.13.7-macos11.pkg'
             BIN_PATH: '/Library/Frameworks/PythonT.framework/Versions/3.13/bin/python3.13t'
+          - VERSION: '3.14t'
+            DOWNLOAD_URL: 'https://www.python.org/ftp/python/3.14.0/python-3.14.0rc2-macos11.pkg'
+            BIN_PATH: '/Library/Frameworks/PythonT.framework/Versions/3.14/bin/python3.14t'
     name: "Python ${{ matrix.PYTHON.VERSION }} ${{ matrix.PYTHON.ABI_VERSION }} on macOS"
     steps:
       - uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493 # v4.2.2
@@ -157,18 +173,19 @@ jobs:
           # The tag to build or the tag received by the tag event
           ref: ${{ github.event.inputs.version || github.ref }}
           sparse-checkout: |
-            .github/config/macos-pkg-choices-freethreaded.xml
+            .github/config/macos-pkg-choices-freethreaded-3.13t.xml
+            .github/config/macos-pkg-choices-freethreaded-3.14t.xml
           persist-credentials: false
       - name: Install Python
-        if: matrix.PYTHON.VERSION != '3.13t'
+        if: ${{ !endsWith(matrix.PYTHON.VERSION, 't') }}
         run: |
           curl "${{ matrix.PYTHON.DOWNLOAD_URL }}" -o python.pkg
           sudo installer -pkg python.pkg -target /
-      - name: Install Python
-        if: matrix.PYTHON.VERSION == '3.13t'
+      - name: Install Python (free-threaded)
+        if: ${{ endsWith(matrix.PYTHON.VERSION, 't') }}
         run: |
           curl "${{ matrix.PYTHON.DOWNLOAD_URL }}" -o python.pkg
-          sudo installer -pkg python.pkg -applyChoiceChangesXML .github/config/macos-pkg-choices-freethreaded.xml -target /
+          sudo installer -pkg python.pkg -applyChoiceChangesXML .github/config/macos-pkg-choices-freethreaded-${{ matrix.PYTHON.VERSION  }}.xml -target /
       - uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9
         with:
           toolchain: stable
@@ -200,7 +217,7 @@ jobs:
       - run: mv wheelhouse/bcrypt*.whl bcrypt-wheelhouse/
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: "bcrypt-${{ github.event.inputs.version }}-macOS-${{ matrix.PYTHON.ABI_VERSION }}"
+          name: "bcrypt-${{ github.event.inputs.version }}-macOS-${{ matrix.PYTHON.VERSION  }}${{ matrix.PYTHON.ABI_VERSION }}"
           path: bcrypt-wheelhouse/
 
   windows:
@@ -217,6 +234,7 @@ jobs:
           - {VERSION: "3.11", ABI_VERSION: "cp38"}
           - {VERSION: "3.11", ABI_VERSION: "cp39"}
           - {VERSION: "3.13t"}
+          - {VERSION: "3.14t-dev"}
     name: "${{ matrix.PYTHON.VERSION }} ${{ matrix.PYTHON.ABI_VERSION }} ${{ matrix.WINDOWS.ARCH }}"
     steps:
       - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
@@ -251,5 +269,5 @@ jobs:
       - run: move wheelhouse\bcrypt*.whl bcrypt-wheelhouse\
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: "bcrypt-${{ github.event.inputs.version }}-${{ matrix.WINDOWS.ARCH }}-${{ matrix.PYTHON.ABI_VERSION }}"
+          name: "bcrypt-${{ github.event.inputs.version }}-${{ matrix.WINDOWS.ARCH }}-${{ matrix.PYTHON.VERSION  }}${{ matrix.PYTHON.ABI_VERSION }}"
           path: bcrypt-wheelhouse\

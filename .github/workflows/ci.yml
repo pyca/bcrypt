@@ -94,6 +94,8 @@ jobs:
           - {VERSION: "3.12", NOXSESSION: "tests"}
           - {VERSION: "3.13", NOXSESSION: "tests"}
           - {VERSION: "3.13t", NOXSESSION: "tests"}
+          - {VERSION: "3.14-dev", NOXSESSION: "tests"}
+          - {VERSION: "3.14t-dev", NOXSESSION: "tests"}
           - {VERSION: "pypy-3.9", NOXSESSION: "tests"}
           - {VERSION: "pypy-3.10", NOXSESSION: "tests"}
           - {VERSION: "pypy-3.11", NOXSESSION: "tests"}
