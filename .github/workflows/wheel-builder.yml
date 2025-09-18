@@ -234,7 +234,7 @@ jobs:
           - {VERSION: "3.11", ABI_VERSION: "cp38"}
           - {VERSION: "3.11", ABI_VERSION: "cp39"}
           - {VERSION: "3.13t"}
-          - {VERSION: "3.14t"}
+          - {VERSION: "3.14t-dev"}
     name: "${{ matrix.PYTHON.VERSION }} ${{ matrix.PYTHON.ABI_VERSION }} ${{ matrix.WINDOWS.ARCH }}"
     steps:
       - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
@@ -245,7 +245,6 @@ jobs:
         with:
           python-version: ${{ matrix.PYTHON.VERSION }}
           architecture: ${{ matrix.WINDOWS.ARCH }}
-          allow-prereleases: true
       - uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9
         with:
           toolchain: stable
