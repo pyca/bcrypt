@@ -15,8 +15,8 @@ jobs:
       matrix:
         PYTHON:
           - {VERSION: "3.8", NOXSESSION: "tests"}
-          - {VERSION: "3.14", NOXSESSION: "tests"}
-          - {VERSION: "3.14t", NOXSESSION: "tests"}
+          - {VERSION: "3.13", NOXSESSION: "tests"}
+          - {VERSION: "3.13t", NOXSESSION: "tests"}
         MACOS:
           - macos-13
           - macos-latest
@@ -53,8 +53,8 @@ jobs:
           - {ARCH: 'arm64', WINDOWS: 'win-arm64', RUST_TRIPLE: 'aarch64-pc-windows-msvc', RUNNER: 'windows-11-arm'}
         PYTHON:
           - {VERSION: "3.8", NOXSESSION: "tests"}
-          - {VERSION: "3.14", NOXSESSION: "tests"}
-          - {VERSION: "3.14t", NOXSESSION: "tests"}
+          - {VERSION: "3.13", NOXSESSION: "tests"}
+          - {VERSION: "3.13t", NOXSESSION: "tests"}
         exclude:
           - WINDOWS: {ARCH: 'arm64', WINDOWS: 'win-arm64', RUST_TRIPLE: 'aarch64-pc-windows-msvc'}
             PYTHON: {VERSION: "3.8", NOXSESSION: "tests"}
@@ -103,9 +103,9 @@ jobs:
           - {VERSION: "pypy-3.11", NOXSESSION: "tests"}
 
           # MSRV
-          - {VERSION: "3.14", NOXSESSION: "tests", RUST_VERSION: "1.74.0"}
-          - {VERSION: "3.14", NOXSESSION: "tests", RUST_VERSION: "beta"}
-          - {VERSION: "3.14", NOXSESSION: "tests", RUST_VERSION: "nightly"}
+          - {VERSION: "3.13", NOXSESSION: "tests", RUST_VERSION: "1.74.0"}
+          - {VERSION: "3.13", NOXSESSION: "tests", RUST_VERSION: "beta"}
+          - {VERSION: "3.13", NOXSESSION: "tests", RUST_VERSION: "nightly"}
     name: "${{ matrix.PYTHON.VERSION }} on linux, Rust ${{ matrix.PYTHON.RUST_VERSION || 'stable' }}"
     steps:
       - uses: actions/checkout@v5.0.0
