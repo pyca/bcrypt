@@ -51,11 +51,15 @@ While bcrypt remains an acceptable choice for password storage, depending on you
 Changelog
 =========
 
-Unreleased
-----------
+5.0.0
+-----
 
 * Bumped MSRV to 1.74.
 * Added support for Python 3.14 and free-threaded Python 3.14.
+* Added support for Windows on ARM.
+* Passing ``hashpw`` a password longer than 72 bytes now raises a
+  ``ValueError``. Previously the password was silently truncated, following the
+  behavior of the original OpenBSD ``bcrypt`` implementation.
 
 4.3.0
 -----
