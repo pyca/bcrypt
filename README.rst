@@ -51,7 +51,7 @@ While bcrypt remains an acceptable choice for password storage, depending on you
 Changelog
 =========
 
-The changelog is maintained in `CHANGELOG.rst <https://github.com/pyca/bcrypt/blob/main/CHANGELOG.rst>`
+The changelog is maintained in `CHANGELOG.rst <https://github.com/pyca/bcrypt/blob/main/CHANGELOG.rst>`_
 
 Usage
 =====
