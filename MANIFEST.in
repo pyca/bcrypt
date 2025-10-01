@@ -1,4 +1,4 @@
-include LICENSE README.rst
+include LICENSE README.rst CHANGELOG.rst
 
 include pyproject.toml
 

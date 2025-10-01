@@ -38,6 +38,7 @@ dynamic = ["readme"]
 
 [project.urls]
 homepage = "https://github.com/pyca/bcrypt/"
+changelog = "https://github.com/pyca/bcrypt/blob/main/CHANGELOG.rst"
 
 [tool.setuptools]
 zip-safe = false
