@@ -18,7 +18,7 @@ jobs:
           - {VERSION: "3.13", NOXSESSION: "tests"}
           - {VERSION: "3.13t", NOXSESSION: "tests"}
         MACOS:
-          - macos-13
+          - macos-15-intel
           - macos-latest
     name: "Python ${{ matrix.PYTHON.VERSION }} on ${{ matrix.MACOS }}"
     steps:
