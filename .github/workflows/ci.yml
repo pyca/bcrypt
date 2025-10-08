@@ -15,8 +15,8 @@ jobs:
       matrix:
         PYTHON:
           - {VERSION: "3.8", NOXSESSION: "tests"}
-          - {VERSION: "3.13", NOXSESSION: "tests"}
-          - {VERSION: "3.13t", NOXSESSION: "tests"}
+          - {VERSION: "3.14", NOXSESSION: "tests"}
+          - {VERSION: "3.14t", NOXSESSION: "tests"}
         MACOS:
           - macos-15-intel
           - macos-latest
@@ -52,8 +52,8 @@ jobs:
           - {ARCH: 'arm64', WINDOWS: 'win-arm64', RUST_TRIPLE: 'aarch64-pc-windows-msvc', RUNNER: 'windows-11-arm'}
         PYTHON:
           - {VERSION: "3.8", NOXSESSION: "tests"}
-          - {VERSION: "3.13", NOXSESSION: "tests"}
-          - {VERSION: "3.13t", NOXSESSION: "tests"}
+          - {VERSION: "3.14", NOXSESSION: "tests"}
+          - {VERSION: "3.14t", NOXSESSION: "tests"}
         exclude:
           - WINDOWS: {ARCH: 'arm64', WINDOWS: 'win-arm64', RUST_TRIPLE: 'aarch64-pc-windows-msvc'}
             PYTHON: {VERSION: "3.8", NOXSESSION: "tests"}
@@ -94,10 +94,8 @@ jobs:
           - {VERSION: "3.12", NOXSESSION: "tests"}
           - {VERSION: "3.13", NOXSESSION: "tests"}
           - {VERSION: "3.13t", NOXSESSION: "tests"}
-          - {VERSION: "3.14-dev", NOXSESSION: "tests"}
-          - {VERSION: "3.14t-dev", NOXSESSION: "tests"}
-          - {VERSION: "pypy-3.9", NOXSESSION: "tests"}
-          - {VERSION: "pypy-3.10", NOXSESSION: "tests"}
+          - {VERSION: "3.14", NOXSESSION: "tests"}
+          - {VERSION: "3.14t", NOXSESSION: "tests"}
           - {VERSION: "pypy-3.11", NOXSESSION: "tests"}
 
           # MSRV
