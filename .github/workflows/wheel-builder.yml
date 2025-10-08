@@ -164,7 +164,7 @@ jobs:
             DOWNLOAD_URL: 'https://www.python.org/ftp/python/3.13.7/python-3.13.7-macos11.pkg'
             BIN_PATH: '/Library/Frameworks/PythonT.framework/Versions/3.13/bin/python3.13t'
           - VERSION: '3.14t'
-            DOWNLOAD_URL: 'https://www.python.org/ftp/python/3.14.0/python-3.14.0rc2-macos11.pkg'
+            DOWNLOAD_URL: 'https://www.python.org/ftp/python/3.14.0/python-3.14.0-macos11.pkg'
             BIN_PATH: '/Library/Frameworks/PythonT.framework/Versions/3.14/bin/python3.14t'
     name: "Python ${{ matrix.PYTHON.VERSION }} ${{ matrix.PYTHON.ABI_VERSION }} on macOS"
     steps:
@@ -234,7 +234,7 @@ jobs:
           - {VERSION: "3.11", ABI_VERSION: "cp38"}
           - {VERSION: "3.11", ABI_VERSION: "cp39"}
           - {VERSION: "3.13t"}
-          - {VERSION: "3.14t-dev"}
+          - {VERSION: "3.14t"}
     name: "${{ matrix.PYTHON.VERSION }} ${{ matrix.PYTHON.ABI_VERSION }} ${{ matrix.WINDOWS.ARCH }}"
     steps:
       - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
