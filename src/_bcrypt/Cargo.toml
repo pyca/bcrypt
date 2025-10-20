@@ -8,7 +8,7 @@ rust-version = "1.74.0"
 publish = false
 
 [dependencies]
-pyo3 = { version = "0.26", features = ["abi3"] }
+pyo3 = { version = "0.27", features = ["abi3"] }
 bcrypt = "0.17"
 bcrypt-pbkdf = "0.10.0"
 base64 = "0.22.1"
