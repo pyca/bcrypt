@@ -123,18 +123,31 @@ As of 3.0.0 the ``$2y$`` prefix is still supported in ``hashpw`` but deprecated.
 Maximum Password Length
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-The bcrypt algorithm only handles passwords up to 72 characters, any characters
-beyond that are ignored. To work around this, a common approach is to hash a
-password with a cryptographic hash (such as ``sha256``) and then base64
-encode it to prevent NULL byte problems before hashing the result with
-``bcrypt``:
+The bcrypt algorithm only handles passwords up to 72 characters; any characters
+beyond that are ignored. The best solution to this problem is to stop using
+bcrypt and use a modern algorithm such as argon2id or scrypt. Seriously.
+
+If you must use bcrypt, you can work around bcrypt's character limit by first
+hashing the password with a hexadecimal salted cryptographic hash. Note that
+omitting the salt or using raw output is `recommended against`_ because it may
+expose the system to `hash shucking`_ attacks. Therefore, make sure you give the
+inner hash function a `pepper`_, and encode the output as base64 to prevent
+`NULL`-byte problems:
 
 .. code:: pycon
 
+    >>> import base64
+    >>> import bcrypt
+    >>> import hmac
     >>> password = b"an incredibly long password" * 10
+    >>> pepper = bcrypt.gensalt()  # Do not store the pepper in your database
     >>> hashed = bcrypt.hashpw(
-    ...     base64.b64encode(hashlib.sha256(password).digest()),
+    ...     base64.b64encode(hmac.digest(pepper, password, "sha256")),
     ...     bcrypt.gensalt()
+    ... )
+    >>> matches = bcrypt.checkpw(
+    ...     base64.b64encode(hmac.digest(pepper, password, "sha256")),
+    ...     hashed
     ... )
 
 Compatibility
@@ -153,3 +166,6 @@ identify a vulnerability, we ask you to contact us privately.
 .. _`standard library`: https://docs.python.org/3/library/hashlib.html#hashlib.scrypt
 .. _`argon2_cffi`: https://argon2-cffi.readthedocs.io
 .. _`cryptography`: https://cryptography.io/en/latest/hazmat/primitives/key-derivation-functions/#cryptography.hazmat.primitives.kdf.scrypt.Scrypt
+.. _`recommended against`: https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html#pre-hashing-passwords
+.. _`hash shucking`: https://security.stackexchange.com/a/234795/
+.. _`pepper`: https://en.wikipedia.org/wiki/Pepper_(cryptography)
