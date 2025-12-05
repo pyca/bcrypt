@@ -123,8 +123,9 @@ As of 3.0.0 the ``$2y$`` prefix is still supported in ``hashpw`` but deprecated.
 Maximum Password Length
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-The bcrypt algorithm only handles passwords up to 72 characters, any characters
-beyond that are ignored. To work around this, a common approach is to hash a
+Passing ``hashpw`` a password longer than 72 bytes now raises a ``ValueError``.
+Previously the password was silently truncated, following the behavior of the 
+original OpenBSD ``bcrypt`` implementation. To work around this, a common approach is to hash a
 password with a cryptographic hash (such as ``sha256``) and then base64
 encode it to prevent NULL byte problems before hashing the result with
 ``bcrypt``:
