@@ -22,7 +22,7 @@ To install bcrypt, simply:
     $ pip install bcrypt
 
 Note that bcrypt should build very easily on Linux provided you have a C
-compiler and a Rust compiler (the minimum supported Rust version is 1.56.0).
+compiler and a Rust compiler (the minimum supported Rust version is 1.74.0).
 
 For Debian and Ubuntu, the following command will ensure that the required dependencies are installed:
 
