@@ -13,7 +13,7 @@ bcrypt = "0.17"
 bcrypt-pbkdf = "0.10.0"
 base64 = "0.22.1"
 subtle = "2.6"
-getrandom = "0.3"
+getrandom = "0.4"
 
 [features]
 extension-module = ["pyo3/extension-module"]
