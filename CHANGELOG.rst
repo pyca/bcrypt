@@ -1,6 +1,11 @@
 Changelog
 =========
 
+Unreleased
+----------
+
+* Bumped MSRV to 1.85.
+
 5.0.0
 -----
 

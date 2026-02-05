@@ -99,7 +99,7 @@ jobs:
           - {VERSION: "pypy-3.11", NOXSESSION: "tests"}
 
           # MSRV
-          - {VERSION: "3.13", NOXSESSION: "tests", RUST_VERSION: "1.74.0"}
+          - {VERSION: "3.13", NOXSESSION: "tests", RUST_VERSION: "1.85"}
           - {VERSION: "3.13", NOXSESSION: "tests", RUST_VERSION: "beta"}
           - {VERSION: "3.13", NOXSESSION: "tests", RUST_VERSION: "nightly"}
     name: "${{ matrix.PYTHON.VERSION }} on linux, Rust ${{ matrix.PYTHON.RUST_VERSION || 'stable' }}"
