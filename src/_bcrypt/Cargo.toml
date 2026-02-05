@@ -2,9 +2,9 @@
 name = "bcrypt-rust"
 version = "0.1.0"
 authors = ["The bcrypt developers <cryptography-dev@python.org>"]
-edition = "2018"
+edition = "2024"
 # This specifies the MSRV
-rust-version = "1.74.0"
+rust-version = "1.85"
 publish = false
 
 [dependencies]
