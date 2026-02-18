@@ -91,12 +91,14 @@ fn hashpw<'p>(
     // salt here is not just the salt bytes, but rather an encoded value
     // containing a version number, number of rounds, and the salt.
     // Should be [prefix, cost, hash]. This logic is copied from `bcrypt`
-    let [raw_version, raw_cost, remainder]: [&[u8]; 3] = salt
-        .split(|&b| b == b'$')
-        .filter(|s| !s.is_empty())
-        .collect::<Vec<_>>()
-        .try_into()
-        .map_err(|_| pyo3::exceptions::PyValueError::new_err("Invalid salt"))?;
+    let invalid_salt = || pyo3::exceptions::PyValueError::new_err("Invalid salt");
+    let mut parts = salt.split(|&b| b == b'$').filter(|s| !s.is_empty());
+    let raw_version = parts.next().ok_or_else(invalid_salt)?;
+    let raw_cost = parts.next().ok_or_else(invalid_salt)?;
+    let remainder = parts.next().ok_or_else(invalid_salt)?;
+    if parts.next().is_some() {
+        return Err(invalid_salt());
+    }
 
     let version = match raw_version {
         b"2y" => bcrypt::Version::TwoY,
