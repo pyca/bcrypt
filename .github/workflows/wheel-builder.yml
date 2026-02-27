@@ -103,7 +103,7 @@ jobs:
       - run: /opt/python/${{ matrix.PYTHON.VERSION }}/bin/python -m venv .venv
       - name: Install python dependencies
         run: .venv/bin/pip install -U pip wheel setuptools-rust
-      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+      - uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
         with:
           name: bcrypt-sdist
       - run: mkdir tmpwheelhouse
@@ -176,7 +176,7 @@ jobs:
 
       - run: ${{ matrix.PYTHON.BIN_PATH }} -m venv venv
       - run: venv/bin/pip install -U pip wheel setuptools-rust
-      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+      - uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
         with:
           name: bcrypt-sdist
       - run: mkdir wheelhouse
@@ -219,7 +219,7 @@ jobs:
           - {VERSION: "3.14t"}
     name: "${{ matrix.PYTHON.VERSION }} ${{ matrix.PYTHON.ABI_VERSION }} ${{ matrix.WINDOWS.ARCH }}"
     steps:
-      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+      - uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
         with:
           name: bcrypt-sdist
       - name: Setup python
