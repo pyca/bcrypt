@@ -127,6 +127,69 @@ jobs:
           name: "bcrypt-${{ github.event.inputs.version }}-${{ matrix.MANYLINUX.NAME }}-${{ matrix.PYTHON.VERSION  }}${{ matrix.PYTHON.ABI_VERSION }}"
           path: bcrypt-wheelhouse/
 
+  manylinux-riscv64:
+    needs: [sdist]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        PYTHON:
+          - { VERSION: "cp39-cp39", ABI_VERSION: 'cp39' }
+          - { VERSION: "cp313-cp313t" }
+          - { VERSION: "cp314-cp314t" }
+        MANYLINUX:
+          - { NAME: "manylinux_2_39_riscv64", CONTAINER: "manylinux_2_39_riscv64" }
+    name: "${{ matrix.PYTHON.VERSION }} for ${{ matrix.MANYLINUX.NAME }}"
+    steps:
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@29109295f81e9208d7d86ff1c6c12d2833863392 # v3.6.0
+        with:
+          platforms: riscv64
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: bcrypt-sdist
+          path: sdist
+      - name: Build and test the wheel
+        env:
+          PYTHON_VERSION: ${{ matrix.PYTHON.VERSION }}
+          ABI_VERSION: ${{ matrix.PYTHON.ABI_VERSION }}
+          CONTAINER: ${{ matrix.MANYLINUX.CONTAINER }}
+        run: |
+          docker run --rm \
+            --platform linux/riscv64 \
+            -v "$(pwd)/sdist:/sdist" \
+            -v "$(pwd)/wheelhouse:/wheelhouse" \
+            -e PYTHON_VERSION \
+            -e ABI_VERSION \
+            "quay.io/pypa/${CONTAINER}" \
+            bash -c '
+              set -eux
+              # Install Rust
+              curl https://sh.rustup.rs -sSf | sh -s -- -y --default-toolchain stable --profile minimal
+              export PATH="/root/.cargo/bin:$PATH"
+
+              /opt/python/${PYTHON_VERSION}/bin/python -m venv /venv
+              /venv/bin/pip install -U pip wheel setuptools-rust
+
+              mkdir /tmp/tmpwheelhouse
+              PY_LIMITED_API=""
+              if [ -n "${ABI_VERSION:-}" ]; then
+                  PY_LIMITED_API="--config-settings=--build-option=--py-limited-api=${ABI_VERSION} --no-build-isolation"
+              fi
+              /venv/bin/python -m pip wheel -v ${PY_LIMITED_API} /sdist/bcrypt*.tar.gz -w /tmp/dist/ && \
+                mv /tmp/dist/bcrypt*.whl /tmp/tmpwheelhouse/
+
+              auditwheel repair /tmp/tmpwheelhouse/bcrypt*.whl -w /wheelhouse/
+              /venv/bin/pip install bcrypt --no-index -f /wheelhouse/
+              /venv/bin/python -c "import bcrypt; password = b'"'"'super secret password'"'"'; hashed = bcrypt.hashpw(password, bcrypt.gensalt()); bcrypt.checkpw(password, hashed)"
+            '
+      - run: mkdir bcrypt-wheelhouse
+      - run: mv wheelhouse/bcrypt*.whl bcrypt-wheelhouse/
+      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        with:
+          name: "bcrypt-${{ github.event.inputs.version }}-${{ matrix.MANYLINUX.NAME }}-${{ matrix.PYTHON.VERSION  }}${{ matrix.PYTHON.ABI_VERSION }}"
+          path: bcrypt-wheelhouse/
+
   macos:
     needs: [sdist]
     runs-on: macos-15
