@@ -127,6 +127,53 @@ jobs:
           name: "bcrypt-${{ github.event.inputs.version }}-${{ matrix.MANYLINUX.NAME }}-${{ matrix.PYTHON.VERSION  }}${{ matrix.PYTHON.ABI_VERSION }}"
           path: bcrypt-wheelhouse/
 
+  manylinux-riscv64:
+    needs: [sdist]
+    runs-on: ubuntu-24.04-riscv
+    strategy:
+      fail-fast: false
+      matrix:
+        PYTHON:
+          - { VERSION: "cp39-cp39", ABI_VERSION: "" }
+          - { VERSION: "cp312-cp312", ABI_VERSION: "" }
+    name: "${{ matrix.PYTHON.VERSION }} for manylinux_riscv64"
+    steps:
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y patchelf libffi-dev
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+          echo "$HOME/.cargo/bin" >> "$GITHUB_PATH"
+      - name: Cache Rust artifacts
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+          key: bcrypt-riscv64-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            bcrypt-riscv64-cargo-
+      - run: /opt/python-3.12/bin/python3.12 -m venv .venv
+      - name: Install python dependencies
+        run: .venv/bin/pip install -U pip wheel setuptools-rust auditwheel
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
+        with:
+          name: bcrypt-sdist
+      - run: mkdir tmpwheelhouse
+      - name: Build the wheel
+        run: |
+          .venv/bin/python -m pip wheel -v bcrypt*.tar.gz -w dist/ && mv dist/bcrypt*.whl tmpwheelhouse
+      - run: .venv/bin/auditwheel repair tmpwheelhouse/bcrypt*.whl -w wheelhouse/
+      - run: .venv/bin/pip install bcrypt --no-index -f wheelhouse/
+      - run: |
+          .venv/bin/python -c "import bcrypt; password = b'super secret password';hashed = bcrypt.hashpw(password, bcrypt.gensalt());bcrypt.checkpw(password, hashed)"
+      - run: mkdir bcrypt-wheelhouse
+      - run: mv wheelhouse/bcrypt*.whl bcrypt-wheelhouse/
+      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f
+        with:
+          name: "bcrypt-${{ github.event.inputs.version }}-manylinux_riscv64-${{ matrix.PYTHON.VERSION }}"
+          path: bcrypt-wheelhouse/
+
   macos:
     needs: [sdist]
     runs-on: macos-15
