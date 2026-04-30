@@ -10,7 +10,7 @@ publish = false
 [dependencies]
 pyo3 = { version = "0.28", features = ["abi3"] }
 bcrypt = "0.19"
-bcrypt-pbkdf = "0.10.0"
+bcrypt-pbkdf = "0.11.0"
 base64 = "0.22.1"
 subtle = "2.6"
 getrandom = "0.4"
