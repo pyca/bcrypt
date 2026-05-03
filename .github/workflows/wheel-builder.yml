@@ -153,7 +153,10 @@ jobs:
           key: bcrypt-riscv64-cargo-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: |
             bcrypt-riscv64-cargo-
-      - run: /opt/python-3.12/bin/python3.12 -m venv .venv
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python3 -m venv .venv
       - name: Install python dependencies
         run: .venv/bin/pip install -U pip wheel setuptools-rust auditwheel
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
