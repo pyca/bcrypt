@@ -47,10 +47,8 @@ jobs:
       fail-fast: false
       matrix:
         PYTHON:
-          - { VERSION: "cp38-cp38", ABI_VERSION: 'cp38' }
           - { VERSION: "cp39-cp39", ABI_VERSION: 'cp39' }
           - { VERSION: "pp311-pypy311_pp73" }
-          - { VERSION: "cp313-cp313t" }
           - { VERSION: "cp314-cp314t" }
         MANYLINUX:
           - { NAME: "manylinux2014_x86_64", CONTAINER: "cryptography-manylinux2014:x86_64", RUNNER: "ubuntu-latest" }
@@ -134,16 +132,9 @@ jobs:
       matrix:
         PYTHON:
           - VERSION: '3.11'
-            ABI_VERSION: 'cp38'
-            DOWNLOAD_URL: 'https://www.python.org/ftp/python/3.11.9/python-3.11.9-macos11.pkg'
-            BIN_PATH: '/Library/Frameworks/Python.framework/Versions/3.11/bin/python3'
-          - VERSION: '3.11'
             ABI_VERSION: 'cp39'
             DOWNLOAD_URL: 'https://www.python.org/ftp/python/3.11.9/python-3.11.9-macos11.pkg'
             BIN_PATH: '/Library/Frameworks/Python.framework/Versions/3.11/bin/python3'
-          - VERSION: '3.13t'
-            DOWNLOAD_URL: 'https://www.python.org/ftp/python/3.13.7/python-3.13.7-macos11.pkg'
-            BIN_PATH: '/Library/Frameworks/PythonT.framework/Versions/3.13/bin/python3.13t'
           - VERSION: '3.14t'
             DOWNLOAD_URL: 'https://www.python.org/ftp/python/3.14.0/python-3.14.0-macos11.pkg'
             BIN_PATH: '/Library/Frameworks/PythonT.framework/Versions/3.14/bin/python3.14t'
@@ -154,7 +145,6 @@ jobs:
           # The tag to build or the tag received by the tag event
           ref: ${{ github.event.inputs.version || github.ref }}
           sparse-checkout: |
-            .github/config/macos-pkg-choices-freethreaded-3.13t.xml
             .github/config/macos-pkg-choices-freethreaded-3.14t.xml
           persist-credentials: false
       - name: Install Python
@@ -211,9 +201,7 @@ jobs:
           - {ARCH: 'x86', RUST_TRIPLE: 'i686-pc-windows-msvc', RUNNER: 'windows-latest'}
           - {ARCH: 'x64', RUST_TRIPLE: 'x86_64-pc-windows-msvc', RUNNER: 'windows-latest'}
         PYTHON:
-          - {VERSION: "3.11", ABI_VERSION: "cp38"}
           - {VERSION: "3.11", ABI_VERSION: "cp39"}
-          - {VERSION: "3.13t"}
           - {VERSION: "3.14t"}
     name: "${{ matrix.PYTHON.VERSION }} ${{ matrix.PYTHON.ABI_VERSION }} ${{ matrix.WINDOWS.ARCH }}"
     steps:
