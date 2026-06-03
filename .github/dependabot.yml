@@ -4,6 +4,8 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+    cooldown:
+      default-days: 7
     open-pull-requests-limit: 1024
   - package-ecosystem: cargo
     directory: "/src/_bcrypt/"
