@@ -14,7 +14,7 @@ jobs:
       fail-fast: false
       matrix:
         PYTHON:
-          - {VERSION: "3.8", NOXSESSION: "tests"}
+          - {VERSION: "3.9", NOXSESSION: "tests"}
           - {VERSION: "3.14", NOXSESSION: "tests"}
           - {VERSION: "3.14t", NOXSESSION: "tests"}
         MACOS:
@@ -50,7 +50,7 @@ jobs:
           - {ARCH: 'x86', WINDOWS: 'win32', RUST_TRIPLE: 'i686-pc-windows-msvc', RUNNER: 'windows-latest'}
           - {ARCH: 'x64', WINDOWS: 'win64', RUST_TRIPLE: 'x86_64-pc-windows-msvc', RUNNER: 'windows-latest'}
         PYTHON:
-          - {VERSION: "3.8", NOXSESSION: "tests"}
+          - {VERSION: "3.9", NOXSESSION: "tests"}
           - {VERSION: "3.14", NOXSESSION: "tests"}
           - {VERSION: "3.14t", NOXSESSION: "tests"}
     name: "Python ${{ matrix.PYTHON.VERSION }} on ${{ matrix.WINDOWS.WINDOWS }}"
@@ -83,13 +83,11 @@ jobs:
         PYTHON:
           - {VERSION: "3.13", NOXSESSION: "pep8,packaging"}
           - {VERSION: "3.13", NOXSESSION: "mypy"}
-          - {VERSION: "3.8", NOXSESSION: "tests"}
           - {VERSION: "3.9", NOXSESSION: "tests"}
           - {VERSION: "3.10", NOXSESSION: "tests"}
           - {VERSION: "3.11", NOXSESSION: "tests"}
           - {VERSION: "3.12", NOXSESSION: "tests"}
           - {VERSION: "3.13", NOXSESSION: "tests"}
-          - {VERSION: "3.13t", NOXSESSION: "tests"}
           - {VERSION: "3.14", NOXSESSION: "tests"}
           - {VERSION: "3.14t", NOXSESSION: "tests"}
           - {VERSION: "pypy-3.11", NOXSESSION: "tests"}

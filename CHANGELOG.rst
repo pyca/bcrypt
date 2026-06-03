@@ -5,6 +5,9 @@ Unreleased
 ----------
 
 * Bumped MSRV to 1.85.
+* Dropped support for Python 3.8.
+* Dropped support for free-threaded Python 3.13 (free-threaded Python 3.14 is
+  still supported).
 
 5.0.0
 -----

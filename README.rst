@@ -142,7 +142,7 @@ Compatibility
 -------------
 
 This library should be compatible with py-bcrypt and it will run on Python
-3.8+ (including free-threaded builds), and PyPy 3.
+3.9+ (including free-threaded builds), and PyPy 3.
 
 Security
 --------
