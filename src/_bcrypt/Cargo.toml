@@ -11,7 +11,7 @@ publish = false
 pyo3 = { version = "0.29", features = ["abi3"] }
 bcrypt = "0.19.1"
 bcrypt-pbkdf = "0.11.0"
-base64 = "0.22.1"
+base64 = "0.23.0"
 subtle = "2.6"
 getrandom = "0.4"
 
