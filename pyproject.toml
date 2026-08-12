@@ -1,7 +1,6 @@
 [build-system]
 requires = [
-    "setuptools>=42.0.0",
-    "wheel",
+    "setuptools>=70.1.0",
     "setuptools-rust>=1.7.0",
 ]
 # Point to the setuptools' PEP517 build backend explicitly to
