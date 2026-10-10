@@ -50,6 +50,7 @@ jobs:
           - { VERSION: "cp39-cp39", ABI_VERSION: 'cp39' }
           - { VERSION: "pp311-pypy311_pp73" }
           - { VERSION: "cp314-cp314t" }
+          - { VERSION: "cp315-cp315t" }
         MANYLINUX:
           - { NAME: "manylinux2014_x86_64", CONTAINER: "cryptography-manylinux2014:x86_64", RUNNER: "ubuntu-latest" }
           - { NAME: "manylinux_2_28_x86_64", CONTAINER: "cryptography-manylinux_2_28:x86_64", RUNNER: "ubuntu-latest"}
@@ -138,6 +139,9 @@ jobs:
           - VERSION: '3.14t'
             DOWNLOAD_URL: 'https://www.python.org/ftp/python/3.14.0/python-3.14.0-macos11.pkg'
             BIN_PATH: '/Library/Frameworks/PythonT.framework/Versions/3.14/bin/python3.14t'
+          - VERSION: '3.15t'
+            DOWNLOAD_URL: 'https://www.python.org/ftp/python/3.15.0/python-3.15.0-macos11.pkg'
+            BIN_PATH: '/Library/Frameworks/PythonT.framework/Versions/3.15/bin/python3.15t'
     name: "Python ${{ matrix.PYTHON.VERSION }} ${{ matrix.PYTHON.ABI_VERSION }} on macOS"
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -146,6 +150,7 @@ jobs:
           ref: ${{ github.event.inputs.version || github.ref }}
           sparse-checkout: |
             .github/config/macos-pkg-choices-freethreaded-3.14t.xml
+            .github/config/macos-pkg-choices-freethreaded-3.15t.xml
           persist-credentials: false
       - name: Install Python
         if: ${{ !endsWith(matrix.PYTHON.VERSION, 't') }}
@@ -203,6 +208,7 @@ jobs:
         PYTHON:
           - {VERSION: "3.11", ABI_VERSION: "cp39"}
           - {VERSION: "3.14t"}
+          - {VERSION: "3.15t"}
     name: "${{ matrix.PYTHON.VERSION }} ${{ matrix.PYTHON.ABI_VERSION }} ${{ matrix.WINDOWS.ARCH }}"
     steps:
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
@@ -212,6 +218,7 @@ jobs:
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: ${{ matrix.PYTHON.VERSION }}
+          allow-prereleases: true
           architecture: ${{ matrix.WINDOWS.ARCH }}
       - uses: dtolnay/rust-toolchain@e2a55d2ffb04f378e9626c28d38b36d230d1e12f
         with:
