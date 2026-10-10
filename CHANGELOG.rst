@@ -8,6 +8,8 @@ Unreleased
 * Dropped support for Python 3.8.
 * Dropped support for free-threaded Python 3.13 (free-threaded Python 3.14 is
   still supported).
+* Added support for Python 3.15 and free-threaded Python 3.15.
+* We now publish wheels for free-threaded Python 3.15.
 
 5.0.0
 -----
