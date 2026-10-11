@@ -136,6 +136,18 @@ fn hashpw<'p>(
     ))
 }
 
+
+#[pyo3::pyfunction]
+fn hashpw_from_string<'p>(
+    py: pyo3::Python<'p>,
+    password: String,
+    salt: &[u8],
+) -> pyo3::PyResult<pyo3::Bound<'p, pyo3::types::PyBytes>> {
+    hashpw(py, password.as_bytes(), salt)
+}
+
+
+
 #[pyo3::pyfunction]
 fn checkpw(py: pyo3::Python<'_>, password: &[u8], hashed_password: &[u8]) -> pyo3::PyResult<bool> {
     Ok(hashpw(py, password, hashed_password)?
@@ -143,6 +155,16 @@ fn checkpw(py: pyo3::Python<'_>, password: &[u8], hashed_password: &[u8]) -> pyo
         .ct_eq(hashed_password)
         .into())
 }
+
+#[pyo3::pyfunction]
+fn checkpw_from_string<'p>(
+    py: pyo3::Python<'p>,
+    password: String,
+    hashed_password: String
+) -> pyo3::PyResult<bool> {
+    checkpw(py, password.as_bytes(), hashed_password.as_bytes())
+}
+
 
 #[pyo3::pyfunction]
 #[pyo3(signature = (password, salt, desired_key_bytes, rounds, ignore_few_rounds=false))]
@@ -197,7 +219,14 @@ mod _bcrypt {
     use pyo3::types::PyModuleMethods;
 
     #[pymodule_export]
-    use super::{checkpw, gensalt, hashpw, kdf};
+    use super::{
+        checkpw, 
+        checkpw_from_string, 
+        gensalt, 
+        hashpw, 
+        hashpw_from_string,
+        kdf
+    };
 
     // Not yet possible to add constants declaratively.
     #[pymodule_init]
