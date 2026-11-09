@@ -490,6 +490,10 @@ def test_invalid_params(password, salt, desired_key_bytes, rounds, error):
     with pytest.raises(error):
         bcrypt.kdf(password, salt, desired_key_bytes, rounds)
 
+def test_unicode():
+    hash_ = bcrypt.hashpw_from_string("password", bcrypt.gensalt())
+    assert bcrypt.checkpw_from_string("password", hash_.decode('utf-8'))
+
 
 def test_multithreading():
     def create_user(pw):
