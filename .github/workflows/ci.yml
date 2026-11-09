@@ -19,6 +19,8 @@ jobs:
           - {VERSION: "3.9", NOXSESSION: "tests"}
           - {VERSION: "3.14", NOXSESSION: "tests"}
           - {VERSION: "3.14t", NOXSESSION: "tests"}
+          - {VERSION: "3.15", NOXSESSION: "tests"}
+          - {VERSION: "3.15t", NOXSESSION: "tests"}
         MACOS:
           - macos-15-intel
           - macos-latest
@@ -32,6 +34,7 @@ jobs:
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: ${{ matrix.PYTHON.VERSION }}
+          allow-prereleases: true
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         timeout-minutes: 5
         with:
@@ -57,6 +60,8 @@ jobs:
           - {VERSION: "3.9", NOXSESSION: "tests"}
           - {VERSION: "3.14", NOXSESSION: "tests"}
           - {VERSION: "3.14t", NOXSESSION: "tests"}
+          - {VERSION: "3.15", NOXSESSION: "tests"}
+          - {VERSION: "3.15t", NOXSESSION: "tests"}
     name: "Python ${{ matrix.PYTHON.VERSION }} on ${{ matrix.WINDOWS.WINDOWS }}"
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -67,6 +72,7 @@ jobs:
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: ${{ matrix.PYTHON.VERSION }}
+          allow-prereleases: true
           architecture: ${{ matrix.WINDOWS.ARCH }}
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         timeout-minutes: 5
@@ -96,6 +102,8 @@ jobs:
           - {VERSION: "3.13", NOXSESSION: "tests"}
           - {VERSION: "3.14", NOXSESSION: "tests"}
           - {VERSION: "3.14t", NOXSESSION: "tests"}
+          - {VERSION: "3.15", NOXSESSION: "tests"}
+          - {VERSION: "3.15t", NOXSESSION: "tests"}
           - {VERSION: "pypy-3.11", NOXSESSION: "tests"}
 
           # MSRV
@@ -112,6 +120,7 @@ jobs:
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: ${{ matrix.PYTHON.VERSION }}
+          allow-prereleases: true
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         timeout-minutes: 5
         with:
