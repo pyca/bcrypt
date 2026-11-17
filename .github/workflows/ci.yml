@@ -17,7 +17,6 @@ jobs:
       matrix:
         PYTHON:
           - {VERSION: "3.9", NOXSESSION: "tests"}
-          - {VERSION: "3.14", NOXSESSION: "tests"}
           - {VERSION: "3.14t", NOXSESSION: "tests"}
           - {VERSION: "3.15", NOXSESSION: "tests"}
           - {VERSION: "3.15t", NOXSESSION: "tests"}
@@ -34,7 +33,6 @@ jobs:
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: ${{ matrix.PYTHON.VERSION }}
-          allow-prereleases: true
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         timeout-minutes: 5
         with:
@@ -58,7 +56,6 @@ jobs:
           - {ARCH: 'x64', WINDOWS: 'win64', RUST_TRIPLE: 'x86_64-pc-windows-msvc', RUNNER: 'windows-latest'}
         PYTHON:
           - {VERSION: "3.9", NOXSESSION: "tests"}
-          - {VERSION: "3.14", NOXSESSION: "tests"}
           - {VERSION: "3.14t", NOXSESSION: "tests"}
           - {VERSION: "3.15", NOXSESSION: "tests"}
           - {VERSION: "3.15t", NOXSESSION: "tests"}
@@ -72,7 +69,6 @@ jobs:
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: ${{ matrix.PYTHON.VERSION }}
-          allow-prereleases: true
           architecture: ${{ matrix.WINDOWS.ARCH }}
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         timeout-minutes: 5
@@ -120,7 +116,6 @@ jobs:
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: ${{ matrix.PYTHON.VERSION }}
-          allow-prereleases: true
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         timeout-minutes: 5
         with:
