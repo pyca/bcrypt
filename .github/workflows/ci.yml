@@ -17,8 +17,9 @@ jobs:
       matrix:
         PYTHON:
           - {VERSION: "3.9", NOXSESSION: "tests"}
-          - {VERSION: "3.14", NOXSESSION: "tests"}
           - {VERSION: "3.14t", NOXSESSION: "tests"}
+          - {VERSION: "3.15", NOXSESSION: "tests"}
+          - {VERSION: "3.15t", NOXSESSION: "tests"}
         MACOS:
           - macos-15-intel
           - macos-latest
@@ -55,8 +56,9 @@ jobs:
           - {ARCH: 'x64', WINDOWS: 'win64', RUST_TRIPLE: 'x86_64-pc-windows-msvc', RUNNER: 'windows-latest'}
         PYTHON:
           - {VERSION: "3.9", NOXSESSION: "tests"}
-          - {VERSION: "3.14", NOXSESSION: "tests"}
           - {VERSION: "3.14t", NOXSESSION: "tests"}
+          - {VERSION: "3.15", NOXSESSION: "tests"}
+          - {VERSION: "3.15t", NOXSESSION: "tests"}
     name: "Python ${{ matrix.PYTHON.VERSION }} on ${{ matrix.WINDOWS.WINDOWS }}"
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -96,6 +98,8 @@ jobs:
           - {VERSION: "3.13", NOXSESSION: "tests"}
           - {VERSION: "3.14", NOXSESSION: "tests"}
           - {VERSION: "3.14t", NOXSESSION: "tests"}
+          - {VERSION: "3.15", NOXSESSION: "tests"}
+          - {VERSION: "3.15t", NOXSESSION: "tests"}
           - {VERSION: "pypy-3.11", NOXSESSION: "tests"}
 
           # MSRV
